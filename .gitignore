@@ -2,3 +2,5 @@
 *.xml
 *.class
 Project.iml
+.idea/
+

@@ -1,3 +1,5 @@
+import java.util.stream.IntStream;
+
 public class Features {
 
     private Features() {}
@@ -43,4 +45,53 @@ public class Features {
 
         return (double) numHoles;
     }
+
+    /**
+     *
+     * @param testState
+     * @return number of blocks above holes
+     */
+    public static Double getBlocksAboveHoles(TestState testState){
+        int numBlocks = 0;
+
+        for(int col = 0; col < State.COLS;col++){
+            boolean foundHole = false;
+            for(int row = 0; row< testState.top[col];row++){
+                if(testState.field[row][col] == 0) foundHole = true;
+                else if(foundHole) numBlocks++;
+            }
+        }
+        return (double)numBlocks;
+    }
+
+    /**
+     *
+     * @param testState
+     * @return numbers of columns where all neighbouring columns are both at least 3 blocks taller
+     */
+    public static Double getNumOfSignificantTopDifference(TestState testState){
+        int num = 0;
+        for(int i =0;i<State.COLS;i++){
+            if((i == 0 || testState.top[i-1] >= testState.top[i]+3) && (i < State.COLS-1 || testState.top[i + 1] >= testState.top[i] + 3))
+                num++;
+        }
+        return (double) num;
+    }
+
+
+    public static Double getAverageTop(TestState testState){
+        return IntStream.of(testState.top).average().getAsDouble();
+    }
+
+    public static Double getMeanAbsoluteDeviationOfTop(TestState testState){
+        double average = IntStream.of(testState.top).average().getAsDouble();
+
+        double dev = 0;
+        for(int i=0;i<State.COLS;i++){
+            dev += Math.abs(testState.top[i]-average);
+        }
+
+        return dev/State.COLS;
+    }
+
 }
