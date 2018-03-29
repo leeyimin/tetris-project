@@ -60,20 +60,30 @@ public class LocalTrainer extends Trainer {
     public static void main(String args[]) {
         List<Double> coefficients = new ArrayList<>();
 
-        coefficients.add(0.58117228267127740);
-        coefficients.add(3.25528650862073600);
-        coefficients.add(0.43095925248722470);
-        coefficients.add(0.44869404796247603);
-        coefficients.add(1.27830445664962780);
-        coefficients.add(0.62961264968157570);
+        coefficients.add(0.0);
+        coefficients.add(0.0);
+        coefficients.add(0.0);
+        coefficients.add(0.0);
+        coefficients.add(0.0);
+        coefficients.add(0.0);
+        coefficients.add(0.0);
+        coefficients.add(0.0);
+        coefficients.add(0.0);
+        coefficients.add(0.0);
+        coefficients.add(0.0);
 
         List<Function<TestState, Double>> features = new ArrayList<>();
         features.add(Features::getBumpiness);
         features.add(Features::getTotalHeight);
         features.add(Features::getMaxHeight);
-        features.add(Features::getBlocksAboveHoles);
-        features.add(Features::getAverageTop);
+        features.add(Features::getNumHoles);
+        features.add(Features::getNumOfSignificantTopDifference);
         features.add(Features::getMeanAbsoluteDeviationOfTop);
+        features.add(Features::hasLevelSurface);
+        features.add(Features::hasRightStep);
+        features.add(Features::hasLeftStep);
+        features.add(Features::getNegativeOfRowsCleared);
+        features.add(Features::hasPossibleDeathNextPiece);
 
         new LocalTrainer(coefficients, features).train();
     }
