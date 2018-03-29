@@ -34,6 +34,11 @@ public class Features {
         return (double) maxHeight;
     }
 
+    /**
+     *
+     * @param testState
+     * @return number of empty blocks where there exists a full block above it
+     */
     public static Double getNumHoles(TestState testState) {
         int numHoles = 0;
 
@@ -72,7 +77,7 @@ public class Features {
     public static Double getNumOfSignificantTopDifference(TestState testState){
         int num = 0;
         for(int i =0;i<State.COLS;i++){
-            if((i == 0 || testState.top[i-1] >= testState.top[i]+3) && (i < State.COLS-1 || testState.top[i + 1] >= testState.top[i] + 3))
+            if((i == 0 || testState.top[i-1] >= testState.top[i]+3) && (i == State.COLS-1 || testState.top[i + 1] >= testState.top[i] + 3))
                 num++;
         }
         return (double) num;
