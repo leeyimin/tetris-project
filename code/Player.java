@@ -44,7 +44,7 @@ public class Player {
         return score;
     }
 
-    public void simulate() {
+    public int simulate() {
         State state = new State();
         this.frame = new TFrame(state);
 
@@ -60,22 +60,7 @@ public class Player {
         }
 
         this.frame.dispose();
-        System.out.println("You have completed " + state.getRowsCleared() + " rows.");
-    }
-
-    public static void main(String[] args) {
-        List<Double> coefficients = new ArrayList<>();
-        List<Function<TestState, Double>> features = new ArrayList<>();
-
-        coefficients.add(5.0);
-        coefficients.add(1.0);
-        coefficients.add(0.5);
-
-        features.add(Features::getBumpiness);
-        features.add(Features::getTotalHeight);
-        features.add(Features::getMaxHeight);
-
-        new Player(coefficients, features).simulate();
+        return state.getRowsCleared();
     }
 
 }

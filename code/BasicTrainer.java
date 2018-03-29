@@ -7,8 +7,10 @@ public class BasicTrainer extends Trainer {
         super(100, coefficients, features);
     }
 
-    public void update() {
-        // do nothing
+    public void onSimulateDone(int rowsCleared) {
+        this.printCoefficients();
+        System.out.println("Rows cleared: " + rowsCleared);
+        System.out.println();
     }
 
     public static void main(String args[]) {

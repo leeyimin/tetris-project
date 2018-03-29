@@ -15,10 +15,20 @@ public abstract class Trainer {
 
     public void train() {
         for (int i = 0; i < this.numIterations; i++) {
-            new Player(coefficients, features).simulate();
-            this.update();
+            int rowsCleared = new Player(coefficients, features).simulate();
+            this.onSimulateDone(rowsCleared);
         }
     }
 
-    public abstract void update();
+    public void printCoefficients() {
+        StringBuilder output = new StringBuilder();
+
+        for (Double coefficient : coefficients) {
+            output.append(coefficient + ", ");
+        }
+
+        System.out.println(output.delete(output.length() - 2, output.length()).toString());
+    }
+
+    public abstract void onSimulateDone(int rowsCleared);
 }
