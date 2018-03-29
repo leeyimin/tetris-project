@@ -46,12 +46,12 @@ public class Player {
 
     public int simulate() {
         State state = new State();
-        this.frame = new TFrame(state);
+  //      this.frame = new TFrame(state);
 
         while (!state.hasLost()) {
             state.makeMove(this.pickMove(state, state.legalMoves()));
-            state.draw();
-            state.drawNext(0,0);
+//            state.draw();
+//            state.drawNext(0,0);
             /*try {
                 Thread.sleep(REFRESH_DELAY);
             } catch (InterruptedException e) {
@@ -59,7 +59,7 @@ public class Player {
             }*/
         }
 
-        this.frame.dispose();
+//        this.frame.dispose();
         return state.getRowsCleared();
     }
 

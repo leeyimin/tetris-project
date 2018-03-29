@@ -54,8 +54,11 @@ public class DarwinTrainer extends Trainer {
 
         }
 
+        System.out.println("@@@@@@@@@@@@ BATTLE ROYALE RESULTS @@@@@@@@@@@@@");
         System.out.println("Best player index: " + bestPlayer + " with score of " + highScore);
         System.out.println("Second best player index: " + secondBestPlayer + " with score of " + secondHighScore);
+        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        System.out.println();
 
         resultPair[0] = bestPlayer;
         resultPair[1] = secondBestPlayer;
@@ -71,18 +74,99 @@ public class DarwinTrainer extends Trainer {
         ArrayList<Double> childCoefficient;
         ArrayList<List<Double>> newGeneration = new ArrayList<List<Double>>();
 
-        for (int i = 0; i < bestCoefficient.size(); i++) {
+        int parentCoin, mutationDice;
+
+        int totalCrossNum = (int)(Math.pow(bestCoefficient.size(), 2));
+        int perfectCount = (int)(totalCrossNum * 0.4);
+        int stupidCount =(int)(totalCrossNum * 0.4);
+        int retardedCount = (int)(totalCrossNum * 0.6);
+
+        double mutatedCoefficient;
+
+
+
+        //Perfect cross breed
+        for (int i = 0; i < perfectCount; i++) {
 
             childCoefficient = new ArrayList<Double>();
+            for (int j = 0; j < bestCoefficient.size(); j++) {
+                parentCoin = ThreadLocalRandom.current().nextInt(0, 2);
 
-            for (int firstGene = 0; firstGene <= i; firstGene++) {
-                childCoefficient.add(bestCoefficient.get(firstGene));
+
+
+                if (parentCoin == 0) {
+                    childCoefficient.add(bestCoefficient.get(j));
+                } else {
+                    childCoefficient.add(secondCoefficient.get(j));
+                }
             }
+            newGeneration.add(childCoefficient);
+        }
 
-            for (int secondGene = i + 1; secondGene < secondCoefficient.size(); secondGene++) {
-                childCoefficient.add(secondCoefficient.get(secondGene));
+        //stupid cross breed
+        for (int i = 0; i < stupidCount; i++) {
+
+            childCoefficient = new ArrayList<Double>();
+            for (int j = 0; j < bestCoefficient.size(); j++) {
+                parentCoin = ThreadLocalRandom.current().nextInt(0, 2);
+                mutationDice = ThreadLocalRandom.current().nextInt(0, 3);
+
+                if (parentCoin == 0) {
+
+                    if (mutationDice == 0) {
+                        mutatedCoefficient = bestCoefficient.get(j) +
+                                (ThreadLocalRandom.current().nextDouble(-0.3,0.3));
+                    } else {
+                        mutatedCoefficient = bestCoefficient.get(j);
+                    }
+
+                    childCoefficient.add(Math.max(mutatedCoefficient, 0));
+
+                } else {
+                    if (mutationDice == 0) {
+                        mutatedCoefficient = secondCoefficient.get(j) +
+                                (ThreadLocalRandom.current().nextDouble(-0.3,0.3));
+                    } else {
+                        mutatedCoefficient = secondCoefficient.get(j);
+                    }
+
+                    childCoefficient.add(Math.max(mutatedCoefficient, 0));
+                }
             }
+            newGeneration.add(childCoefficient);
+        }
 
+
+        //retarded crossbreed
+        for (int i = 0; i < retardedCount; i++) {
+
+            childCoefficient = new ArrayList<Double>();
+            for (int j = 0; j < bestCoefficient.size(); j++) {
+                parentCoin = ThreadLocalRandom.current().nextInt(0, 2);
+                mutationDice = ThreadLocalRandom.current().nextInt(0, 2);
+
+                if (parentCoin == 0) {
+
+                    if (mutationDice == 0) {
+                        mutatedCoefficient = bestCoefficient.get(j) +
+                                (ThreadLocalRandom.current().nextDouble(-1,1));
+                    } else {
+                        mutatedCoefficient = bestCoefficient.get(j);
+                    }
+
+                    childCoefficient.add(Math.max(mutatedCoefficient, 0));
+
+                } else {
+                    if (mutationDice == 0) {
+                        mutatedCoefficient = secondCoefficient.get(j) +
+                                (ThreadLocalRandom.current().nextDouble(-0.4,0.4));
+                    } else {
+                        mutatedCoefficient = secondCoefficient.get(j);
+                    }
+
+                    childCoefficient.add(Math.max(mutatedCoefficient, 0));
+                }
+            }
             newGeneration.add(childCoefficient);
         }
 
@@ -98,11 +182,13 @@ public class DarwinTrainer extends Trainer {
         final int numPlayers = 20;
 
         //Adding features
-        features.add(Features::getBumpiness);
-        features.add(Features::getMaxHeight);
-        features.add(Features::getNumOfSignificantTopDifference);
+        features.add(Features::hasPossibleDeathNextPiece);
+        features.add(Features::getNegativeOfRowsCleared);
+        features.add(Features::hasRightStep);
         features.add(Features::getMeanAbsoluteDeviationOfTop);
-        features.add(Features::getAverageTop);
+        features.add(Features::getTotalHeight);
+        features.add(Features::getNumOfSignificantTopDifference);
+        features.add(Features::getNumHoles);
 
         //Populating random weights
         for (int i = 0; i < numPlayers; i++) {
