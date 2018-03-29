@@ -12,8 +12,8 @@ public class LocalTrainer extends Trainer {
     private int bestCumulatedRows; 
     private List<Double> bestCoefficients;
 
-    public BasicTrainer(List<Double> coefficients, List<Function<TestState, Double>> features) {
-        super(BATCH_SIZE * NUM_BATTLES, coefficients, features);
+    public LocalTrainer(List<Double> coefficients, List<Function<TestState, Double>> features) {
+        super(BATCH_SIZE * NUM_BATCHES, coefficients, features);
 
         this.currRound = 0;
         this.cumulatedRows = 0;
@@ -27,7 +27,7 @@ public class LocalTrainer extends Trainer {
         this.cumulatedRows += rowsCleared;
 
         if (this.currRound % BATCH_SIZE == 0) {
-            this.updateCoefficient();
+            this.updateCoefficients();
             this.cumulatedRows = 0;
         }
     }

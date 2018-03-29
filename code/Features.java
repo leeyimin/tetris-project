@@ -134,4 +134,14 @@ public class Features {
         return 1.0;
     }
 
+    /**
+     *
+     * @param testState
+     * @return -1 * rows cleared last move
+     */
+    public static Double getNegativeOfRowsCleared(TestState testState){
+        return (double) -1*testState.lastCleared;
+    }
+
+
 }
