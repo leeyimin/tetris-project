@@ -3,7 +3,8 @@ import java.util.function.*;
 
 public class Player {
 
-    protected static int REFRESH_DELAY = 1;
+    protected static final int REFRESH_DELAY = 1;
+    protected static final boolean RENDER_BOARD = false;
 
     private TFrame frame;
 
@@ -46,20 +47,28 @@ public class Player {
 
     public int simulate() {
         State state = new State();
-        this.frame = new TFrame(state);
+
+        if (RENDER_BOARD) {
+            this.frame = new TFrame(state);
+        }
 
         while (!state.hasLost()) {
             state.makeMove(this.pickMove(state, state.legalMoves()));
-            state.draw();
-            state.drawNext(0,0);
-            /*try {
-                Thread.sleep(REFRESH_DELAY);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }*/
+            if (RENDER_BOARD) { 
+                state.draw();
+                state.drawNext(0,0);
+                try {
+                    Thread.sleep(REFRESH_DELAY);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
-        this.frame.dispose();
+        if (RENDER_BOARD) {
+            this.frame.dispose();
+        }
+
         return state.getRowsCleared();
     }
 

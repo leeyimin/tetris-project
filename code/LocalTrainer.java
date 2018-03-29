@@ -3,7 +3,7 @@ import java.util.function.*;
 
 public class LocalTrainer extends Trainer {
 
-    private static final int BATCH_SIZE = 10;
+    private static final int BATCH_SIZE = 100;
     private static final int NUM_BATCHES = 100000;
 
     private int currBatch;
@@ -18,7 +18,7 @@ public class LocalTrainer extends Trainer {
         this.currBatch = 0;
         this.currRound = 0;
         this.cumulatedRows = 0;
-        this.stepSize = 0.1;
+        this.stepSize = 1.0;
         this.bestCumulatedRows = 0;
         this.bestCoefficients = coefficients;
     }
@@ -38,7 +38,7 @@ public class LocalTrainer extends Trainer {
         System.out.println();
         System.out.println("RESULT OF BATCH #" + (++currBatch));
         System.out.println("======================================");
-        System.out.println("Rows cleared: " + this.cumulatedRows / 10.0);
+        System.out.println("Rows cleared: " + (double) this.cumulatedRows / BATCH_SIZE);
         this.printCoefficients();
 
         // if the new coefficients are better than the best so far
@@ -60,17 +60,23 @@ public class LocalTrainer extends Trainer {
     public static void main(String args[]) {
         List<Double> coefficients = new ArrayList<>();
 
-        coefficients.add(0.0);
-        coefficients.add(0.0);
-        coefficients.add(0.0);
-        coefficients.add(0.0);
-        coefficients.add(0.0);
-        coefficients.add(0.0);
-        coefficients.add(0.0);
-        coefficients.add(0.0);
-        coefficients.add(0.0);
-        coefficients.add(0.0);
-        coefficients.add(0.0);
+        coefficients.add(0.5104353223422937);
+        coefficients.add(3.817903728201659);
+        coefficients.add(0.31012531039568025);
+        coefficients.add(0.14667791183942425);
+        coefficients.add(2.2330640842735687);
+        coefficients.add(2.263339721291005);
+        coefficients.add(0.18623383673088817);
+        coefficients.add(0.5414191629604356);
+        coefficients.add(0.6156312845858801);
+        coefficients.add(2.5117122546500923);
+        coefficients.add(2.0367323121409804);
+
+        /*
+        for (int i = 0; i < 11; i++) {
+            coefficients.add(2.0);
+        }
+        */
 
         List<Function<TestState, Double>> features = new ArrayList<>();
         features.add(Features::getBumpiness);
