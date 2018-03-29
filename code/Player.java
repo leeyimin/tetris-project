@@ -1,22 +1,27 @@
 import java.util.*;
+import java.util.function.*;
 
 public class Player {
 
-    private static int REFRESH_DELAY = 1;
+    protected static int REFRESH_DELAY = 1;
 
-    public int pickMove(State s, int[][] legalMoves) {
+    private TFrame frame;
+
+    private List<Double> coefficients;
+    private List<Function<TestState, Double>> features;
+
+    public Player(List<Double> coefficients, List<Function<TestState, Double>> features) {
+        this.coefficients = coefficients;
+        this.features = features;
+    }
+
+    public int pickMove(State currentState, int[][] legalMoves) {
         int bestMove = 0;
-        int bestCost = this.evaluateField(MoveTester.testMove(s, 0));
+        double bestCost = Double.MAX_VALUE;
 
-        for (int move = 1; move < legalMoves.length; move++) {
-            int cost = evaluateField(MoveTester.testMove(s, move));
-            Random r = new Random();
-
-            if(r.nextInt(1000) < 1){
-                continue;
-            }
-
-            if ((cost == bestCost && r.nextInt(10) < 5) || cost < bestCost) {
+        for (int move = 0; move < legalMoves.length; move++) {
+            double cost = this.evaluateField(MoveTester.testMove(currentState, move));
+            if (cost < bestCost) {
                 bestMove = move;
                 bestCost = cost;
             }
@@ -25,38 +30,52 @@ public class Player {
         return bestMove;
     }
 
-    public int evaluateField(TestState testState) {
+    public double evaluateField(TestState testState) {
         if (testState == null) {
-            return Integer.MAX_VALUE;
+            return Double.MAX_VALUE;
         }
 
-        return (
-            2 * Features.getBumpiness(testState) +
-            10 * Features.getTotalHeight(testState) +
-            1/2 * Features.getNumHoles(testState)
-        );
+        int score = 0;
+
+        for (int i = 0; i < this.coefficients.size(); i++) {
+            score += this.coefficients.get(i) * this.features.get(i).apply(testState);
+        }
+
+        return score;
+    }
+
+    public void simulate() {
+        State state = new State();
+        this.frame = new TFrame(state);
+
+        while (!state.hasLost()) {
+            state.makeMove(this.pickMove(state, state.legalMoves()));
+            state.draw();
+            state.drawNext(0,0);
+            try {
+                Thread.sleep(REFRESH_DELAY);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        this.frame.dispose();
+        System.out.println("You have completed " + state.getRowsCleared() + " rows.");
     }
 
     public static void main(String[] args) {
-        for (int i = 0; i < 3; i++) {
-            State state = new State();
-            TFrame frame = new TFrame(state);
-            Player player = new Player();
+        List<Double> coefficients = new ArrayList<>();
+        List<Function<TestState, Double>> features = new ArrayList<>();
 
-            while (!state.hasLost()) {
-                state.makeMove(player.pickMove(state, state.legalMoves()));
-                state.draw();
-                state.drawNext(0,0);
-                try {
-                    Thread.sleep(REFRESH_DELAY);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
+        coefficients.add(5.0);
+        coefficients.add(1.0);
+        coefficients.add(0.5);
 
-            System.out.println("You have completed " + state.getRowsCleared() + " rows.");
-        }
+        features.add(Features::getBumpiness);
+        features.add(Features::getTotalHeight);
+        features.add(Features::getMaxHeight);
 
+        new Player(coefficients, features).simulate();
     }
 
 }
