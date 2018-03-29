@@ -16,7 +16,7 @@ public abstract class Trainer {
     public void train() {
         for (int i = 0; i < this.numIterations; i++) {
             int rowsCleared = new Player(coefficients, features).simulate();
-            this.update(rowsCleared);
+            this.onSimulateDone(rowsCleared);
         }
     }
 
@@ -30,5 +30,5 @@ public abstract class Trainer {
         System.out.println(output.delete(output.length() - 2, output.length()).toString());
     }
 
-    public abstract void update(int rowsCleared);
+    public abstract void onSimulateDone(int rowsCleared);
 }
