@@ -1,4 +1,5 @@
 import java.util.*;
+import java.awt.event.WindowEvent.*;
 
 public class PlayerTrainer {
 
@@ -38,17 +39,18 @@ public class PlayerTrainer {
         }
 
         return (
-            this.coefficients[0] * Features.getBumpiness(testState) +
-            this.coefficients[1] * Features.getTotalHeight(testState) +
-            this.coefficients[2] * Features.getNumHoles(testState)
-        );
+                this.coefficients[0] * Features.getBumpiness(testState) +
+                this.coefficients[1] * Features.getTotalHeight(testState) +
+                this.coefficients[2] * Features.getNumHoles(testState)
+               );
     }
 
-   public static void main(String[] args) {
+    public static void main(String[] args) {
         for (int i = 0; i < NUM_ITERATIONS; i++) {
+            double[] coefficients = {2, 10, 0.5};
             State state = new State();
             TFrame frame = new TFrame(state);
-            PlayerTrainer player = new PlayerTrainer(new double[] {1, 2, 0.5});
+            PlayerTrainer player = new PlayerTrainer(coefficients);
 
             while (!state.hasLost()) {
                 state.makeMove(player.pickMove(state, state.legalMoves()));
@@ -61,7 +63,8 @@ public class PlayerTrainer {
                 }
             }
 
-            System.out.println("You have completed " + state.getRowsCleared() + " rows.");
+            frame.dispose();
+            System.out.println(coefficients[0] + " | " + coefficients[1] + " | " + coefficients[2] + " >> " + state.getRowsCleared());
         }
 
     }
