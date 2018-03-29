@@ -78,11 +78,11 @@ public class Features {
         return (double) num;
     }
 
-
-    public static Double getAverageTop(TestState testState){
-        return IntStream.of(testState.top).average().getAsDouble();
-    }
-
+    /**
+     * Measure of height variation
+     * @param testState
+     * @return mean absolute deviation of heights of columns
+     */
     public static Double getMeanAbsoluteDeviationOfTop(TestState testState){
         double average = IntStream.of(testState.top).average().getAsDouble();
 
@@ -92,6 +92,46 @@ public class Features {
         }
 
         return dev/State.COLS;
+    }
+
+    /**
+     * Help to ensure cubes can be placed
+     * @param testState
+     * @return 0 if there are at least two columns of same height, else returns 1.0
+     */
+    public static Double hasLevelSurface(TestState testState){
+        int prev = testState.top[0];
+        for(int i=1;i<State.COLS;i++){
+            if(testState.top[i]== prev) return 0.0;
+        }
+        return 1.0;
+    }
+
+    /**
+     * Help to ensure z-blocks can be placed
+     * @param testState
+     * @return 0 if there exist some column with its right column one unit higher, else returns 1.0
+     */
+    public static Double hasRightStep(TestState testState){
+        int prev = testState.top[0];
+        for (int i = 1; i < State.COLS; i++) {
+            if (testState.top[i] == prev + 1) return 0.0;
+        }
+        return 1.0;
+    }
+
+    /**
+     * Help to ensure reverse z-blocks can be placed
+     *
+     * @param testState
+     * @return 0 if there exist some column with its left column one unit higher, else returns 1.0
+     */
+    public static Double hasLeftStep(TestState testState) {
+        int prev = testState.top[0];
+        for (int i = 1; i < State.COLS; i++) {
+            if (testState.top[i] == prev - 1) return 0.0;
+        }
+        return 1.0;
     }
 
 }
