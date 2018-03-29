@@ -18,7 +18,7 @@ public class LocalTrainer extends Trainer {
         this.currBatch = 0;
         this.currRound = 0;
         this.cumulatedRows = 0;
-        this.stepSize = 1.0;
+        this.stepSize = 0.2;
         this.bestCumulatedRows = 0;
         this.bestCoefficients = coefficients;
     }
