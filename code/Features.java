@@ -143,5 +143,22 @@ public class Features {
         return (double) -1*testState.lastCleared;
     }
 
+    /**
+     *
+     * @param testState
+     * @return 1.0 if there exist some next piece that has no possible move, else 0
+     */
+    public static Double hasPossibleDeathNextPiece(TestState testState){
+        for(int i=0;i<State.N_PIECES;i++){
+            TestState possibleState = MoveTester.testMove(testState, i, 0);
+            for(int move=1;move<State.legalMoves[i].length;move++){
+                if(possibleState != null) break;
+                possibleState = MoveTester.testMove(testState, i, move);
+            }
+            if(possibleState == null) return 1.0;
+        }
+        return 0.0;
+    }
+
 
 }
