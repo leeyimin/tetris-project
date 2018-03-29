@@ -54,7 +54,7 @@ public class Player {
 
         while (!state.hasLost()) {
             state.makeMove(this.pickMove(state, state.legalMoves()));
-            if (RENDER_BOARD) { 
+            if (RENDER_BOARD) {
                 state.draw();
                 state.drawNext(0,0);
                 try {

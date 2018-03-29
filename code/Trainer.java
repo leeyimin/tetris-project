@@ -20,6 +20,15 @@ public abstract class Trainer {
         }
     }
 
+    public int getAverageResult() {
+        int rowsCleared = 0;
+
+        for (int i = 0; i < this.numIterations; i++) {
+            rowsCleared += new Player(coefficients, features).simulate();
+        }
+        return (rowsCleared/numIterations);
+    }
+
     public void printCoefficients() {
         StringBuilder output = new StringBuilder();
 
