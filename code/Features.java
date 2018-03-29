@@ -2,48 +2,48 @@ public class Features {
 
     private Features() {}
 
-    public static int getBumpiness(TestState testState) {
+    public static Double getBumpiness(TestState testState) {
         int bumpiness = 0;
 
         for (int col = 1; col < State.COLS; col++) {
             bumpiness += Math.abs(testState.top[col - 1] - testState.top[col]);
         }
 
-        return bumpiness;
+        return (double) bumpiness;
     }
 
-    public static int getTotalHeight(TestState testState) {
+    public static Double getTotalHeight(TestState testState) {
         int totalHeight = 0;
 
         for (int col = 0; col < State.COLS; col++) {
             totalHeight += testState.top[col];
         }
 
-        return totalHeight;
+        return (double) totalHeight;
     }
 
-    public static int getMaxHeight(TestState testState) {
+    public static Double getMaxHeight(TestState testState) {
         int maxHeight = 0;
 
         for (int col = 0; col < State.COLS; col++) {
             maxHeight = Integer.max(maxHeight, testState.top[col]);
         }
 
-        return maxHeight;
+        return (double) maxHeight;
     }
 
-    public static int getNumHoles(TestState testState) {
-        int height = getMaxHeight(testState);
+    public static Double getNumHoles(TestState testState) {
+        int height = getMaxHeight(testState).intValue();
         int numHoles = 0;
 
         for (int row = 0; row < height; row++) {
             numHoles += Features.getNumHolesOnRow(testState, row);
         }
 
-        return numHoles;
+        return (double) numHoles;
     }
 
-    public static int getNumHolesOnRow(TestState testState, int row) {
+    public static Double getNumHolesOnRow(TestState testState, int row) {
         int numHoles = 0;
 
         for (int col = 0; col < State.COLS; col++) {
@@ -67,7 +67,7 @@ public class Features {
             }
         }
 
-        return numHoles;
+        return (double) numHoles;
     }
 
 }
