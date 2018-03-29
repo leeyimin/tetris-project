@@ -33,41 +33,14 @@ public class Features {
     }
 
     public static Double getNumHoles(TestState testState) {
-        int height = getMaxHeight(testState).intValue();
         int numHoles = 0;
 
-        for (int row = 0; row < height; row++) {
-            numHoles += Features.getNumHolesOnRow(testState, row);
-        }
-
-        return (double) numHoles;
-    }
-
-    public static Double getNumHolesOnRow(TestState testState, int row) {
-        int numHoles = 0;
-
-        for (int col = 0; col < State.COLS; col++) {
-            boolean hasCeiling = false;
-            int numConsecEmpty = 0;
-
-            for(int r = row; r < getMaxHeight(testState); r++){
-                if(testState.field[row][col] != 0 || numConsecEmpty == 3){
-                    hasCeiling = true;
-                    break;
-                }
-                if(testState.field[row][col] == 0) {
-                    numConsecEmpty++;
-                }
-            }
-            if (testState.field[row][col] == 0 && hasCeiling) {
-                if(numConsecEmpty >= 5){
-                    numHoles+=5;
-                }
-                numHoles++;
+        for(int col = 0; col < State.COLS; col++){
+            for(int row =0;row< testState.top[col]-1;row++){
+                if(testState.field[row][col] == 0) numHoles++;
             }
         }
 
         return (double) numHoles;
     }
-
 }
