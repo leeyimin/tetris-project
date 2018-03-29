@@ -15,7 +15,11 @@ public class LocalTrainer extends Trainer {
 
     public LocalTrainer(List<Double> coefficients, List<Function<TestState, Double>> features) {
         super(BATCH_SIZE * NUM_BATCHES, coefficients, features);
+<<<<<<< HEAD
         this.currBatch = 0;
+=======
+
+>>>>>>> 9ef81024586ce4b8a88e412e6d657a4858765c3a
         this.currRound = 0;
         this.cumulatedRows = 0;
         this.stepSize = 0.1;
@@ -28,7 +32,11 @@ public class LocalTrainer extends Trainer {
         this.cumulatedRows += rowsCleared;
 
         if (this.currRound % BATCH_SIZE == 0) {
+<<<<<<< HEAD
             this.onBatchDone();
+=======
+            this.updateCoefficients();
+>>>>>>> 9ef81024586ce4b8a88e412e6d657a4858765c3a
             this.cumulatedRows = 0;
         }
     }
