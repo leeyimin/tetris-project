@@ -4,20 +4,21 @@ import java.util.function.*;
 public class LocalTrainer extends Trainer {
 
     private static final int BATCH_SIZE = 10;
-    private static final int NUM_BATCHES = 100;
+    private static final int NUM_BATCHES = 100000;
 
+    private int currBatch;
     private int currRound;
     private int cumulatedRows;
     private double stepSize;
     private int bestCumulatedRows; 
     private List<Double> bestCoefficients;
 
-    public BasicTrainer(List<Double> coefficients, List<Function<TestState, Double>> features) {
-        super(BATCH_SIZE * NUM_BATTLES, coefficients, features);
-
+    public LocalTrainer(List<Double> coefficients, List<Function<TestState, Double>> features) {
+        super(BATCH_SIZE * NUM_BATCHES, coefficients, features);
+        this.currBatch = 0;
         this.currRound = 0;
         this.cumulatedRows = 0;
-        this.stepSize = 10.0;
+        this.stepSize = 0.1;
         this.bestCumulatedRows = 0;
         this.bestCoefficients = coefficients;
     }
@@ -27,32 +28,54 @@ public class LocalTrainer extends Trainer {
         this.cumulatedRows += rowsCleared;
 
         if (this.currRound % BATCH_SIZE == 0) {
-            this.updateCoefficient();
+            this.onBatchDone();
             this.cumulatedRows = 0;
         }
     }
 
-    private void updateCoefficients() {
+    private void onBatchDone() {
+        // print the rows cleared
+        System.out.println();
+        System.out.println("RESULT OF BATCH #" + (++currBatch));
+        System.out.println("======================================");
+        System.out.println("Rows cleared: " + this.cumulatedRows / 10.0);
+        this.printCoefficients();
+
+        // if the new coefficients are better than the best so far
+        // update the best coefficients
+        if (this.bestCumulatedRows < this.cumulatedRows) {
+            this.bestCumulatedRows = this.cumulatedRows;
+            this.bestCoefficients = this.coefficients;
+        }
+
+        // pertubate the coefficients by a little every batch
         Random rng = new Random();
         List<Double> newCoefficients = new ArrayList<>();
-
-        for (Double coefficient : this.coefficients) {
-            newCoefficients.add(coefficient + stepSize * rng.nextDouble());
+        for (Double coefficient : this.bestCoefficients) {
+            newCoefficients.add(Math.abs(coefficient + this.stepSize * (rng.nextDouble() - this.stepSize / 2)));
         }
+        this.coefficients = newCoefficients;
     }
 
     public static void main(String args[]) {
         List<Double> coefficients = new ArrayList<>();
-        coefficients.add(2.0);
-        coefficients.add(10.0);
-        coefficients.add(0.5);
+
+        coefficients.add(0.58117228267127740);
+        coefficients.add(3.25528650862073600);
+        coefficients.add(0.43095925248722470);
+        coefficients.add(0.44869404796247603);
+        coefficients.add(1.27830445664962780);
+        coefficients.add(0.62961264968157570);
 
         List<Function<TestState, Double>> features = new ArrayList<>();
         features.add(Features::getBumpiness);
         features.add(Features::getTotalHeight);
         features.add(Features::getMaxHeight);
+        features.add(Features::getBlocksAboveHoles);
+        features.add(Features::getAverageTop);
+        features.add(Features::getMeanAbsoluteDeviationOfTop);
 
-        new BasicTrainer(coefficients, features).train();
+        new LocalTrainer(coefficients, features).train();
     }
 
 }

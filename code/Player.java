@@ -52,11 +52,11 @@ public class Player {
             state.makeMove(this.pickMove(state, state.legalMoves()));
             state.draw();
             state.drawNext(0,0);
-            try {
+            /*try {
                 Thread.sleep(REFRESH_DELAY);
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }
+            }*/
         }
 
         this.frame.dispose();
