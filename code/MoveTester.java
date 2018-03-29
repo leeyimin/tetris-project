@@ -1,19 +1,19 @@
 public class MoveTester {
 
     // test a move based on the move index - its order in the legalMoves list
-    public static MoveResult testMove(State s, int moveIndex) {
+    public static TestState testMove(State s, int moveIndex) {
         int[][] legalMoves = s.legalMoves();
         return MoveTester.testMove(s, legalMoves[moveIndex]);
     }
 
     // test a move based on an array of orient and slot
-    public static MoveResult testMove(State s, int[] move) {
+    public static TestState testMove(State s, int[] move) {
         return MoveTester.testMove(s, move[State.ORIENT], move[State.SLOT]);
     }
 
     // returns null if you lose,
-    // instance of MoveResult after move taken otherwise
-    public static MoveResult testMove(State s, int orient, int slot) {
+    // instance of TestState after move taken otherwise
+    public static TestState testMove(State s, int orient, int slot) {
         // create alias for all static public fields
         int[] pOrients = State.getpOrients();
         int[][] pWidth = State.getpWidth();
@@ -92,7 +92,7 @@ public class MoveTester {
             }
         }
 
-        return new MoveResult(field, top);
+        return new TestState(field, top);
     }
 
 }

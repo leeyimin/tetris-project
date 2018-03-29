@@ -2,11 +2,11 @@ import java.util.*;
 
 public class PlayerSkeleton {
 
-    private static int SPEED = 1;
+    private static int SPEED = 10;
 
     public int pickMove(State s, int[][] legalMoves) {
         int bestMove = 0;
-        int bestCost = evaluateField(MoveTester.testMove(s, 0));
+        int bestCost = this.evaluateField(MoveTester.testMove(s, 0));
 
         for (int move = 1; move < legalMoves.length; move++) {
             int cost = evaluateField(MoveTester.testMove(s, move));
@@ -14,16 +14,11 @@ public class PlayerSkeleton {
 
             if(r.nextInt(1000) < 1){
                 continue;
-            }else {
-                if (cost == bestCost) {
-                    if (r.nextInt(10) < 5) {
-                        bestMove = move;
-                        bestCost = cost;
-                    }
-                } else if (cost < bestCost) {
-                    bestMove = move;
-                    bestCost = cost;
-                }
+            }
+
+            if ((cost == bestCost && r.nextInt(10) < 5) || cost < bestCost) {
+                bestMove = move;
+                bestCost = cost;
             }
         }
 
@@ -31,77 +26,76 @@ public class PlayerSkeleton {
         return bestMove;
     }
 
-    public int evaluateField(MoveResult moveResult) {
-        if (moveResult == null) {
+    public int evaluateField(TestState testState) {
+        if (testState == null) {
             return Integer.MAX_VALUE;
         }
 
         return (
-            10 * getTotalHeight(moveResult) +
-            2 * getBumpiness(moveResult) +
-            1/2 * getNumHoles(moveResult)
+            2 * getBumpiness(testState) +
+            10 * getTotalHeight(testState) +
+            1/2 * getNumHoles(testState)
         );
     }
 
-    public int getBumpiness(MoveResult moveResult) {
+    public int getBumpiness(TestState testState) {
         int bumpiness = 0;
 
         for (int col = 1; col < State.COLS; col++) {
-            bumpiness += Math.abs(moveResult.top[col - 1] - moveResult.top[col]);
+            bumpiness += Math.abs(testState.top[col - 1] - testState.top[col]);
         }
 
         return bumpiness;
     }
 
-    public int getMaxHeight(MoveResult moveResult) {
-        int maxHeight = 0;
-
-        for (int col = 0; col < State.COLS; col++) {
-            maxHeight = Integer.max(maxHeight, moveResult.top[col]);
-        }
-
-        return maxHeight;
-    }
-
-    public int getTotalHeight(MoveResult moveResult) {
+    public int getTotalHeight(TestState testState) {
         int totalHeight = 0;
 
         for (int col = 0; col < State.COLS; col++) {
-            totalHeight += moveResult.top[col];
+            totalHeight += testState.top[col];
         }
 
         return totalHeight;
     }
 
-    public int getNumGapsOnRow(MoveResult moveResult, int row) {
-        int numGaps = 0;
+    public int getMaxHeight(TestState testState) {
+        int maxHeight = 0;
 
         for (int col = 0; col < State.COLS; col++) {
-            if (moveResult.field[row][col] == 0) {
-                numGaps++;
-            }
+            maxHeight = Integer.max(maxHeight, testState.top[col]);
         }
 
-        return numGaps;
+        return maxHeight;
     }
 
-    public int getNumHolesOnRow(MoveResult moveResult, int row) {
+    public int getNumHoles(TestState testState) {
+        int height = getMaxHeight(testState);
+        int numHoles = 0;
+
+        for (int row = 0; row < height; row++) {
+            numHoles += getNumHolesOnRow(testState, row);
+        }
+
+        return numHoles;
+    }
+
+    public int getNumHolesOnRow(TestState testState, int row) {
         int numHoles = 0;
 
         for (int col = 0; col < State.COLS; col++) {
             boolean hasCeiling = false;
             int numConsecEmpty = 0;
 
-            for(int r = row; r < getMaxHeight(moveResult); r++){
-                if(moveResult.field[row][col] != 0 || numConsecEmpty == 3){
+            for(int r = row; r < getMaxHeight(testState); r++){
+                if(testState.field[row][col] != 0 || numConsecEmpty == 3){
                     hasCeiling = true;
                     break;
                 }
-                if(moveResult.field[row][col] == 0) {
+                if(testState.field[row][col] == 0) {
                     numConsecEmpty++;
                 }
             }
-            if (moveResult.field[row][col] == 0 && hasCeiling) {
+            if (testState.field[row][col] == 0 && hasCeiling) {
                 if(numConsecEmpty >= 5){
                     numHoles+=5;
                 }
@@ -110,50 +104,6 @@ public class PlayerSkeleton {
         }
 
         return numHoles;
-    }
-
-    public int getNumHoles(MoveResult moveResult) {
-        int height = getMaxHeight(moveResult);
-        int numHoles = 0;
-
-        for (int row = 0; row < height; row++) {
-            numHoles += getNumHolesOnRow(moveResult, row);
-        }
-
-        return numHoles;
-    }
-
-    public int getNumGaps(MoveResult moveResult) {
-        int height = getMaxHeight(moveResult);
-        int numGaps = 0;
-
-        for (int row = 0; row < height; row++) {
-            numGaps += getNumGapsOnRow(moveResult, row);
-        }
-
-        return numGaps;
-    }
-
-    public int getNumRowsWithSparseGaps(MoveResult moveResult) {
-        int height = getMaxHeight(moveResult);
-        int numRowsWithSparseGaps = 0;
-
-        for (int row = 0; row < height; row++) {
-            if (getNumGapsOnRow(moveResult, row) <= 3) {
-                numRowsWithSparseGaps++;
-            }
-        }
-
-        return numRowsWithSparseGaps;
-    }
-
-    public int getGapsOnBottomRow(MoveResult moveResult) {
-        return getNumGapsOnRow(moveResult, 0);
-    }
-
-    public int getNumGapsOnTopRow(MoveResult moveResult) {
-        int topRow = getMaxHeight(moveResult);
-        return getNumGapsOnRow(moveResult, topRow);
     }
 
     public static void main(String[] args) {
