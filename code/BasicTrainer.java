@@ -1,15 +1,25 @@
-import java.util.*;
-import java.util.function.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
 
 public class BasicTrainer extends Trainer {
 
+    long sum;
+    int iterations;
+
     public BasicTrainer(List<Double> coefficients, List<Function<TestState, Double>> features) {
         super(100, coefficients, features);
+        sum = 0;
+        iterations = 0;
     }
 
     public void onSimulateDone(int rowsCleared) {
+        iterations++;
+        sum += rowsCleared;
+        System.out.println("Iteration " + iterations);
         this.printCoefficients();
         System.out.println("Rows cleared: " + rowsCleared);
+        System.out.println("Average: " + ((double)sum/iterations));
         System.out.println();
     }
 
