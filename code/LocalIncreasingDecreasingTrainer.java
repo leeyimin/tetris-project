@@ -11,11 +11,11 @@ import java.util.function.Function;
  */
 public class LocalIncreasingDecreasingTrainer extends Trainer{
 
-    static final int ITERATIONS = 200;
+    static final int ITERATIONS = 50;
     static final double STARTING_INCREMENT = 16;
-    static final double EPSILON = 1.0;
-    static final double factor = 4.0; // multiply increment by 1/factor after one iteration of the features
-    static final int MOVES = 300;
+    static final double EPSILON = 0.5;
+    static final double factor = 2.0; // multiply increment by 1/factor after one iteration of the features
+    static final int MOVES = 2000;
 
     double bestResult = Double.MIN_VALUE;
     List<Double> bestCoefficient;
@@ -147,28 +147,14 @@ public class LocalIncreasingDecreasingTrainer extends Trainer{
 
         features.add(Features::getBumpiness);
         features.add(Features::getTotalHeight);
-        features.add(Features::getMaxHeight);
-        features.add(Features::getNumHoles);
         features.add(Features::getNumOfSignificantTopDifference);
         features.add(Features::getMeanAbsoluteDeviationOfTop);
         features.add(Features::hasLevelSurface);
-        features.add(Features::hasRightStep);
-        features.add(Features::hasLeftStep);
         features.add(Features::getNegativeOfRowsCleared);
         features.add(Features::hasPossibleDeathNextPiece);
         features.add(Features::getBlocksAboveHoles);
         features.add(Features::getNumColsWithHoles);
         features.add(Features::getNumRowsWithHoles);
-        features.add(Features::getFirstColHeight);
-        features.add(Features::getSecondColHeight);
-        features.add(Features::getThirdColHeight);
-        features.add(Features::getFourthColHeight);
-        features.add(Features::getFifthColHeight);
-        features.add(Features::getSixthColHeight);
-        features.add(Features::getSeventhColHeight);
-        features.add(Features::getEighthColHeight);
-        features.add(Features::getNinthColHeight);
-        features.add(Features::getTenthColHeight);
 
         initialiseCoefficients(coefficients, features.size());
 
