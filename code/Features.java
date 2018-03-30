@@ -165,5 +165,91 @@ public class Features {
         return 0.0;
     }
 
+    /**
+     *
+     * @param testState
+     * @return number of columns with holes in them
+     */
+    public static Double getNumColsWithHoles(TestState testState){
+        int numCol = 0;
+        for(int col = 0; col<State.COLS; col++){
+            for(int row = 0;row< testState.top[col]; row++){
+                if(testState.field[row][col] == 0){
+                    numCol++;
+                    break;
+                }
+            }
+        }
+        return (double) numCol;
+    }
+
+    /**
+     *
+     * @param testState
+     * @return number of rows with holes in them
+     */
+    public static Double getNumRowsWithHoles(TestState testState){
+        boolean hasHole[] = new boolean[State.ROWS];
+        int numRow = 0;
+        for (int col = 0; col < State.COLS; col++) {
+            for (int row = 0; row < testState.top[col]; row++) {
+                if (testState.field[row][col] == 0 && !hasHole[row]) {
+                    hasHole[row] = true;
+                    numRow++;
+                    break;
+                }
+            }
+        }
+        return (double) numRow;
+
+    }
+
+
+    /**
+     * Return heights of particular columns, could be helpful if player tends to favour /miss out certain columns
+     * @param testState
+     * @return
+     */
+    public static Double getFirstColHeight(TestState testState){
+        return (double) testState.top[0];
+    }
+
+    public static Double getSecondColHeight(TestState testState) {
+        return (double) testState.top[1];
+    }
+
+    public static Double getThirdColHeight(TestState testState) {
+        return (double) testState.top[2];
+    }
+
+    public static Double getFourthColHeight(TestState testState) {
+        return (double) testState.top[3];
+    }
+
+    public static Double getFifthColHeight(TestState testState) {
+        return (double) testState.top[4];
+    }
+
+    public static Double getSixthColHeight(TestState testState) {
+        return (double) testState.top[5];
+    }
+
+    public static Double getSeventhColHeight(TestState testState) {
+        return (double) testState.top[6];
+    }
+
+    public static Double getEighthColHeight(TestState testState) {
+        return (double) testState.top[7];
+    }
+
+    public static Double getNinthColHeight(TestState testState) {
+        return (double) testState.top[8];
+    }
+
+    public static Double getTenthColHeight(TestState testState) {
+        return (double) testState.top[9];
+    }
+
+
 
 }
