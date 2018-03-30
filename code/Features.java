@@ -204,6 +204,69 @@ public class Features {
 
     }
 
+    /**
+     * Based on a KTH paper - Tetris: A Heuristic Study
+     * Using height-based weighing functions and breadth-first search
+     * heuristics for playing Tetris
+     * @param testState
+     * @return sum of (row height)^2 of empty cells with right wall
+     */
+    public static Double getSpaceWithRightWallMeasure(TestState testState){
+        int sum = 0;
+        for(int col = 0; col< State.COLS - 1;col++){
+            for(int row = 0; row< testState.top[col+1]; row++){
+                if(testState.field[row][col] == 0 ) sum+=row*row;
+            }
+        }
+        return (double) sum;
+    }
+
+    /**
+     * Based on a KTH paper
+     *
+     * @param testState
+     * @return sum of (row height)^2 of empty cells with left wall
+     */
+    public static Double getSpaceWithLeftWallMeasure(TestState testState) {
+        int sum = 0;
+        for (int col = 1; col < State.COLS; col++) {
+            for (int row = 0; row < testState.top[col - 1]; row++) {
+                if (testState.field[row][col] == 0) sum += row * row;
+            }
+        }
+        return (double) sum;
+    }
+
+
+
+    /**
+     * Based on a KTH paper
+     *
+     * @param testState
+     * @return sum of (row height)^3 of holes
+     */
+    public static Double getHoleMeasure(TestState testState) {
+        int sum = 0;
+        for (int col = 0; col < State.COLS; col++) {
+            for (int row = 0; row < testState.top[col] - 1; row++) {
+                if (testState.field[row][col] == 0) sum += row * row * row;
+            }
+        }
+        return (double) sum;
+    }
+
+    /**
+     * Based on a KTH paper
+     *
+     * @param testState
+     * @return sum of hole and wall measures
+     */
+    public static Double getAggregateHoleAndWallMeasure(TestState testState) {
+        return (double) getSpaceWithLeftWallMeasure(testState) + getSpaceWithRightWallMeasure(testState) + getHoleMeasure(testState);
+    }
+
+
+
 
     /**
      * Return heights of particular columns, could be helpful if player tends to favour /miss out certain columns
