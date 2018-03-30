@@ -72,4 +72,23 @@ public class Player {
         return state.getRowsCleared();
     }
 
+    public double[] simulate(int moves) {
+        State state = new State();
+        //this.frame = new TFrame(state);
+
+        for(int i=0;i<moves&&!state.hasLost();i++){
+            state.makeMove(this.pickMove(state, state.legalMoves()));
+            //state.draw();
+            //state.drawNext(0, 0);
+            /*try {
+                Thread.sleep(REFRESH_DELAY);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }*/
+        }
+
+       //this.frame.dispose();
+        return new double[]{(double)state.getRowsCleared(),state.hasLost()? Double.MAX_VALUE: evaluateField(new TestState(state.getField(), state.getTop(), 0))};
+    }
+
 }
