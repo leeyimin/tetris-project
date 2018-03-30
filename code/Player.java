@@ -5,11 +5,14 @@ public class Player {
 
     protected static final int REFRESH_DELAY = 1;
     protected static final boolean RENDER_BOARD = false;
+    protected static final int MAX_NUM_MOVES = Integer.MAX_VALUE;
 
     private TFrame frame;
 
     private List<Double> coefficients;
     private List<Function<TestState, Double>> features;
+
+    private int numMoves = 0;
 
     public Player(List<Double> coefficients, List<Function<TestState, Double>> features) {
         this.coefficients = coefficients;
@@ -52,8 +55,9 @@ public class Player {
             this.frame = new TFrame(state);
         }
 
-        while (!state.hasLost()) {
+        while (!state.hasLost() && numMoves < MAX_NUM_MOVES) {
             state.makeMove(this.pickMove(state, state.legalMoves()));
+
             if (RENDER_BOARD) {
                 state.draw();
                 state.drawNext(0,0);
@@ -63,6 +67,8 @@ public class Player {
                     e.printStackTrace();
                 }
             }
+
+            numMoves++;
         }
 
         if (RENDER_BOARD) {

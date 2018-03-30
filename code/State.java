@@ -5,7 +5,7 @@ import java.awt.Color;
 
 public class State {
 	public static final int COLS = 10;
-	public static final int ROWS = 21;
+	public static final int ROWS = 15;
 	public static final int N_PIECES = 7;
 
 	
@@ -164,7 +164,7 @@ public class State {
 
 	}
 	
-	//random integer, returns 0-6
+
 	private int randomPiece() {
 		return (int)(Math.random()*N_PIECES);
 	}

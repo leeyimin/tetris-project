@@ -1,4 +1,3 @@
-/*
 import java.util.*;
 import java.util.function.*;
 
@@ -19,7 +18,7 @@ public class LocalTrainer extends Trainer {
         this.currBatch = 0;
         this.currRound = 0;
         this.cumulatedRows = 0;
-        this.stepSize = 0.2;
+        this.stepSize = 0.5;
         this.bestCumulatedRows = 0;
         this.bestCoefficients = coefficients;
     }
@@ -37,7 +36,8 @@ public class LocalTrainer extends Trainer {
     private void onBatchDone() {
         // print the rows cleared
         System.out.println();
-        System.out.println("RESULT OF BATCH #" + (++currBatch));
+        System.out.println("======================================");
+        System.out.println(" RESULT OF BATCH #" + (++currBatch));
         System.out.println("======================================");
         System.out.println("Rows cleared: " + (double) this.cumulatedRows / BATCH_SIZE);
         this.printCoefficients();
@@ -59,25 +59,11 @@ public class LocalTrainer extends Trainer {
     }
 
     public static void main(String args[]) {
-        List<Double> coefficients = new ArrayList<>();
+        // General Coefficient
+        Double[] coefficients = new Double[] { 1.4282372400117123, 9.516277725900398, 0.13525561944365183,  0.07368618867991161,
+            4.5116824995818865, 4.150977779792673, 1.184726054395163, 0.9914349168793231, 1.1084028932492331, 3.437920660029056, 4.9684152255437155 };
 
-        coefficients.add(0.5104353223422937);
-        coefficients.add(3.817903728201659);
-        coefficients.add(0.31012531039568025);
-        coefficients.add(0.14667791183942425);
-        coefficients.add(2.2330640842735687);
-        coefficients.add(2.263339721291005);
-        coefficients.add(0.18623383673088817);
-        coefficients.add(0.5414191629604356);
-        coefficients.add(0.6156312845858801);
-        coefficients.add(2.5117122546500923);
-        coefficients.add(2.0367323121409804);
-
-        /*
-        for (int i = 0; i < 11; i++) {
-            coefficients.add(2.0);
-        }
-        */
+        //Double[] coefficients = new Double[] { 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0 };
 
         List<Function<TestState, Double>> features = new ArrayList<>();
         features.add(Features::getBumpiness);
@@ -92,8 +78,7 @@ public class LocalTrainer extends Trainer {
         features.add(Features::getNegativeOfRowsCleared);
         features.add(Features::hasPossibleDeathNextPiece);
 
-        new LocalTrainer(coefficients, features).train();
+        new LocalTrainer(Arrays.asList(coefficients), features).train();
     }
 
 }
-*/
