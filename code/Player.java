@@ -57,18 +57,7 @@ public class Player {
 
         while (!state.hasLost() && numMoves < MAX_NUM_MOVES) {
             state.makeMove(this.pickMove(state, state.legalMoves()));
-
-            if (RENDER_BOARD) {
-                state.draw();
-                state.drawNext(0,0);
-                try {
-                    Thread.sleep(REFRESH_DELAY);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            numMoves++;
+            updateBoard(state);
         }
 
         if (RENDER_BOARD) {
@@ -76,6 +65,35 @@ public class Player {
         }
 
         return state.getRowsCleared();
+    }
+
+    private void updateBoard(State state) {
+        if (RENDER_BOARD) {
+            state.draw();
+            state.drawNext(0,0);
+            try {
+                Thread.sleep(REFRESH_DELAY);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public double[] simulate(int moves) {
+        State state = new State();
+        if (RENDER_BOARD) {
+            this.frame = new TFrame(state);
+        }
+
+        for(int i=0;i<moves&&!state.hasLost();i++){
+            state.makeMove(this.pickMove(state, state.legalMoves()));
+            updateBoard(state);
+        }
+
+        if (RENDER_BOARD) {
+            this.frame.dispose();
+        }
+        return new double[]{(double)state.getRowsCleared(),state.hasLost()? Double.MAX_VALUE: evaluateField(new TestState(state.getField(), state.getTop(), 0))};
     }
 
 }
