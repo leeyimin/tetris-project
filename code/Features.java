@@ -1,3 +1,5 @@
+import java.util.List;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 
 public class Features {
@@ -70,6 +72,22 @@ public class Features {
     }
 
     /**
+     * motivation: penalize stacking over holes/ covering tall holes
+     * @param testState
+     * @return sum of (top - 1 ) - row over all holes
+     */
+    public static Double getSumOfDepthOfHoles(TestState testState){
+        int sum = 0;
+
+        for (int col = 0; col < State.COLS; col++) {
+            for (int row = 0; row < testState.top[col]; row++) {
+                if (testState.field[row][col] == 0) sum += testState.top[col] - 1 - row;
+            }
+        }
+        return (double) sum;
+    }
+
+    /**
      * NOTE: may cause holes since it may incentivize turning significant top diff into hole
      * @param testState
      * @return numbers of columns where all neighbouring columns are both at least 3 blocks taller
@@ -87,6 +105,8 @@ public class Features {
      * penalizes more for taller holes and significant top difference
      * For each hole, cost = height
      * For each dip, cost = smaller of the height difference
+     *
+     * ( may be similar to sum of bumpiness and num of holes...)
      * @param testState
      * @return
      */
@@ -357,6 +377,74 @@ public class Features {
 
     public static Double getTenthColHeight(TestState testState) {
         return (double) testState.top[9];
+    }
+
+
+    public static void addAllColHeightFeatures(List<Function<TestState, Double>> features){
+        features.add(Features::getFirstColHeight);
+        features.add(Features::getSecondColHeight);
+        features.add(Features::getThirdColHeight);
+        features.add(Features::getFourthColHeight);
+        features.add(Features::getFifthColHeight);
+        features.add(Features::getSixthColHeight);
+        features.add(Features::getSeventhColHeight);
+        features.add(Features::getEighthColHeight);
+        features.add(Features::getNinthColHeight);
+        features.add(Features::getTenthColHeight);
+    }
+
+    /**
+     *
+     * @param testState
+     * @return top difference of pairwise columns
+     */
+
+    public static Double getFirstHeightDifference(TestState testState){
+        return (double) Math.abs(testState.top[0]- testState.top[1]);
+    }
+
+    public static Double getSecondHeightDifference(TestState testState) {
+        return (double) Math.abs(testState.top[1] - testState.top[2]);
+    }
+
+    public static Double getThirdHeightDifference(TestState testState) {
+        return (double) Math.abs(testState.top[2] - testState.top[3]);
+    }
+
+    public static Double getFourthHeightDifference(TestState testState) {
+        return (double) Math.abs(testState.top[3] - testState.top[4]);
+    }
+
+    public static Double getFifthHeightDifference(TestState testState) {
+        return (double) Math.abs(testState.top[4] - testState.top[5]);
+    }
+
+    public static Double getSixthHeightDifference(TestState testState) {
+        return (double) Math.abs(testState.top[5] - testState.top[6]);
+    }
+
+    public static Double getSeventhdHeightDifference(TestState testState) {
+        return (double) Math.abs(testState.top[6] - testState.top[7]);
+    }
+
+    public static Double getEighthHeightDifference(TestState testState) {
+        return (double) Math.abs(testState.top[7] - testState.top[8]);
+    }
+
+    public static Double getNinthHeightDifference(TestState testState) {
+        return (double) Math.abs(testState.top[8] - testState.top[9]);
+    }
+
+    public static void addAllHeightDiffFeatures(List<Function<TestState, Double>> features) {
+        features.add(Features::getFirstHeightDifference);
+        features.add(Features::getSecondHeightDifference);
+        features.add(Features::getThirdHeightDifference);
+        features.add(Features::getFourthHeightDifference);
+        features.add(Features::getFifthHeightDifference);
+        features.add(Features::getSixthHeightDifference);
+        features.add(Features::getSeventhdHeightDifference);
+        features.add(Features::getEighthHeightDifference);
+        features.add(Features::getNinthHeightDifference);
     }
 
 
