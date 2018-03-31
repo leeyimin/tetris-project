@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
@@ -11,18 +12,19 @@ import java.util.function.Function;
  */
 public class LocalIncreasingDecreasingTrainer extends Trainer{
 
-    static final int ITERATIONS = 50;
-    static final double STARTING_INCREMENT = 16;
+    static final int ITERATIONS = 30;
+    static final double STARTING_INCREMENT = 32;
     static final double EPSILON = 0.5;
-    static final double factor = 2.0; // multiply increment by 1/factor after one iteration of the features
-    static final int MOVES = 2000;
+    static final double factor = 4.0; // multiply increment by 1/factor after one iteration of the features
+    static final boolean DECREASE_FLAG = true;
 
-    double bestResult = Double.MIN_VALUE;
+    int bestResult = Integer.MIN_VALUE;
     List<Double> bestCoefficient;
     int rounds;
     double increment;
-    double[][] resultsInRound;
+    int[] resultsInRound;
     int direction;
+    int order[];
 
 
     int currentCoefficient;
@@ -32,25 +34,14 @@ public class LocalIncreasingDecreasingTrainer extends Trainer{
     public LocalIncreasingDecreasingTrainer(List<Double> coefficients, List<Function<TestState, Double>> features) {
         super(features.size()*50*100, coefficients, features);
         rounds = 0;
-        resultsInRound = new double[ITERATIONS][2];
+        resultsInRound = new int[ITERATIONS];
         bestCoefficient = new ArrayList<>(coefficients);
         increment = STARTING_INCREMENT;
         currentCoefficient = 0;
         direction = 1;
         random = new Random();
+        randomOrder();
         //coefficients.set(currentCoefficient, coefficients.get(currentCoefficient)+increment);
-    }
-
-    public void train(){
-        for (int i = 0; i < this.numIterations; i++) {
-            double[] results = new Player(coefficients, features).simulate(MOVES);
-            if(this.onSimulateDone(results)) break;
-        }
-    }
-
-    @Override
-    public void onSimulateDone(int rowsCleared) {
-        // not implemented
     }
 
     /**return true if training has ended
@@ -58,43 +49,49 @@ public class LocalIncreasingDecreasingTrainer extends Trainer{
      * @param result
      * @return
      */
-    public boolean onSimulateDone(double[] result) {
+    public void onSimulateDone(int result) {
         rounds++;
         resultsInRound[rounds%ITERATIONS] = result;
         if(rounds%ITERATIONS == 0){
             rounds = 0;
             //print results
+            System.out.println("cc " + currentCoefficient + " increment " + increment + " order[cc]" + order[currentCoefficient] );
             System.out.println("coefficients");
             for (double r : coefficients) System.out.print(r + " ");
             System.out.println();
+            Arrays.sort(resultsInRound);
             System.out.println("Rows cleared");
-            for(double[] r: resultsInRound) System.out.print((int)r[0] + " ");
-            System.out.println();
-            System.out.println("Cost");
-            for (double[] r : resultsInRound) System.out.print((int) r[1] + " ");
+            for(int r: resultsInRound) System.out.print(r + " ");
             System.out.println();
 
-            double sum = 0;
+            int sum = 0;
 
-            for (double[] r : resultsInRound){
+            for (int i=ITERATIONS/4;i<ITERATIONS/4*3;i++){
+                sum += resultsInRound[i];
                 //penalise rounds with deaths
-                sum+=r[1] ==  Double.MAX_VALUE? r[0]/2 : r[0];
+               // sum+=r[1] ==  Double.MAX_VALUE? r[0]/2 : r[0];
             }
+
+
+            System.out.println("interquartile sum: "+ sum);
 
             if(sum > bestResult){
                 bestResult = sum;
                 bestCoefficient = new ArrayList<>(coefficients);
-                coefficients.set(currentCoefficient, coefficients.get(currentCoefficient) + increment);
+                coefficients.set(order[currentCoefficient], coefficients.get(order[currentCoefficient]) + increment);
             }
             else{
 
                 currentCoefficient++;
                 if(currentCoefficient% features.size() == 0){
+                    randomOrder();
                     currentCoefficient = 0;
                     increment /= factor;
                 }
                 if(Math.abs(increment) < EPSILON) {
-                    direction *= -1;
+                    if(DECREASE_FLAG){
+                        direction *= -1;
+                    }
                     increment = direction * STARTING_INCREMENT;
                     System.out.println();
                     System.out.println("BEST");
@@ -108,12 +105,11 @@ public class LocalIncreasingDecreasingTrainer extends Trainer{
 
 
 
-                    bestResult = Double.MIN_VALUE;
+                    bestResult = Integer.MIN_VALUE;
 
                     //perturbation
                     //TODO: perturbation strategy to be improved
                     if(direction == 1){
-                        return true;
 //                        System.out.println("PERTURBATION");
 //                        for (int i = 0; i < coefficients.size(); i++) {
 //                            bestCoefficient.set(i, bestCoefficient.get(i) + (1-2*(random.nextInt()%2))*STARTING_INCREMENT );
@@ -124,7 +120,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer{
                 else{
 
                     coefficients = new ArrayList<>(bestCoefficient);
-                    coefficients.set(currentCoefficient, coefficients.get(currentCoefficient) + increment);
+                    coefficients.set(order[currentCoefficient], coefficients.get(order[currentCoefficient]) + increment);
                 }
             }
 
@@ -137,7 +133,21 @@ public class LocalIncreasingDecreasingTrainer extends Trainer{
             System.out.println();
 
         }
-        return false;
+    }
+
+    private void randomOrder(){
+        order = new int[features.size()];
+        for(int i=0;i<features.size();i++){
+            order[i] = i;
+        }
+        for(int i=features.size()-1;i>=1;i--){
+            int swap = random.nextInt() % (i + 1);
+            if(swap<0) swap*=-1;
+            int temp = order[i];
+            order[i] = order[swap];
+            order[swap] = temp;
+
+        }
     }
 
     public static void main(String args[]) {
@@ -147,14 +157,30 @@ public class LocalIncreasingDecreasingTrainer extends Trainer{
 
         features.add(Features::getBumpiness);
         features.add(Features::getTotalHeight);
+        features.add(Features::getMaxHeight);
+        features.add(Features::getNumHoles);
+        features.add(Features::getBlocksAboveHoles);
         features.add(Features::getNumOfSignificantTopDifference);
+        features.add(Features::getWeightedSignificantHoleAndTopDifference);
         features.add(Features::getMeanAbsoluteDeviationOfTop);
         features.add(Features::hasLevelSurface);
+        features.add(Features::hasRightStep);
+        features.add(Features::hasLeftStep);
         features.add(Features::getNegativeOfRowsCleared);
-        features.add(Features::hasPossibleDeathNextPiece);
-        features.add(Features::getBlocksAboveHoles);
+        features.add(Features::hasPossibleInevitableDeathNextPiece);
         features.add(Features::getNumColsWithHoles);
         features.add(Features::getNumRowsWithHoles);
+        features.add(Features::getAggregateHoleAndWallMeasure);
+        features.add(Features::getFirstColHeight);
+        features.add(Features::getSecondColHeight);
+        features.add(Features::getThirdColHeight);
+        features.add(Features::getFourthColHeight);
+        features.add(Features::getFifthColHeight);
+        features.add(Features::getSixthColHeight);
+        features.add(Features::getSeventhColHeight);
+        features.add(Features::getEighthColHeight);
+        features.add(Features::getNinthColHeight);
+        features.add(Features::getTenthColHeight);
 
         initialiseCoefficients(coefficients, features.size());
 

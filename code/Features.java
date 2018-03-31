@@ -70,7 +70,7 @@ public class Features {
     }
 
     /**
-     *
+     * NOTE: may cause holes since it may incentivize turning significant top diff into hole
      * @param testState
      * @return numbers of columns where all neighbouring columns are both at least 3 blocks taller
      */
@@ -81,6 +81,34 @@ public class Features {
                 num++;
         }
         return (double) num;
+    }
+
+    /**
+     * penalizes more for taller holes and significant top difference
+     * For each hole, cost = height* height + 1
+     * For each dip, cost = 2 * smaller of the height difference
+     * @param testState
+     * @return
+     */
+    public static Double getWeightedSignificantHoleAndTopDifference(TestState testState){
+        int sum = 0;
+        for (int i = 0; i < State.COLS; i++) {
+            int consec = 0;
+            for(int j=0;j<testState.top[i];j++){
+                if(testState.field[j][i] == 0){
+                    consec++;
+                }else{
+                    sum += consec * consec + 1;
+                }
+            }
+            if ((i == 0 || testState.top[i - 1] >= testState.top[i] + 3) && (i == State.COLS - 1 || testState.top[i + 1] >= testState.top[i] + 3)){
+                if(i== State.COLS - 1) sum += 2 * (testState.top[i - 1] - testState.top[i]);
+                else if(i == 0 ) sum += 2 * (testState.top[i + 1] - testState.top[i]);
+                else sum += 2 * Math.min(testState.top[i - 1] - testState.top[i], testState.top[i + 1] - testState.top[i]);
+            }
+
+        }
+        return (double) sum;
     }
 
     /**
@@ -153,7 +181,7 @@ public class Features {
      * @param testState
      * @return 1.0 if there exist some next piece that has no possible move, else 0
      */
-    public static Double hasPossibleDeathNextPiece(TestState testState){
+    public static Double hasPossibleInevitableDeathNextPiece(TestState testState){
         for(int i=0;i<State.N_PIECES;i++){
             TestState possibleState = MoveTester.testMove(testState, i, 0);
             for(int move=1;move<State.legalMoves[i].length;move++){
@@ -161,6 +189,24 @@ public class Features {
                 possibleState = MoveTester.testMove(testState, i, move);
             }
             if(possibleState == null) return 1.0;
+        }
+        return 0.0;
+    }
+
+    /**
+     * WARNING: SUPER SLOW
+     * @param testState
+     * @return 1.0 if there exist some next size two sequence that has no possible move, else 0
+     */
+    public static Double hasPossibleInevitableDeathNextTwoSequence(TestState testState) {
+        for (int i = 0; i < State.N_PIECES; i++) {
+            TestState possibleState = null;
+            for (int move = 0; move < State.legalMoves[i].length; move++) {
+                possibleState = MoveTester.testMove(testState, i, move);
+                if(possibleState == null) continue;
+                if(hasPossibleInevitableDeathNextPiece(possibleState) >= 0.99) possibleState = null;
+            }
+            if (possibleState == null) return 1.0;
         }
         return 0.0;
     }

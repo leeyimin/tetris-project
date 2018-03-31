@@ -182,7 +182,7 @@ public class DarwinTrainer extends Trainer {
         final int numPlayers = 20;
 
         //Adding features
-        features.add(Features::hasPossibleDeathNextPiece);
+        features.add(Features::hasPossibleInevitableDeathNextPiece);
         features.add(Features::getNegativeOfRowsCleared);
         features.add(Features::hasRightStep);
         features.add(Features::getMeanAbsoluteDeviationOfTop);

@@ -76,7 +76,7 @@ public class LocalTrainer extends Trainer {
         features.add(Features::hasRightStep);
         features.add(Features::hasLeftStep);
         features.add(Features::getNegativeOfRowsCleared);
-        features.add(Features::hasPossibleDeathNextPiece);
+        features.add(Features::hasPossibleInevitableDeathNextPiece);
 
         new LocalTrainer(Arrays.asList(coefficients), features).train();
     }
