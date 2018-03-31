@@ -85,12 +85,12 @@ public class Features {
 
     /**
      * penalizes more for taller holes and significant top difference
-     * For each hole, cost = height* height + 1
-     * For each dip, cost = 2 * smaller of the height difference
+     * For each hole, cost = height
+     * For each dip, cost = smaller of the height difference
      * @param testState
      * @return
      */
-    public static Double getWeightedSignificantHoleAndTopDifference(TestState testState){
+    public static Double getSignificantHoleAndTopDifference(TestState testState){
         int sum = 0;
         for (int i = 0; i < State.COLS; i++) {
             int consec = 0;
@@ -98,13 +98,13 @@ public class Features {
                 if(testState.field[j][i] == 0){
                     consec++;
                 }else{
-                    sum += consec * consec + 1;
+                    sum += consec;
                 }
             }
             if ((i == 0 || testState.top[i - 1] >= testState.top[i] + 3) && (i == State.COLS - 1 || testState.top[i + 1] >= testState.top[i] + 3)){
-                if(i== State.COLS - 1) sum += 2 * (testState.top[i - 1] - testState.top[i]);
-                else if(i == 0 ) sum += 2 * (testState.top[i + 1] - testState.top[i]);
-                else sum += 2 * Math.min(testState.top[i - 1] - testState.top[i], testState.top[i + 1] - testState.top[i]);
+                if(i== State.COLS - 1) sum += (testState.top[i - 1] - testState.top[i]);
+                else if(i == 0 ) sum += (testState.top[i + 1] - testState.top[i]);
+                else sum += Math.min(testState.top[i - 1] - testState.top[i], testState.top[i + 1] - testState.top[i]);
             }
 
         }

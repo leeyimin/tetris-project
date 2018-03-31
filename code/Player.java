@@ -50,13 +50,17 @@ public class Player {
     }
 
     public int simulate() {
+        return simulate(MAX_NUM_MOVES);
+    }
+
+    public int simulate(int maxMoves){
         State state = new State();
 
         if (RENDER_BOARD) {
             this.frame = new TFrame(state);
         }
 
-        while (!state.hasLost() && numMoves < MAX_NUM_MOVES) {
+        while (!state.hasLost() && numMoves < maxMoves) {
             numMoves++;
             state.makeMove(this.pickMove(state, state.legalMoves()));
             updateBoard(state);

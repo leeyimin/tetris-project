@@ -88,6 +88,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer{
                     currentCoefficient = 0;
                     increment /= factor;
                 }
+                coefficients = new ArrayList<>(bestCoefficient);
                 if(Math.abs(increment) < EPSILON) {
                     if(DECREASE_FLAG){
                         direction *= -1;
@@ -119,7 +120,6 @@ public class LocalIncreasingDecreasingTrainer extends Trainer{
                 }
                 else{
 
-                    coefficients = new ArrayList<>(bestCoefficient);
                     coefficients.set(order[currentCoefficient], coefficients.get(order[currentCoefficient]) + increment);
                 }
             }
@@ -156,18 +156,12 @@ public class LocalIncreasingDecreasingTrainer extends Trainer{
         List<Function<TestState, Double>> features = new ArrayList<>();
 
         features.add(Features::getBumpiness);
-        features.add(Features::getTotalHeight);
         features.add(Features::getMaxHeight);
         features.add(Features::getNumHoles);
         features.add(Features::getBlocksAboveHoles);
-        features.add(Features::getNumOfSignificantTopDifference);
-        features.add(Features::getWeightedSignificantHoleAndTopDifference);
+        features.add(Features::getSignificantHoleAndTopDifference);
         features.add(Features::getMeanAbsoluteDeviationOfTop);
-        features.add(Features::hasLevelSurface);
-        features.add(Features::hasRightStep);
-        features.add(Features::hasLeftStep);
         features.add(Features::getNegativeOfRowsCleared);
-        features.add(Features::hasPossibleInevitableDeathNextPiece);
         features.add(Features::getNumColsWithHoles);
         features.add(Features::getNumRowsWithHoles);
         features.add(Features::getAggregateHoleAndWallMeasure);
@@ -183,6 +177,10 @@ public class LocalIncreasingDecreasingTrainer extends Trainer{
         features.add(Features::getTenthColHeight);
 
         initialiseCoefficients(coefficients, features.size());
+
+
+        features.add(Features::getTotalHeight);
+        coefficients.add(STARTING_INCREMENT);
 
         new LocalIncreasingDecreasingTrainer(coefficients, features).train();
     }
