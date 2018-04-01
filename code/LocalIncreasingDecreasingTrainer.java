@@ -14,7 +14,7 @@ import java.util.function.Function;
  */
 public class LocalIncreasingDecreasingTrainer extends Trainer{
 
-    static final int ITERATIONS = 100;
+    static final int ITERATIONS = 50;
     static final double STARTING_INCREMENT = 32;
     static final double EPSILON = 0.125;
     static final double factor = 4.0; // multiply increment by 1/factor after one iteration of the features
@@ -28,6 +28,8 @@ public class LocalIncreasingDecreasingTrainer extends Trainer{
     int direction;
     int order[];
 
+    int moves;
+
     long startTime;
     long lastUpdate;
     long interval = 15*60*1000;
@@ -39,6 +41,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer{
 
     public LocalIncreasingDecreasingTrainer(List<Double> coefficients, List<Function<TestState, Double>> features) {
         super(Integer.MAX_VALUE, coefficients, features);
+        moves = Integer.MAX_VALUE;
         rounds = 0;
         resultsInRound = new int[ITERATIONS];
         bestCoefficient = new ArrayList<>(coefficients);
@@ -53,7 +56,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer{
             String filename = "LIDtrain" + startTime + ".txt";
             FileWriter fw = new FileWriter(filename, true); //the true will append the new data
             fw.write("iterations: " + ITERATIONS + "\n");
-            fw.write("max moves: " + Player.MAX_NUM_MOVES + "\n");
+            fw.write("max moves: " + moves + "\n");
             fw.write("increment: " + STARTING_INCREMENT + "\n");
             fw.write("epsilon: " + EPSILON + "\n");
             fw.write("\n");
@@ -62,6 +65,14 @@ public class LocalIncreasingDecreasingTrainer extends Trainer{
             System.err.println("IOException: " + ioe.getMessage());
         }
         //coefficients.set(currentCoefficient, coefficients.get(currentCoefficient)+increment);
+    }
+
+    @Override
+    public void train() {
+        for (int i = 0; i < this.numIterations; i++) {
+            int rowsCleared = new Player(coefficients, features).simulate(moves);
+            this.onSimulateDone(rowsCleared);
+        }
     }
 
     public void onSimulateDone(int result) {
