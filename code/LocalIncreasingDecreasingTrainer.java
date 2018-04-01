@@ -1,3 +1,5 @@
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -14,7 +16,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer{
 
     static final int ITERATIONS = 30;
     static final double STARTING_INCREMENT = 32;
-    static final double EPSILON = 0.5;
+    static final double EPSILON = 0.125;
     static final double factor = 4.0; // multiply increment by 1/factor after one iteration of the features
     static final boolean DECREASE_FLAG = true;
 
@@ -26,13 +28,17 @@ public class LocalIncreasingDecreasingTrainer extends Trainer{
     int direction;
     int order[];
 
+    long startTime;
+    long lastUpdate;
+    long interval = 15*60*1000;
+
 
     int currentCoefficient;
 
     Random random;
 
     public LocalIncreasingDecreasingTrainer(List<Double> coefficients, List<Function<TestState, Double>> features) {
-        super(features.size()*50*100, coefficients, features);
+        super(Integer.MAX_VALUE, coefficients, features);
         rounds = 0;
         resultsInRound = new int[ITERATIONS];
         bestCoefficient = new ArrayList<>(coefficients);
@@ -41,14 +47,23 @@ public class LocalIncreasingDecreasingTrainer extends Trainer{
         direction = 1;
         random = new Random();
         randomOrder();
+        startTime = System.currentTimeMillis();
+        lastUpdate = startTime;
+        try {
+            String filename = "LIDtrain" + startTime + ".txt";
+            FileWriter fw = new FileWriter(filename, true); //the true will append the new data
+            fw.write("iterations: " + ITERATIONS + "\n");
+            fw.write("max moves: " + Player.MAX_NUM_MOVES + "\n");
+            fw.write("increment: " + STARTING_INCREMENT + "\n");
+            fw.write("epsilon: " + EPSILON + "\n");
+            fw.write("\n");
+            fw.close();
+        } catch (IOException ioe) {
+            System.err.println("IOException: " + ioe.getMessage());
+        }
         //coefficients.set(currentCoefficient, coefficients.get(currentCoefficient)+increment);
     }
 
-    /**return true if training has ended
-     *
-     * @param result
-     * @return
-     */
     public void onSimulateDone(int result) {
         rounds++;
         resultsInRound[rounds%ITERATIONS] = result;
@@ -66,14 +81,14 @@ public class LocalIncreasingDecreasingTrainer extends Trainer{
 
             int sum = 0;
 
-            for (int i=ITERATIONS/4;i<ITERATIONS/4*3;i++){
+            for (int i=0;i<ITERATIONS;i++){
                 sum += resultsInRound[i];
                 //penalise rounds with deaths
                // sum+=r[1] ==  Double.MAX_VALUE? r[0]/2 : r[0];
             }
 
 
-            System.out.println("interquartile sum: "+ sum);
+            System.out.println("sum: "+ sum);
 
             if(sum > bestResult){
                 bestResult = sum;
@@ -104,6 +119,28 @@ public class LocalIncreasingDecreasingTrainer extends Trainer{
                     System.out.println();
                     System.out.println();
 
+                    // do file writing
+                    if(System.currentTimeMillis() - lastUpdate >  interval){
+                        lastUpdate = System.currentTimeMillis();
+
+                        try {
+                            String filename = "LIDtrain" + startTime+".txt";
+                            FileWriter fw = new FileWriter(filename, true); //the true will append the new data
+                            fw.write("time: " + (lastUpdate - startTime)/(60*1000.0) + "\n");
+                            fw.write("sum: " + bestResult + "\n");
+                            fw.write(bestCoefficient.get(0) +"");
+                            for (int i = 1; i < coefficients.size(); i++) {
+                                fw.write(", "+ bestCoefficient.get(i));
+                            }
+                            fw.write("\n");
+                            fw.close();
+                        } catch (IOException ioe) {
+                            System.err.println("IOException: " + ioe.getMessage());
+                        }
+
+
+
+                    }
 
 
                     bestResult = Integer.MIN_VALUE;
@@ -156,30 +193,32 @@ public class LocalIncreasingDecreasingTrainer extends Trainer{
         List<Function<TestState, Double>> features = new ArrayList<>();
 
         features.add(Features::getBumpiness);
+        features.add(Features::getTotalHeight);
         features.add(Features::getMaxHeight);
         features.add(Features::getNumHoles);
         features.add(Features::getBlocksAboveHoles);
+        features.add(Features::getSumOfDepthOfHoles);
         features.add(Features::getSignificantHoleAndTopDifference);
+        features.add(Features::getNumOfSignificantTopDifference);
         features.add(Features::getMeanAbsoluteDeviationOfTop);
-        features.add(Features::getNegativeOfRowsCleared);
+
+        features.add(Features::hasLevelSurface);
+        features.add(Features::hasLeftStep);
+        features.add(Features::hasRightStep);
         features.add(Features::getNumColsWithHoles);
         features.add(Features::getNumRowsWithHoles);
+        features.add(Features::getSpaceWithRightWallMeasure);
+        features.add(Features::getSpaceWithLeftWallMeasure);
+        features.add(Features::getHoleMeasure);
         features.add(Features::getAggregateHoleAndWallMeasure);
-        features.add(Features::getFirstColHeight);
-        features.add(Features::getSecondColHeight);
-        features.add(Features::getThirdColHeight);
-        features.add(Features::getFourthColHeight);
-        features.add(Features::getFifthColHeight);
-        features.add(Features::getSixthColHeight);
-        features.add(Features::getSeventhColHeight);
-        features.add(Features::getEighthColHeight);
-        features.add(Features::getNinthColHeight);
-        features.add(Features::getTenthColHeight);
+
+        Features.addAllColHeightFeatures(features);
+        Features.addAllHeightDiffFeatures(features);
 
         initialiseCoefficients(coefficients, features.size());
 
 
-        features.add(Features::getTotalHeight);
+        features.add(Features::getNegativeOfRowsCleared);
         coefficients.add(STARTING_INCREMENT);
 
         new LocalIncreasingDecreasingTrainer(coefficients, features).train();
