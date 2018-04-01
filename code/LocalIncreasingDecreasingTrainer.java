@@ -204,32 +204,23 @@ public class LocalIncreasingDecreasingTrainer extends Trainer{
         List<Function<TestState, Double>> features = new ArrayList<>();
 
         features.add(Features::getBumpiness);
-        features.add(Features::getTotalHeight);
+        features.add(Features::getNegativeOfRowsCleared);
         features.add(Features::getMaxHeight);
         features.add(Features::getNumHoles);
-        features.add(Features::getBlocksAboveHoles);
         features.add(Features::getSumOfDepthOfHoles);
-        features.add(Features::getSignificantHoleAndTopDifference);
-        features.add(Features::getNumOfSignificantTopDifference);
         features.add(Features::getMeanAbsoluteDeviationOfTop);
 
-        features.add(Features::hasLevelSurface);
-        features.add(Features::hasLeftStep);
-        features.add(Features::hasRightStep);
         features.add(Features::getNumColsWithHoles);
         features.add(Features::getNumRowsWithHoles);
-        features.add(Features::getSpaceWithRightWallMeasure);
-        features.add(Features::getSpaceWithLeftWallMeasure);
-        features.add(Features::getHoleMeasure);
-        features.add(Features::getAggregateHoleAndWallMeasure);
 
         Features.addAllColHeightFeatures(features);
-        //Features.addAllHeightDiffFeatures(features);
+        Features.addAllHeightDiffFeatures(features);
 
         initialiseCoefficients(coefficients, features.size());
 
-
-        features.add(Features::getNegativeOfRowsCleared);
+        features.add(Features::getBumpiness);
+        coefficients.add(STARTING_INCREMENT/10.0);
+        features.add(Features::getTotalHeight);
         coefficients.add(STARTING_INCREMENT);
 
         new LocalIncreasingDecreasingTrainer(coefficients, features).train();
