@@ -14,7 +14,7 @@ import java.util.function.Function;
  */
 public class LocalIncreasingDecreasingTrainer extends Trainer{
 
-    static final int ITERATIONS = 30;
+    static final int ITERATIONS = 100;
     static final double STARTING_INCREMENT = 32;
     static final double EPSILON = 0.125;
     static final double factor = 4.0; // multiply increment by 1/factor after one iteration of the features
