@@ -224,7 +224,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer{
         features.add(Features::getAggregateHoleAndWallMeasure);
 
         Features.addAllColHeightFeatures(features);
-        Features.addAllHeightDiffFeatures(features);
+        //Features.addAllHeightDiffFeatures(features);
 
         initialiseCoefficients(coefficients, features.size());
 
