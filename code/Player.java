@@ -58,6 +58,7 @@ public class Player {
         while (!state.hasLost() && numMoves < MAX_NUM_MOVES) {
             state.makeMove(this.pickMove(state, state.legalMoves()));
             updateBoard(state);
+            numMoves++;
         }
 
         if (RENDER_BOARD) {
