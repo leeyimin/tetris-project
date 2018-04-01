@@ -1,0 +1,503 @@
+"C:\Program Files\Java\jdk1.8.0_112\bin\java" -Dvisualvm.id=639014873462941 "-javaagent:C:\Program Files\JetBrains\IntelliJ IDEA 2017.2.4\lib\idea_rt.jar=50944:C:\Program Files\JetBrains\IntelliJ IDEA 2017.2.4\bin" -Dfile.encoding=UTF-8 -classpath "C:\Program Files\Java\jdk1.8.0_112\jre\lib\charsets.jar;C:\Program Files\Java\jdk1.8.0_112\jre\lib\deploy.jar;C:\Program Files\Java\jdk1.8.0_112\jre\lib\ext\access-bridge-64.jar;C:\Program Files\Java\jdk1.8.0_112\jre\lib\ext\cldrdata.jar;C:\Program Files\Java\jdk1.8.0_112\jre\lib\ext\dnsns.jar;C:\Program Files\Java\jdk1.8.0_112\jre\lib\ext\jaccess.jar;C:\Program Files\Java\jdk1.8.0_112\jre\lib\ext\jfxrt.jar;C:\Program Files\Java\jdk1.8.0_112\jre\lib\ext\localedata.jar;C:\Program Files\Java\jdk1.8.0_112\jre\lib\ext\nashorn.jar;C:\Program Files\Java\jdk1.8.0_112\jre\lib\ext\sunec.jar;C:\Program Files\Java\jdk1.8.0_112\jre\lib\ext\sunjce_provider.jar;C:\Program Files\Java\jdk1.8.0_112\jre\lib\ext\sunmscapi.jar;C:\Program Files\Java\jdk1.8.0_112\jre\lib\ext\sunpkcs11.jar;C:\Program Files\Java\jdk1.8.0_112\jre\lib\ext\zipfs.jar;C:\Program Files\Java\jdk1.8.0_112\jre\lib\javaws.jar;C:\Program Files\Java\jdk1.8.0_112\jre\lib\jce.jar;C:\Program Files\Java\jdk1.8.0_112\jre\lib\jfr.jar;C:\Program Files\Java\jdk1.8.0_112\jre\lib\jfxswt.jar;C:\Program Files\Java\jdk1.8.0_112\jre\lib\jsse.jar;C:\Program Files\Java\jdk1.8.0_112\jre\lib\management-agent.jar;C:\Program Files\Java\jdk1.8.0_112\jre\lib\plugin.jar;C:\Program Files\Java\jdk1.8.0_112\jre\lib\resources.jar;C:\Program Files\Java\jdk1.8.0_112\jre\lib\rt.jar;C:\Users\leeyimin\Desktop\NUS\1718-2\CS3243\Project\Project\out\production\Project" BasicTrainer
+Iteration 1
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 229
+Average: 229.0
+
+Iteration 2
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 23092
+Average: 11660.5
+
+Iteration 3
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 2291
+Average: 8537.333333333334
+
+Iteration 4
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 3175
+Average: 7196.75
+
+Iteration 5
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 482
+Average: 5853.8
+
+Iteration 6
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 4530
+Average: 5633.166666666667
+
+Iteration 7
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 11493
+Average: 6470.285714285715
+
+Iteration 8
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 2792
+Average: 6010.5
+
+Iteration 9
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 3173
+Average: 5695.222222222223
+
+Iteration 10
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 1074
+Average: 5233.1
+
+Iteration 11
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 1420
+Average: 4886.454545454545
+
+Iteration 12
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 1984
+Average: 4644.583333333333
+
+Iteration 13
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 747
+Average: 4344.7692307692305
+
+Iteration 14
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 9871
+Average: 4739.5
+
+Iteration 15
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 12267
+Average: 5241.333333333333
+
+Iteration 16
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 6031
+Average: 5290.6875
+
+Iteration 17
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 1562
+Average: 5071.35294117647
+
+Iteration 18
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 3098
+Average: 4961.722222222223
+
+Iteration 19
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 4161
+Average: 4919.578947368421
+
+Iteration 20
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 2952
+Average: 4821.2
+
+Iteration 21
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 16504
+Average: 5377.523809523809
+
+Iteration 22
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 12957
+Average: 5722.045454545455
+
+Iteration 23
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 1172
+Average: 5524.217391304348
+
+Iteration 24
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 8266
+Average: 5638.458333333333
+
+Iteration 25
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 1757
+Average: 5483.2
+
+Iteration 26
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 13594
+Average: 5795.153846153846
+
+Iteration 27
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 7114
+Average: 5844.0
+
+Iteration 28
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 11799
+Average: 6056.678571428572
+
+Iteration 29
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 386
+Average: 5861.137931034483
+
+Iteration 30
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 7694
+Average: 5922.233333333334
+
+Iteration 31
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 15096
+Average: 6218.1612903225805
+
+Iteration 32
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 4215
+Average: 6155.5625
+
+Iteration 33
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 3605
+Average: 6078.272727272727
+
+Iteration 34
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 11655
+Average: 6242.294117647059
+
+Iteration 35
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 913
+Average: 6090.028571428571
+
+Iteration 36
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 4228
+Average: 6038.305555555556
+
+Iteration 37
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 5081
+Average: 6012.4324324324325
+
+Iteration 38
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 11003
+Average: 6143.763157894737
+
+Iteration 39
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 7318
+Average: 6173.871794871795
+
+Iteration 40
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 1712
+Average: 6062.325
+
+Iteration 41
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 5731
+Average: 6054.243902439024
+
+Iteration 42
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 2181
+Average: 5962.023809523809
+
+Iteration 43
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 6911
+Average: 5984.093023255814
+
+Iteration 44
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 17638
+Average: 6248.954545454545
+
+Iteration 45
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 5120
+Average: 6223.866666666667
+
+Iteration 46
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 3024
+Average: 6154.304347826087
+
+Iteration 47
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 3482
+Average: 6097.446808510638
+
+Iteration 48
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 162
+Average: 5973.791666666667
+
+Iteration 49
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 266
+Average: 5857.306122448979
+
+Iteration 50
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 10050
+Average: 5941.16
+
+Iteration 51
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 1726
+Average: 5858.509803921569
+
+Iteration 52
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 456
+Average: 5754.615384615385
+
+Iteration 53
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 5884
+Average: 5757.056603773585
+
+Iteration 54
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 18789
+Average: 5998.388888888889
+
+Iteration 55
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 1282
+Average: 5912.636363636364
+
+Iteration 56
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 5068
+Average: 5897.553571428572
+
+Iteration 57
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 4718
+Average: 5876.859649122807
+
+Iteration 58
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 3066
+Average: 5828.396551724138
+
+Iteration 59
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 10291
+Average: 5904.033898305085
+
+Iteration 60
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 2153
+Average: 5841.516666666666
+
+Iteration 61
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 8149
+Average: 5879.3442622950815
+
+Iteration 62
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 1125
+Average: 5802.6612903225805
+
+Iteration 63
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 273
+Average: 5714.888888888889
+
+Iteration 64
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 9088
+Average: 5767.59375
+
+Iteration 65
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 668
+Average: 5689.138461538461
+
+Iteration 66
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 3501
+Average: 5655.984848484848
+
+Iteration 67
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 22494
+Average: 5907.298507462687
+
+Iteration 68
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 1430
+Average: 5841.455882352941
+
+Iteration 69
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 1178
+Average: 5773.869565217391
+
+Iteration 70
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 14128
+Average: 5893.214285714285
+
+Iteration 71
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 325
+Average: 5814.788732394366
+
+Iteration 72
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 199
+Average: 5736.791666666667
+
+Iteration 73
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 2423
+Average: 5691.397260273972
+
+Iteration 74
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 9941
+Average: 5748.824324324324
+
+Iteration 75
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 10919
+Average: 5817.76
+
+Iteration 76
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 11029
+Average: 5886.328947368421
+
+Iteration 77
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 4440
+Average: 5867.545454545455
+
+Iteration 78
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 3313
+Average: 5834.794871794872
+
+Iteration 79
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 7360
+Average: 5854.101265822785
+
+Iteration 80
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 1929
+Average: 5805.0375
+
+Iteration 81
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 3430
+Average: 5775.716049382716
+
+Iteration 82
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 2094
+Average: 5730.817073170731
+
+Iteration 83
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 6723
+Average: 5742.77108433735
+
+Iteration 84
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 4383
+Average: 5726.583333333333
+
+Iteration 85
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 5272
+Average: 5721.235294117647
+
+Iteration 86
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 2759
+Average: 5686.790697674419
+
+Iteration 87
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 1025
+Average: 5633.206896551724
+
+Iteration 88
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 10132
+Average: 5684.329545454545
+
+Iteration 89
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 316
+Average: 5624.011235955056
+
+Iteration 90
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 3567
+Average: 5601.155555555555
+
+Iteration 91
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 2194
+Average: 5563.714285714285
+
+Iteration 92
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 14182
+Average: 5657.391304347826
+
+Iteration 93
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 2935
+Average: 5628.118279569892
+
+Iteration 94
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 17737
+Average: 5756.936170212766
+
+Iteration 95
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 5250
+Average: 5751.6
+
+Iteration 96
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 1401
+Average: 5706.28125
+
+Iteration 97
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 2634
+Average: 5674.6082474226805
+
+Iteration 98
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 2719
+Average: 5644.448979591837
+
+Iteration 99
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 8488
+Average: 5673.171717171717
+
+Iteration 100
+16.0, 84.0, 44.0, 12.5, -16.0, 6.0, 8.0, 6.0, 0.0, -3.5
+Rows cleared: 2113
+Average: 5637.57
+
+
+Process finished with exit code 0

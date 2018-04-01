@@ -1,3 +1,5 @@
+import java.util.List;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 
 public class Features {
@@ -70,7 +72,23 @@ public class Features {
     }
 
     /**
-     *
+     * motivation: penalize stacking over holes/ covering tall holes
+     * @param testState
+     * @return sum of (top - 1 ) - row over all holes
+     */
+    public static Double getSumOfDepthOfHoles(TestState testState){
+        int sum = 0;
+
+        for (int col = 0; col < State.COLS; col++) {
+            for (int row = 0; row < testState.top[col]; row++) {
+                if (testState.field[row][col] == 0) sum += testState.top[col] - 1 - row;
+            }
+        }
+        return (double) sum;
+    }
+
+    /**
+     * NOTE: may cause holes since it may incentivize turning significant top diff into hole
      * @param testState
      * @return numbers of columns where all neighbouring columns are both at least 3 blocks taller
      */
@@ -81,6 +99,36 @@ public class Features {
                 num++;
         }
         return (double) num;
+    }
+
+    /**
+     * penalizes more for taller holes and significant top difference
+     * For each hole, cost = height
+     * For each dip, cost = smaller of the height difference
+     *
+     * ( may be similar to sum of bumpiness and num of holes...)
+     * @param testState
+     * @return
+     */
+    public static Double getSignificantHoleAndTopDifference(TestState testState){
+        int sum = 0;
+        for (int i = 0; i < State.COLS; i++) {
+            int consec = 0;
+            for(int j=0;j<testState.top[i];j++){
+                if(testState.field[j][i] == 0){
+                    consec++;
+                }else{
+                    sum += consec;
+                }
+            }
+            if ((i == 0 || testState.top[i - 1] >= testState.top[i] + 3) && (i == State.COLS - 1 || testState.top[i + 1] >= testState.top[i] + 3)){
+                if(i== State.COLS - 1) sum += (testState.top[i - 1] - testState.top[i]);
+                else if(i == 0 ) sum += (testState.top[i + 1] - testState.top[i]);
+                else sum += Math.min(testState.top[i - 1] - testState.top[i], testState.top[i + 1] - testState.top[i]);
+            }
+
+        }
+        return (double) sum;
     }
 
     /**
@@ -153,7 +201,7 @@ public class Features {
      * @param testState
      * @return 1.0 if there exist some next piece that has no possible move, else 0
      */
-    public static Double hasPossibleDeathNextPiece(TestState testState){
+    public static Double hasPossibleInevitableDeathNextPiece(TestState testState){
         for(int i=0;i<State.N_PIECES;i++){
             TestState possibleState = MoveTester.testMove(testState, i, 0);
             for(int move=1;move<State.legalMoves[i].length;move++){
@@ -161,6 +209,24 @@ public class Features {
                 possibleState = MoveTester.testMove(testState, i, move);
             }
             if(possibleState == null) return 1.0;
+        }
+        return 0.0;
+    }
+
+    /**
+     * WARNING: SUPER SLOW
+     * @param testState
+     * @return 1.0 if there exist some next size two sequence that has no possible move, else 0
+     */
+    public static Double hasPossibleInevitableDeathNextTwoSequence(TestState testState) {
+        for (int i = 0; i < State.N_PIECES; i++) {
+            TestState possibleState = null;
+            for (int move = 0; move < State.legalMoves[i].length; move++) {
+                possibleState = MoveTester.testMove(testState, i, move);
+                if(possibleState == null) continue;
+                if(hasPossibleInevitableDeathNextPiece(possibleState) >= 0.99) possibleState = null;
+            }
+            if (possibleState == null) return 1.0;
         }
         return 0.0;
     }
@@ -203,6 +269,69 @@ public class Features {
         return (double) numRow;
 
     }
+
+    /**
+     * Based on a KTH paper - Tetris: A Heuristic Study
+     * Using height-based weighing functions and breadth-first search
+     * heuristics for playing Tetris
+     * @param testState
+     * @return sum of (row height)^2 of empty cells with right wall
+     */
+    public static Double getSpaceWithRightWallMeasure(TestState testState){
+        int sum = 0;
+        for(int col = 0; col< State.COLS - 1;col++){
+            for(int row = 0; row< testState.top[col+1]; row++){
+                if(testState.field[row][col] == 0 ) sum+=row*row;
+            }
+        }
+        return (double) sum;
+    }
+
+    /**
+     * Based on a KTH paper
+     *
+     * @param testState
+     * @return sum of (row height)^2 of empty cells with left wall
+     */
+    public static Double getSpaceWithLeftWallMeasure(TestState testState) {
+        int sum = 0;
+        for (int col = 1; col < State.COLS; col++) {
+            for (int row = 0; row < testState.top[col - 1]; row++) {
+                if (testState.field[row][col] == 0) sum += row * row;
+            }
+        }
+        return (double) sum;
+    }
+
+
+
+    /**
+     * Based on a KTH paper
+     *
+     * @param testState
+     * @return sum of (row height)^3 of holes
+     */
+    public static Double getHoleMeasure(TestState testState) {
+        int sum = 0;
+        for (int col = 0; col < State.COLS; col++) {
+            for (int row = 0; row < testState.top[col] - 1; row++) {
+                if (testState.field[row][col] == 0) sum += row * row * row;
+            }
+        }
+        return (double) sum;
+    }
+
+    /**
+     * Based on a KTH paper
+     *
+     * @param testState
+     * @return sum of hole and wall measures
+     */
+    public static Double getAggregateHoleAndWallMeasure(TestState testState) {
+        return (double) getSpaceWithLeftWallMeasure(testState) + getSpaceWithRightWallMeasure(testState) + getHoleMeasure(testState);
+    }
+
+
 
 
     /**
@@ -248,6 +377,74 @@ public class Features {
 
     public static Double getTenthColHeight(TestState testState) {
         return (double) testState.top[9];
+    }
+
+
+    public static void addAllColHeightFeatures(List<Function<TestState, Double>> features){
+        features.add(Features::getFirstColHeight);
+        features.add(Features::getSecondColHeight);
+        features.add(Features::getThirdColHeight);
+        features.add(Features::getFourthColHeight);
+        features.add(Features::getFifthColHeight);
+        features.add(Features::getSixthColHeight);
+        features.add(Features::getSeventhColHeight);
+        features.add(Features::getEighthColHeight);
+        features.add(Features::getNinthColHeight);
+        features.add(Features::getTenthColHeight);
+    }
+
+    /**
+     *
+     * @param testState
+     * @return top difference of pairwise columns
+     */
+
+    public static Double getFirstHeightDifference(TestState testState){
+        return (double) Math.abs(testState.top[0]- testState.top[1]);
+    }
+
+    public static Double getSecondHeightDifference(TestState testState) {
+        return (double) Math.abs(testState.top[1] - testState.top[2]);
+    }
+
+    public static Double getThirdHeightDifference(TestState testState) {
+        return (double) Math.abs(testState.top[2] - testState.top[3]);
+    }
+
+    public static Double getFourthHeightDifference(TestState testState) {
+        return (double) Math.abs(testState.top[3] - testState.top[4]);
+    }
+
+    public static Double getFifthHeightDifference(TestState testState) {
+        return (double) Math.abs(testState.top[4] - testState.top[5]);
+    }
+
+    public static Double getSixthHeightDifference(TestState testState) {
+        return (double) Math.abs(testState.top[5] - testState.top[6]);
+    }
+
+    public static Double getSeventhdHeightDifference(TestState testState) {
+        return (double) Math.abs(testState.top[6] - testState.top[7]);
+    }
+
+    public static Double getEighthHeightDifference(TestState testState) {
+        return (double) Math.abs(testState.top[7] - testState.top[8]);
+    }
+
+    public static Double getNinthHeightDifference(TestState testState) {
+        return (double) Math.abs(testState.top[8] - testState.top[9]);
+    }
+
+    public static void addAllHeightDiffFeatures(List<Function<TestState, Double>> features) {
+        features.add(Features::getFirstHeightDifference);
+        features.add(Features::getSecondHeightDifference);
+        features.add(Features::getThirdHeightDifference);
+        features.add(Features::getFourthHeightDifference);
+        features.add(Features::getFifthHeightDifference);
+        features.add(Features::getSixthHeightDifference);
+        features.add(Features::getSeventhdHeightDifference);
+        features.add(Features::getEighthHeightDifference);
+        features.add(Features::getNinthHeightDifference);
     }
 
 

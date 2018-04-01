@@ -1,10 +1,11 @@
-import java.util.*;
-import java.util.function.*;
+import java.util.List;
+import java.util.function.Function;
 
 public class Player {
 
     protected static final int REFRESH_DELAY = 1;
     protected static final boolean RENDER_BOARD = false;
+    protected static final boolean SHOW_DEATH_STATE = false;
     protected static final int MAX_NUM_MOVES = Integer.MAX_VALUE;
 
     private TFrame frame;
@@ -49,17 +50,24 @@ public class Player {
     }
 
     public int simulate() {
+        return simulate(MAX_NUM_MOVES);
+    }
+
+    public int simulate(int maxMoves){
         State state = new State();
 
         if (RENDER_BOARD) {
             this.frame = new TFrame(state);
         }
 
-        while (!state.hasLost() && numMoves < MAX_NUM_MOVES) {
+        while (!state.hasLost() && numMoves < maxMoves) {
+            numMoves++;
             state.makeMove(this.pickMove(state, state.legalMoves()));
             updateBoard(state);
             numMoves++;
         }
+
+        showDeathState(state);
 
         if (RENDER_BOARD) {
             this.frame.dispose();
@@ -80,21 +88,17 @@ public class Player {
         }
     }
 
-    public double[] simulate(int moves) {
-        State state = new State();
-        if (RENDER_BOARD) {
-            this.frame = new TFrame(state);
-        }
+    private void showDeathState(State state){
+        int field[][] = state.getField();
 
-        for(int i=0;i<moves&&!state.hasLost();i++){
-            state.makeMove(this.pickMove(state, state.legalMoves()));
-            updateBoard(state);
+        if( SHOW_DEATH_STATE && state.hasLost()){
+            System.out.println();
+            for(int i=State.ROWS-1;i>=0;i--){
+                for(int j=0;j< State.COLS;j++){
+                    System.out.print(field[i][j] == 0?" ": "X");
+                }
+                System.out.println();
+            }
         }
-
-        if (RENDER_BOARD) {
-            this.frame.dispose();
-        }
-        return new double[]{(double)state.getRowsCleared(),state.hasLost()? Double.MAX_VALUE: evaluateField(new TestState(state.getField(), state.getTop(), 0))};
     }
-
 }
