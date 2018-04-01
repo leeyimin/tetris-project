@@ -41,7 +41,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer{
 
     public LocalIncreasingDecreasingTrainer(List<Double> coefficients, List<Function<TestState, Double>> features) {
         super(Integer.MAX_VALUE, coefficients, features);
-        moves = Integer.MAX_VALUE;
+        moves = 1000;
         rounds = 0;
         resultsInRound = new int[ITERATIONS];
         bestCoefficient = new ArrayList<>(coefficients);
