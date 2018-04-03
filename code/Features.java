@@ -50,7 +50,6 @@ public class Features {
             }
         }
 
-        System.out.println(numHoles);
         return (double) numHoles;
     }
 

@@ -15,7 +15,7 @@ public class PlayerSkeleton {
     }
 
     public PlayerSkeleton(Function<State, Integer> strategy) {
-        this(strategy, 1);
+        this(strategy, 0);
     }
 
     public int run() {
