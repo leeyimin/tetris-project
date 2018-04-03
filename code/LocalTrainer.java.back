@@ -5,56 +5,55 @@ public class LocalTrainer extends Trainer {
 
     private static final int BATCH_SIZE = 100;
     private static final int NUM_BATCHES = 100000;
-    private static final double LEARNING_RATE = 0.25;
 
     private int currBatch;
-    private int currIteration;
-    private int currRowsCleared;
+    private int currRound;
+    private int cumulatedRows;
+    private double stepSize;
     private int bestCumulatedRows; 
     private List<Double> bestCoefficients;
 
     public LocalTrainer(List<Double> coefficients, List<Function<State, Double>> features) {
+        super(BATCH_SIZE * NUM_BATCHES, coefficients, features);
         this.currBatch = 0;
-        this.currIteration = 0;
+        this.currRound = 0;
         this.cumulatedRows = 0;
+        this.stepSize = 0.25;
         this.bestCumulatedRows = 0;
         this.bestCoefficients = coefficients;
     }
 
-    public void onRunFinished(int rowsCleared) {
-        this.currIteration++;
-        this.currRowsCleared += rowsCleared;
+    public void onSimulateDone(int rowsCleared) {
+        this.currRound++;
+        this.cumulatedRows += rowsCleared;
 
-        if (this.currIteration % BATCH_SIZE == 0) {
-            this.printSummary();
-            this.updateBest();
-            this.pertubateCoefficients();
-            this.currIteration = 0;
-            this.currRowsCleared = 0;
+        if (this.currRound % BATCH_SIZE == 0) {
+            this.onBatchDone();
+            this.cumulatedRows = 0;
         }
     }
 
-    private void printSummary() {
+    private void onBatchDone() {
+        // print the rows cleared
         System.out.println();
         System.out.println("======================================");
         System.out.println(" RESULT OF BATCH #" + (++currBatch));
         System.out.println("======================================");
         System.out.println("Rows cleared: " + (double) this.cumulatedRows / BATCH_SIZE);
         this.printCoefficients();
-    }
 
-    private void updateBest() {
-        if (this.bestRowsCleared < this.currRowsCleared) {
-            this.bestRowsCleared = this.currRowsCleared;
+        // if the new coefficients are better than the best so far
+        // update the best coefficients
+        if (this.bestCumulatedRows < this.cumulatedRows) {
+            this.bestCumulatedRows = this.cumulatedRows;
             this.bestCoefficients = this.coefficients;
         }
-    }
 
-    private void pertubateCoefficients() {
+        // pertubate the coefficients by a little every batch
         Random rng = new Random();
         List<Double> newCoefficients = new ArrayList<>();
         for (Double coefficient : this.bestCoefficients) {
-            newCoefficients.add(Math.abs(coefficient + LocalTrainer.LEARNING_RATE * (rng.nextDouble() - LocalTrainer.LEARNING_RATE / 2)));
+            newCoefficients.add(Math.abs(coefficient + this.stepSize * (rng.nextDouble() - this.stepSize / 2)));
         }
         this.coefficients = newCoefficients;
     }

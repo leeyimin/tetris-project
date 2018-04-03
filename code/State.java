@@ -15,11 +15,11 @@ public class State {
 	private int cleared = 0;
 	
 	// each square in the grid - int means empty - other values mean the turn it was placed
-	private int[][] field = new int[ROWS][COLS];
+	public int[][] field = new int[ROWS][COLS];
 
 	// top row+1 of each column i
     // 0 means empty
-	private int[] top = new int[COLS];
+	public int[] top = new int[COLS];
 	
 	// number of next piece
 	protected int nextPiece;
@@ -157,12 +157,12 @@ public class State {
         this.turn = state.turn;
         this.cleared = state.cleared;
         this.nextPiece = state.nextPiece;
-        this.fields = new int[ROWS][COLS];
+        this.field = new int[ROWS][COLS];
         this.top = new int[COLS];
 
-        for (int i = 0; i < state.fields.length; i++) {
-            for (int j = 0; j < state.fields[i].length; j++) {
-                this.fields[i][j] = state.fields[i][j];
+        for (int i = 0; i < state.field.length; i++) {
+            for (int j = 0; j < state.field[i].length; j++) {
+                this.field[i][j] = state.field[i][j];
             }
         }
 
@@ -170,6 +170,18 @@ public class State {
             this.top[i] = state.top[i];
         }
     }
+
+    // get state after move
+    public State testStateAfterMove(int move) {
+        State testState = new State(this);
+        testState.makeMove(move);
+        return testState;
+    }
+
+	// random integer, returns 0-6
+	private int randomPiece() {
+		return (int)(Math.random()*N_PIECES);
+	}
 
 	// gives legal moves for 
 	public int[][] legalMoves() {

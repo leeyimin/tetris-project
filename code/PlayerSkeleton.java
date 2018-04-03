@@ -1,72 +1,58 @@
 import java.util.List;
 import java.util.function.Function;
 
-public abstract class PlayerSkeleton {
+public class PlayerSkeleton {
 
-    private static final int REFRESH_DELAY = 1;
-    private static final boolean RENDER_BOARD = false;
-    private static final boolean SHOW_DEATH_STATE = false;
-    private static final int MAX_NUM_MOVES = Integer.MAX_VALUE;
-
+    private int refreshDelay;
     private TFrame frame;
 
-    private List<Double> coefficients;
-    private List<Function<TestState, Double>> features;
-    private State currentState;
+    protected Function<State, Integer> strategy;
+    protected State state;
 
-    private int numMoves = 0;
-
-    public PlayerSkeleton(List<Double> coefficients, List<Function<TestState, Double>> features) {
-        this.coefficients = coefficients;
-        this.features = features;
+    public PlayerSkeleton(Function<State, Integer> strategy, int refreshDelay) {
+        this.refreshDelay = refreshDelay;
+        this.strategy = strategy;
         this.state = new State();
     }
 
-    public int pickMove(int[][] legalMoves);
-
-    public int run() {
-        if (RENDER_BOARD) {
-            this.frame = new TFrame(state);
-        }
-
-        while (!state.hasLost() && numMoves < maxMoves) {
-            numMoves++;
-            state.makeMove(this.pickMove(state, state.legalMoves()));
-            updateBoard(state);
-        }
-
-        showDeathState(state);
-
-        if (RENDER_BOARD) {
-            this.frame.dispose();
-        }
-
-        return state.getRowsCleared();
+    public PlayerSkeleton(Function<State, Integer> strategy) {
+        this(strategy, 0);
     }
 
-    private void updateBoard(State state) {
-        if (RENDER_BOARD) {
-            state.draw();
-            state.drawNext(0,0);
+    public int run() {
+        this.initializeFrame();
+        while (!this.state.hasLost()) {
+            int move = this.strategy.apply(this.state);
+            this.state.makeMove(move);
+            this.updateFrame();
+        }
+        this.destroyFrame();
+        return this.state.getRowsCleared();
+    }
+
+    private void initializeFrame() {
+        if (refreshDelay == 0) {
+            this.frame = new TFrame(this.state);
+        }
+    }
+
+    private void destroyFrame() {
+        if (this.frame != null) {
+            this.frame.dispose();
+        }
+    }
+
+    private void updateFrame() {
+        if (this.frame != null) {
+            this.state.draw();
+            this.state.drawNext(0,0);
+
             try {
-                Thread.sleep(REFRESH_DELAY);
+                Thread.sleep(this.refreshDelay);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private void showDeathState(State state){
-        int field[][] = state.getField();
-
-        if( SHOW_DEATH_STATE && state.hasLost()){
-            System.out.println();
-            for(int i=State.ROWS-1;i>=0;i--){
-                for(int j=0;j< State.COLS;j++){
-                    System.out.print(field[i][j] == 0?" ": "X");
-                }
-                System.out.println();
-            }
-        }
-    }
 }
