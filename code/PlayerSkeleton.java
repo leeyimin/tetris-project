@@ -1,4 +1,3 @@
-import java.util.List;
 import java.util.function.Function;
 
 public class PlayerSkeleton {
@@ -16,7 +15,7 @@ public class PlayerSkeleton {
     }
 
     public PlayerSkeleton(Function<State, Integer> strategy) {
-        this(strategy, 0);
+        this(strategy, 1);
     }
 
     public int run() {
@@ -31,7 +30,7 @@ public class PlayerSkeleton {
     }
 
     private void initializeFrame() {
-        if (refreshDelay == 0) {
+        if (this.refreshDelay > 0) {
             this.frame = new TFrame(this.state);
         }
     }
