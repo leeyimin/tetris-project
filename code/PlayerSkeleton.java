@@ -22,42 +22,9 @@ public abstract class PlayerSkeleton {
         this.state = new State();
     }
 
-    public int pickMove(int[][] legalMoves) {
-        int bestMove = 0;
-        double bestCost = Double.MAX_VALUE;
+    public int pickMove(int[][] legalMoves);
 
-        for (int move = 0; move < legalMoves.length; move++) {
-            double cost = this.evaluateField(MoveTester.testMove(currentState, move));
-            if (cost < bestCost) {
-                bestMove = move;
-                bestCost = cost;
-            }
-        }
-
-        return bestMove;
-    }
-
-    public double evaluateField(TestState testState) {
-        if (testState == null) {
-            return Double.MAX_VALUE;
-        }
-
-        int score = 0;
-
-        for (int i = 0; i < this.coefficients.size(); i++) {
-            score += this.coefficients.get(i) * this.features.get(i).apply(testState);
-        }
-
-        return score;
-    }
-
-    public int simulate() {
-        return simulate(MAX_NUM_MOVES);
-    }
-
-    public int simulate(int maxMoves){
-        State state = new State();
-
+    public int run() {
         if (RENDER_BOARD) {
             this.frame = new TFrame(state);
         }
