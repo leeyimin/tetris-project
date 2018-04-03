@@ -23,6 +23,13 @@ public class BasicTrainer extends Trainer {
         System.out.println();
     }
 
+    public static double getAverage(List<Double> coefficients, List<Function<TestState, Double>> features, int numIterations){
+        BasicTrainer trainer = new BasicTrainer(coefficients, features);
+        trainer.numIterations = numIterations;
+        trainer.train();
+        return (double) trainer.sum/trainer.iterations;
+    }
+
     public static void main(String args[]) {
         List<Double> coefficients = new ArrayList<>();
         coefficients.add(2.0);

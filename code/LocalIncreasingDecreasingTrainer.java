@@ -10,14 +10,18 @@ import java.util.function.Function;
  * Increases each coefficient until it stops improving, then move on to next coefficient. Lower the increment after one iteration of the features.
  * After the increment reaches below epsilon, it repeats the steps but decreasing each coefficient instead.
  *
+ * Doubles allowed moves if previous best clears 95% of total possible lines
+ *
  * Perturbation strategy to be improved.
  */
 public class LocalIncreasingDecreasingTrainer extends Trainer{
 
-    static final int ITERATIONS = 50;
+    static final int ITERATIONS = 30;
     static final double STARTING_INCREMENT = 32;
     static final double EPSILON = 0.125;
     static final double factor = 4.0; // multiply increment by 1/factor after one iteration of the features
+    static final int MOVE_FACTOR = 2;
+    static final int STARTING_MOVES =1000;
     static final boolean DECREASE_FLAG = true;
 
     int bestResult = Integer.MIN_VALUE;
@@ -41,7 +45,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer{
 
     public LocalIncreasingDecreasingTrainer(List<Double> coefficients, List<Function<TestState, Double>> features) {
         super(Integer.MAX_VALUE, coefficients, features);
-        moves = 1000;
+        moves = STARTING_MOVES;
         rounds = 0;
         resultsInRound = new int[ITERATIONS];
         bestCoefficient = new ArrayList<>(coefficients);
@@ -130,15 +134,24 @@ public class LocalIncreasingDecreasingTrainer extends Trainer{
                     System.out.println();
                     System.out.println();
 
-                    // do file writing
-                    if(System.currentTimeMillis() - lastUpdate >  interval){
-                        lastUpdate = System.currentTimeMillis();
+                    boolean increaseLines = false;
 
+                    if(bestResult >= 0.95*(moves*4/10)*ITERATIONS){
+                        moves *= MOVE_FACTOR;
+                        increaseLines = true;
+                    }
+
+                    // do file writing
+                    if(System.currentTimeMillis() - lastUpdate >  interval || increaseLines){
+                        lastUpdate = System.currentTimeMillis();
                         try {
                             String filename = "LIDtrain" + startTime+".txt";
                             FileWriter fw = new FileWriter(filename, true); //the true will append the new data
+
+                            if (increaseLines) fw.write("max moves: " + moves + "\n");
                             fw.write("time: " + (lastUpdate - startTime)/(60*1000.0) + "\n");
                             fw.write("sum: " + bestResult + "\n");
+                            fw.write("average over 100: " + BasicTrainer.getAverage(bestCoefficient, features, 100)+"\n");
                             fw.write(bestCoefficient.get(0) +"");
                             for (int i = 1; i < coefficients.size(); i++) {
                                 fw.write(", "+ bestCoefficient.get(i));
@@ -203,7 +216,6 @@ public class LocalIncreasingDecreasingTrainer extends Trainer{
 
         List<Function<TestState, Double>> features = new ArrayList<>();
 
-        features.add(Features::getBumpiness);
         features.add(Features::getNegativeOfRowsCleared);
         features.add(Features::getMaxHeight);
         features.add(Features::getNumHoles);
