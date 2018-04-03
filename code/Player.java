@@ -64,7 +64,6 @@ public class Player {
             numMoves++;
             state.makeMove(this.pickMove(state, state.legalMoves()));
             updateBoard(state);
-            numMoves++;
         }
 
         showDeathState(state);
