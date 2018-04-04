@@ -18,7 +18,7 @@ public class LocalTrainer extends Trainer {
         this.currBatch = 0;
         this.currRound = 0;
         this.cumulatedRows = 0;
-        this.stepSize = 0.25;
+        this.stepSize = 0.2;
         this.bestCumulatedRows = 0;
         this.bestCoefficients = coefficients;
     }
@@ -53,17 +53,33 @@ public class LocalTrainer extends Trainer {
         Random rng = new Random();
         List<Double> newCoefficients = new ArrayList<>();
         for (Double coefficient : this.bestCoefficients) {
-            newCoefficients.add(Math.abs(coefficient + this.stepSize * (rng.nextDouble() - this.stepSize / 2)));
+            newCoefficients.add(coefficient + this.stepSize * (rng.nextDouble() - 0.5));
         }
         this.coefficients = newCoefficients;
     }
 
     public static void main(String args[]) {
-        Double[] coefficients = new Double[] { 2.8076482878262876, 9.52205211768384, 1.1654082765356404, 0.11757694915822758, 
-            3.227936651873784, 4.127918804476838, 3.6275198005155755, 1.332574515842945, 1.948833014274156, 1.844853394469137,
-            3.1667299474927315, 0.9287248528714973, 0.3974205294020895, 1.2099788795849369, 0.5851998600926502, 4.596407295055194,
-            3.3174993445272625, 2.7003736997933534, 3.161659677428588, 3.0375575590367485, 4.410247099265778, 3.7599910254579814,
-            2.9479913080723645, 1.6601874447011036 };
+        /*
+           Double[] coefficients = new Double[] { 2.8076482878262876, 9.52205211768384, 1.1654082765356404, 0.11757694915822758, 
+           3.227936651873784, 4.127918804476838, 3.6275198005155755, 1.332574515842945, 1.948833014274156, 1.844853394469137,
+           3.1667299474927315, 0.9287248528714973, 0.3974205294020895, 1.2099788795849369, 0.5851998600926502, 4.596407295055194,
+           3.3174993445272625, 2.7003736997933534, 3.161659677428588, 3.0375575590367485, 4.410247099265778, 3.7599910254579814,
+           2.9479913080723645, 1.6601874447011036 };
+           */
+        Random rng = new Random();
+        List<Double> coefficients = new ArrayList<>();
+
+        /*
+        for (int i = 0; i < 5; i++) {
+            coefficients.add(rng.nextDouble() - 0.5);
+        }
+        */
+
+        coefficients.add(0.9906969863409814);
+        coefficients.add(5.150433816053596);
+        coefficients.add(0.04170423876619145);
+        coefficients.add(-0.5280838169281842);
+        coefficients.add(0.39639544240468605);
 
         List<Function<TestState, Double>> features = new ArrayList<>();
         features.add(Features::getBumpiness);
@@ -71,27 +87,29 @@ public class LocalTrainer extends Trainer {
         features.add(Features::getMaxHeight);
         features.add(Features::getNumHoles);
         features.add(Features::getBlocksAboveHoles);
-        features.add(Features::getNumOfSignificantTopDifference);
-        features.add(Features::getMeanAbsoluteDeviationOfTop);
-        features.add(Features::hasLevelSurface);
-        features.add(Features::hasRightStep);
-        features.add(Features::hasLeftStep);
-        features.add(Features::getNegativeOfRowsCleared);
-        features.add(Features::hasPossibleInevitableDeathNextPiece);
-        features.add(Features::getNumColsWithHoles);
-        features.add(Features::getNumRowsWithHoles);
-        features.add(Features::getFirstColHeight);
-        features.add(Features::getSecondColHeight);
-        features.add(Features::getThirdColHeight);
-        features.add(Features::getFourthColHeight);
-        features.add(Features::getFifthColHeight);
-        features.add(Features::getSixthColHeight);
-        features.add(Features::getSeventhColHeight);
-        features.add(Features::getEighthColHeight);
-        features.add(Features::getNinthColHeight);
-        features.add(Features::getTenthColHeight);
+        /*
+           features.add(Features::getNumOfSignificantTopDifference);
+           features.add(Features::getMeanAbsoluteDeviationOfTop);
+           features.add(Features::hasLevelSurface);
+           features.add(Features::hasRightStep);
+           features.add(Features::hasLeftStep);
+           features.add(Features::getNegativeOfRowsCleared);
+           features.add(Features::hasPossibleInevitableDeathNextPiece);
+           features.add(Features::getNumColsWithHoles);
+           features.add(Features::getNumRowsWithHoles);
+           features.add(Features::getFirstColHeight);
+           features.add(Features::getSecondColHeight);
+           features.add(Features::getThirdColHeight);
+           features.add(Features::getFourthColHeight);
+           features.add(Features::getFifthColHeight);
+           features.add(Features::getSixthColHeight);
+           features.add(Features::getSeventhColHeight);
+           features.add(Features::getEighthColHeight);
+           features.add(Features::getNinthColHeight);
+           features.add(Features::getTenthColHeight);
+           */
 
-        new LocalTrainer(Arrays.asList(coefficients), features).train();
+        new LocalTrainer(coefficients, features).train();
     }
 
 }

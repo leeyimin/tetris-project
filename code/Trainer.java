@@ -13,7 +13,7 @@ public abstract class Trainer {
         this.numIterations = numIterations;
     }
 
-    public void train() {
+   public void train() {
         for (int i = 0; i < this.numIterations; i++) {
             int rowsCleared = new Player(coefficients, features).simulate();
             this.onSimulateDone(rowsCleared);
