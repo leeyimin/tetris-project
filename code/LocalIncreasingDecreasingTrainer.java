@@ -16,9 +16,9 @@ import java.util.function.Function;
  */
 public class LocalIncreasingDecreasingTrainer extends Trainer{
 
-    static final int ITERATIONS = 30;
+    static final int ITERATIONS = 50;
     static final double STARTING_INCREMENT = 32;
-    static final double EPSILON = 0.125;
+    static final double EPSILON = 0.5;
     static final double factor = 4.0; // multiply increment by 1/factor after one iteration of the features
     static final int MOVE_FACTOR = 2;
     static final int STARTING_MOVES =1000;
@@ -221,6 +221,10 @@ public class LocalIncreasingDecreasingTrainer extends Trainer{
         features.add(Features::getNumHoles);
         features.add(Features::getSumOfDepthOfHoles);
         features.add(Features::getMeanAbsoluteDeviationOfTop);
+        features.add(Features::getBlocksAboveHoles);
+        features.add(Features::getSignificantHoleAndTopDifference);
+        features.add(Features::getNumOfSignificantTopDifference);
+        features.add(Features::hasLevelSurface);
 
         features.add(Features::getNumColsWithHoles);
         features.add(Features::getNumRowsWithHoles);
