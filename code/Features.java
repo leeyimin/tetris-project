@@ -71,6 +71,20 @@ public class Features {
         return (double)numBlocks;
     }
 
+    public static Double getHeightAboveHoles(TestState testState){
+        int numBlocks = 0;
+
+        for (int col = 0; col < State.COLS; col++) {
+            for (int row = 0; row < testState.top[col]; row++) {
+                if (testState.field[row][col] == 0){
+                    numBlocks += testState.top[col] - 1 - row;
+                    break;
+                }
+            }
+        }
+        return (double) numBlocks;
+    }
+
     /**
      * motivation: penalize stacking over holes/ covering tall holes
      * @param testState
