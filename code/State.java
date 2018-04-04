@@ -189,13 +189,13 @@ public class State {
 	}
 	
 	// make a move based on the move index - its order in the legalMoves list
-	public void makeMove(int move) {
-		makeMove(legalMoves[nextPiece][move]);
+	public boolean makeMove(int move) {
+		return makeMove(legalMoves[nextPiece][move]);
 	}
 	
 	// make a move based on an array of orient and slot
-	public void makeMove(int[] move) {
-		makeMove(move[ORIENT],move[SLOT]);
+	public boolean makeMove(int[] move) {
+		return makeMove(move[ORIENT],move[SLOT]);
 	}
 	
 	// returns false if you lose - true otherwise

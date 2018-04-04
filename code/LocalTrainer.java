@@ -3,8 +3,8 @@ import java.util.function.*;
 
 public class LocalTrainer {
 
-    private static final int BATCH_SIZE = 50;
-    private static final double LEARNING_RATE = 0.25;
+    private static final int BATCH_SIZE = 1;
+    private static final double LEARNING_RATE = 0;
 
     private StrategyFactory strategyFactory;
     private Function<State, Integer> strategy;
@@ -74,8 +74,14 @@ public class LocalTrainer {
     private void pertubateCoefficients() {
         Random rng = new Random();
         List<Double> newCoefficients = new ArrayList<>();
-        for (Double coefficient : this.bestCoefficients) {
-            newCoefficients.add(Math.abs(coefficient + LocalTrainer.LEARNING_RATE * (rng.nextDouble() - LocalTrainer.LEARNING_RATE / 2)));
+        if (rng.nextDouble() > 0.1) {
+            for (Double coefficient : this.bestCoefficients) {
+                newCoefficients.add(Math.abs(coefficient + LocalTrainer.LEARNING_RATE * (rng.nextDouble() - LocalTrainer.LEARNING_RATE / 2)));
+            }
+        } else {
+            for (Double coefficient : this.bestCoefficients) {
+                newCoefficients.add(rng.nextDouble());
+            }
         }
         this.currCoefficients = newCoefficients;
         this.strategy = this.strategyFactory.createLookAheadStrategy(newCoefficients);
@@ -97,27 +103,28 @@ public class LocalTrainer {
            coefficients.add(0.6156312845858801);
            */
 
-        /*
-           coefficients.add(1.4282372400117123);
-           coefficients.add(9.516277725900398);
-           coefficients.add(0.13525561944365183);
-           coefficients.add(0.07368618867991161);
-           coefficients.add(4.5116824995818865);
-           coefficients.add(4.150977779792673);
-           coefficients.add(1.184726054395163);
-           coefficients.add(0.9914349168793231);
-           coefficients.add(1.1084028932492331);
-           */
+        coefficients.add(1.4282372400117123);
+        coefficients.add(9.516277725900398);
+        coefficients.add(0.13525561944365183);
+        coefficients.add(0.07368618867991161);
+        coefficients.add(4.5116824995818865);
+        coefficients.add(4.150977779792673);
+        coefficients.add(1.184726054395163);
+        coefficients.add(0.9914349168793231);
+        coefficients.add(1.1084028932492331);
 
-        coefficients.add(2.0);
-        coefficients.add(2.0);
-        coefficients.add(2.0);
-        coefficients.add(2.0);
-        coefficients.add(2.0);
-        coefficients.add(2.0);
-        coefficients.add(2.0);
-        coefficients.add(2.0);
-        coefficients.add(2.0);
+        /*
+           Random rng = new Random();
+           coefficients.add(rng.nextDouble());
+           coefficients.add(rng.nextDouble());
+           coefficients.add(rng.nextDouble());
+           coefficients.add(rng.nextDouble());
+           coefficients.add(rng.nextDouble());
+           coefficients.add(rng.nextDouble());
+           coefficients.add(rng.nextDouble());
+           coefficients.add(rng.nextDouble());
+           coefficients.add(rng.nextDouble());
+           */
 
         features.add(Features::getBumpiness);
         features.add(Features::getTotalHeight);

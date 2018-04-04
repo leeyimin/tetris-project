@@ -51,11 +51,18 @@ public class StrategyFactory {
 
     private double evaluateLookAheadCost(State state, List<Double> coefficients) {
         double cost = 0;
-        for (int move = 0; move < state.legalMoves().length; move++) {
-            State testState = state.testStateAfterMove(move);
-            cost += this.evaluateCost(testState, coefficients);
+        int numStates = 0;
+
+        for (int piece = 0; piece < State.N_PIECES; piece++) {
+            state.nextPiece = piece;
+            for (int move = 0; move < state.legalMoves().length; move++) {
+                State testState = state.testStateAfterMove(move);
+                cost += this.evaluateCost(testState, coefficients);
+                numStates++;
+            }
         }
-        return cost / state.legalMoves().length;
+
+        return cost / numStates;
     }
 
 }
