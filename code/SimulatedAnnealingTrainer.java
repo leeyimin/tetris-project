@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
 
+//Trigonometric additive cooling
+// http://what-when-how.com/artificial-intelligence/a-comparison-of-cooling-schedules-for-simulated-annealing-artificial-intelligence/
 public class SimulatedAnnealingTrainer extends Trainer {
 
     private static final int BATCH_SIZE = 100;
@@ -12,9 +14,9 @@ public class SimulatedAnnealingTrainer extends Trainer {
     private int currBatch;
     private int currRound;
     private int cumulatedRows;
-    private double currentStepSize;
-    private double stepSizeChange;
+    private double initialStepSize;
     private double stepSizeFloor;
+    private double currentStepSize;
     private int bestCumulatedRows;
     private List<Double> bestCoefficients;
 
@@ -23,9 +25,9 @@ public class SimulatedAnnealingTrainer extends Trainer {
         this.currBatch = 0;
         this.currRound = 0;
         this.cumulatedRows = 0;
-        this.currentStepSize = 5;
-        this.stepSizeChange = 0.005;
+        this.initialStepSize = 50;
         this.stepSizeFloor = 1;
+        this.currentStepSize = 50;
         this.bestCumulatedRows = 0;
         this.bestCoefficients = coefficients;
     }
@@ -37,13 +39,7 @@ public class SimulatedAnnealingTrainer extends Trainer {
         if (this.currRound % BATCH_SIZE == 0) {
             this.onBatchDone();
             this.cumulatedRows = 0;
-            if (this.currentStepSize > stepSizeFloor) {
-                //Temperature decrease
-                this.currentStepSize -= stepSizeChange * ((double)(NUM_BATCHES - currBatch) / (double)NUM_BATCHES);
-                if (this.currentStepSize < stepSizeFloor) {
-                    this.currentStepSize = stepSizeFloor;
-                }
-            }
+            this.currentStepSize = stepSizeFloor + 0.5 * (initialStepSize - stepSizeFloor) * (1 + Math.cos(currBatch * Math.PI / NUM_BATCHES));
         }
     }
 
@@ -75,7 +71,7 @@ public class SimulatedAnnealingTrainer extends Trainer {
     }
 
     public static void main(String args[]) {
-        Double[] coefficients = new Double[] {29.962215613633774, 19.319464772666812, 15.240956841509002, -1.2371753858723658, 15.596674922465308, -2.0498214208046766, 5.359734117478345, 4.4559643115714405, 9.642217009550793};
+        Double[] coefficients = new Double[] {1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00,};
 
         List<Function<TestState, Double>> features = new ArrayList<>();
         features.add(Features::getNegativeOfRowsCleared);
