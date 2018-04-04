@@ -23,9 +23,9 @@ public class SimulatedAnnealingTrainer extends Trainer {
         this.currBatch = 0;
         this.currRound = 0;
         this.cumulatedRows = 0;
-        this.currentStepSize = 10;
-        this.stepSizeChange = 4;
-        this.stepSizeFloor = 0.25;
+        this.currentStepSize = 5;
+        this.stepSizeChange = 0.005;
+        this.stepSizeFloor = 1;
         this.bestCumulatedRows = 0;
         this.bestCoefficients = coefficients;
     }
@@ -37,9 +37,12 @@ public class SimulatedAnnealingTrainer extends Trainer {
         if (this.currRound % BATCH_SIZE == 0) {
             this.onBatchDone();
             this.cumulatedRows = 0;
-            if (this.currentStepSize != stepSizeFloor) {
+            if (this.currentStepSize > stepSizeFloor) {
                 //Temperature decrease
-                this.currentStepSize -= stepSizeChange * ((BATCH_SIZE * NUM_BATCHES - currBatch + 1) / (BATCH_SIZE * NUM_BATCHES));
+                this.currentStepSize -= stepSizeChange * ((double)(NUM_BATCHES - currBatch) / (double)NUM_BATCHES);
+                if (this.currentStepSize < stepSizeFloor) {
+                    this.currentStepSize = stepSizeFloor;
+                }
             }
         }
     }
@@ -51,6 +54,7 @@ public class SimulatedAnnealingTrainer extends Trainer {
         System.out.println(" RESULT OF BATCH #" + (++currBatch));
         System.out.println("======================================");
         System.out.println("Rows cleared: " + (double) this.cumulatedRows / BATCH_SIZE);
+        System.out.println("Current step size : " +  currentStepSize);
         this.printCoefficients();
 
         // if the new coefficients are better than the best so far
@@ -71,7 +75,7 @@ public class SimulatedAnnealingTrainer extends Trainer {
     }
 
     public static void main(String args[]) {
-        Double[] coefficients = new Double[] {1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00};
+        Double[] coefficients = new Double[] {29.962215613633774, 19.319464772666812, 15.240956841509002, -1.2371753858723658, 15.596674922465308, -2.0498214208046766, 5.359734117478345, 4.4559643115714405, 9.642217009550793};
 
         List<Function<TestState, Double>> features = new ArrayList<>();
         features.add(Features::getNegativeOfRowsCleared);
