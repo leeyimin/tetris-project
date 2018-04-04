@@ -3,20 +3,23 @@ import java.util.function.*;
 
 public class GeneticTrainer {
 
-    private static final int BATCH_SIZE = 10;
-    private static final int POPULATION_SIZE = 100;
-    private static final int NEWBORN_SIZE = 20;
-    private static final int MUTANT_SIZE = 20;
-    private static final int COEFFICIENT_MEAN = 0;
-    private static final int COEFFICIENT_STDDEV = 30;
+    public static final int STARTING_MOVES = 500;
+    public static final int BATCH_SIZE = 50;
+    public static final int POPULATION_SIZE = 100;
+    public static final int NEWBORN_SIZE = 20;
+    public static final int MUTANT_SIZE = 20;
+    public static final int COEFFICIENT_MEAN = 0;
+    public static final int COEFFICIENT_STDDEV = 30;
 
     private List<Function<TestState, Double>> features;
     private List<Gene> population;
+    private int numMoves;
     private int generation;
 
     public GeneticTrainer(List<Function<TestState, Double>> features) {
         this.features = features;
         this.population = new ArrayList<>();
+        this.numMoves = STARTING_MOVES;
         this.generation = 0;
     }
 
@@ -27,12 +30,14 @@ public class GeneticTrainer {
             this.matePopulation();
             this.mutatePopulation();
             this.evolvePopulation();
+            this.updateParam();
             this.printSummary();
         }
     }
 
     private void initializePopulation() {
-        for (int i = 0; i < POPULATION_SIZE; i++) {
+        this.population.add(Gene.ultimaton());
+        for (int i = 1; i < POPULATION_SIZE; i++) {
             Gene gene = Gene.random(features.size(), COEFFICIENT_MEAN, COEFFICIENT_STDDEV);
             this.population.add(gene);
         }
@@ -63,21 +68,37 @@ public class GeneticTrainer {
         this.population = this.population.subList(0, POPULATION_SIZE);
     }
 
+    private void updateParam() {
+        double firstRowsCleared = (double) this.population.get(0).fitness / BATCH_SIZE;
+        double secondRowsCleared = (double) this.population.get(1).fitness / BATCH_SIZE;
+        double thirdRowsCleared = (double) this.population.get(2).fitness / BATCH_SIZE;
+	double theoreticalMaxRowsCleared = this.numMoves * 0.4;
+	double threshold = 0.95 * theoreticalMaxRowsCleared;
+
+	if (firstRowsCleared > threshold && secondRowsCleared > threshold && thirdRowsCleared > threshold) {
+            this.numMoves *= 2;
+        }
+    }
+
     private void evaluateGene(Gene gene) {
         int totalRowsCleared = 0;
         for (int i = 0; i < BATCH_SIZE; i++) {
-            totalRowsCleared += new Player(gene.coefficients, features).simulate();
+            totalRowsCleared += new Player(gene.coefficients, features).simulate(this.numMoves);
         }
-        gene.fitness = (double) totalRowsCleared / BATCH_SIZE;
+        gene.fitness = totalRowsCleared;
     }
 
     private void printSummary() {
         System.out.println("===========================");
         System.out.println(" RESULT OF GENERATION #" + this.generation);
         System.out.println("===========================");
+	System.out.println();
         this.population.get(0).print();
+	System.out.println();
         this.population.get(1).print();
+	System.out.println();
         this.population.get(2).print();
+	System.out.println();
     }
 
 
@@ -107,7 +128,7 @@ public class GeneticTrainer {
 class Gene implements Comparable<Gene> {
 
     public List<Double> coefficients;
-    public double fitness;
+    public int fitness;
 
     private Gene() {
         this.coefficients = new ArrayList<>();
@@ -121,6 +142,43 @@ class Gene implements Comparable<Gene> {
             double randomVal = rng.nextGaussian() * stdDev + mean;
             gene.coefficients.add(randomVal);
         }
+        return gene;
+    }
+
+    public static Gene ultimaton() {
+        Gene gene = new Gene();
+        gene.coefficients.add(  4.00);
+        gene.coefficients.add(- 1.50);
+        gene.coefficients.add(- 8.00);
+        gene.coefficients.add(  0.00);
+        gene.coefficients.add(  8.00);
+        gene.coefficients.add(  0.00);
+        gene.coefficients.add(  0.50);
+        gene.coefficients.add( 26.00);
+        gene.coefficients.add(  0.00);
+        gene.coefficients.add(  0.00);
+        gene.coefficients.add(  0.00);
+        gene.coefficients.add(  0.00);
+        gene.coefficients.add(  0.00);
+        gene.coefficients.add(  0.00);
+        gene.coefficients.add(  0.00);
+        gene.coefficients.add(  0.00);
+        gene.coefficients.add(  0.00);
+        gene.coefficients.add(  0.00);
+        gene.coefficients.add(  0.00);
+        gene.coefficients.add(  0.05);
+        gene.coefficients.add(- 1.00);
+        gene.coefficients.add(  2.00);
+        gene.coefficients.add(- 2.00);
+        gene.coefficients.add(  0.00);
+        gene.coefficients.add(  0.00);
+        gene.coefficients.add(  0.00);
+        gene.coefficients.add(  0.00);
+        gene.coefficients.add(  0.00);
+        gene.coefficients.add(  0.00);
+        gene.coefficients.add(  0.00);
+        gene.coefficients.add(  3.20);
+        gene.coefficients.add( 30.00);
         return gene;
     }
 
@@ -155,13 +213,13 @@ class Gene implements Comparable<Gene> {
         for (Double coefficient : this.coefficients) {
             output.append(String.format("%.2f, ", coefficient));
         }
-        System.out.println("Fitness: " + String.format("%.2f", this.fitness));
+        System.out.println("Lines: " + String.format("%.2f", (double) this.fitness / GeneticTrainer.BATCH_SIZE));
         System.out.println(output.delete(output.length() - 2, output.length()).toString());
     }
 
     @Override
     public int compareTo(Gene gene) {
-        return (int) (gene.fitness - this.fitness);
+        return gene.fitness - this.fitness;
     }
 
 }
