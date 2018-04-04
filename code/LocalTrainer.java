@@ -1,26 +1,39 @@
 import java.util.*;
 import java.util.function.*;
 
-public class LocalTrainer extends Trainer {
+public class LocalTrainer {
 
-    private static final int BATCH_SIZE = 100;
-    private static final int NUM_BATCHES = 100000;
+    private static final int BATCH_SIZE = 10;
+    private static final int STARTING_MOVES = 1000;
+    private static final double STARTING_STEPS = 2.0;
 
     private int currBatch;
     private int currRound;
     private int cumulatedRows;
-    private double stepSize;
     private int bestCumulatedRows; 
+    private int maxMoves;
+    private double stepSize;
     private List<Double> bestCoefficients;
+    private List<Double> coefficients;
+    private List<Function<TestState, Double>> features;
 
     public LocalTrainer(List<Double> coefficients, List<Function<TestState, Double>> features) {
-        super(BATCH_SIZE * NUM_BATCHES, coefficients, features);
         this.currBatch = 0;
         this.currRound = 0;
         this.cumulatedRows = 0;
-        this.stepSize = 0.25;
         this.bestCumulatedRows = 0;
+        this.maxMoves = STARTING_MOVES;
+        this.stepSize = STARTING_STEPS;
         this.bestCoefficients = coefficients;
+        this.coefficients = coefficients;
+        this.features = features;
+    }
+
+    public void train() {
+        while (true) {
+            int rowsCleared = new Player(coefficients, features).simulate(this.maxMoves);
+            this.onSimulateDone(rowsCleared);
+        }
     }
 
     public void onSimulateDone(int rowsCleared) {
@@ -34,12 +47,16 @@ public class LocalTrainer extends Trainer {
     }
 
     private void onBatchDone() {
+        // compute row count
+        double averageRows = (double) this.cumulatedRows / BATCH_SIZE;
+        double theoreticalMax = this.maxMoves * 0.4;
+
         // print the rows cleared
         System.out.println();
         System.out.println("======================================");
         System.out.println(" RESULT OF BATCH #" + (++currBatch));
         System.out.println("======================================");
-        System.out.println("Rows cleared: " + (double) this.cumulatedRows / BATCH_SIZE);
+        System.out.println("Rows cleared: " + averageRows + "/" + theoreticalMax);
         this.printCoefficients();
 
         // if the new coefficients are better than the best so far
@@ -49,49 +66,86 @@ public class LocalTrainer extends Trainer {
             this.bestCoefficients = this.coefficients;
         }
 
+        // if the rows cleared are more than theoretical limit,
+        // increase the limit
+        if (averageRows > 0.95 * theoreticalMax) {
+            this.maxMoves *= 2;
+            this.stepSize *= 0.9;
+            return;
+        }
+
         // pertubate the coefficients by a little every batch
         Random rng = new Random();
         List<Double> newCoefficients = new ArrayList<>();
         for (Double coefficient : this.bestCoefficients) {
-            newCoefficients.add(Math.abs(coefficient + this.stepSize * (rng.nextDouble() - this.stepSize / 2)));
+            newCoefficients.add(coefficient + 2 * this.stepSize * (rng.nextDouble() - 0.5));
         }
         this.coefficients = newCoefficients;
     }
 
-    public static void main(String args[]) {
-        Double[] coefficients = new Double[] { 2.8076482878262876, 9.52205211768384, 1.1654082765356404, 0.11757694915822758, 
-            3.227936651873784, 4.127918804476838, 3.6275198005155755, 1.332574515842945, 1.948833014274156, 1.844853394469137,
-            3.1667299474927315, 0.9287248528714973, 0.3974205294020895, 1.2099788795849369, 0.5851998600926502, 4.596407295055194,
-            3.3174993445272625, 2.7003736997933534, 3.161659677428588, 3.0375575590367485, 4.410247099265778, 3.7599910254579814,
-            2.9479913080723645, 1.6601874447011036 };
+    public void printCoefficients() {
+        StringBuilder output = new StringBuilder();
 
+        for (Double coefficient : coefficients) {
+            output.append(String.format("%.2f, ", coefficient));
+        }
+
+        System.out.println(output.delete(output.length() - 2, output.length()).toString());
+    }
+
+    public static void main(String args[]) {
         List<Function<TestState, Double>> features = new ArrayList<>();
-        features.add(Features::getBumpiness);
-        features.add(Features::getTotalHeight);
+        features.add(Features::getNegativeOfRowsCleared);
         features.add(Features::getMaxHeight);
         features.add(Features::getNumHoles);
-        features.add(Features::getBlocksAboveHoles);
-        features.add(Features::getNumOfSignificantTopDifference);
+        features.add(Features::getSumOfDepthOfHoles);
         features.add(Features::getMeanAbsoluteDeviationOfTop);
+        features.add(Features::getBlocksAboveHoles);
+        features.add(Features::getSignificantHoleAndTopDifference);
+        features.add(Features::getNumOfSignificantTopDifference);
         features.add(Features::hasLevelSurface);
-        features.add(Features::hasRightStep);
-        features.add(Features::hasLeftStep);
-        features.add(Features::getNegativeOfRowsCleared);
-        features.add(Features::hasPossibleInevitableDeathNextPiece);
         features.add(Features::getNumColsWithHoles);
         features.add(Features::getNumRowsWithHoles);
-        features.add(Features::getFirstColHeight);
-        features.add(Features::getSecondColHeight);
-        features.add(Features::getThirdColHeight);
-        features.add(Features::getFourthColHeight);
-        features.add(Features::getFifthColHeight);
-        features.add(Features::getSixthColHeight);
-        features.add(Features::getSeventhColHeight);
-        features.add(Features::getEighthColHeight);
-        features.add(Features::getNinthColHeight);
-        features.add(Features::getTenthColHeight);
+        Features.addAllColHeightFeatures(features);
+        Features.addAllHeightDiffFeatures(features);
+        features.add(Features::getBumpiness);
+        features.add(Features::getTotalHeight);
 
-        new LocalTrainer(Arrays.asList(coefficients), features).train();
+        List<Double> coefficients = new ArrayList<>();
+        coefficients.add(  4.00);
+        coefficients.add(- 1.50);
+        coefficients.add(- 8.00);
+        coefficients.add(  0.00);
+        coefficients.add(  8.00);
+        coefficients.add(  0.00);
+        coefficients.add(  0.50);
+        coefficients.add( 26.00);
+        coefficients.add(  0.00);
+        coefficients.add(  0.00);
+        coefficients.add(  0.00);
+        coefficients.add(  0.00);
+        coefficients.add(  0.00);
+        coefficients.add(  0.00);
+        coefficients.add(  0.00);
+        coefficients.add(  0.00);
+        coefficients.add(  0.00);
+        coefficients.add(  0.00);
+        coefficients.add(  0.00);
+        coefficients.add(  0.05);
+        coefficients.add(- 1.00);
+        coefficients.add(  2.00);
+        coefficients.add(- 2.00);
+        coefficients.add(  0.00);
+        coefficients.add(  0.00);
+        coefficients.add(  0.00);
+        coefficients.add(  0.00);
+        coefficients.add(  0.00);
+        coefficients.add(  0.00);
+        coefficients.add(  0.00);
+        coefficients.add(  3.20);
+        coefficients.add( 30.00);
+
+        new LocalTrainer(coefficients, features).train();
     }
 
 }
