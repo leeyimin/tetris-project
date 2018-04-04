@@ -25,8 +25,8 @@ public class SimulatedAnnealingTrainer extends Trainer {
         this.currBatch = 0;
         this.currRound = 0;
         this.cumulatedRows = 0;
-        this.initialStepSize = 50;
-        this.stepSizeFloor = 1;
+        this.initialStepSize = 5;
+        this.stepSizeFloor = 0.05;
         this.currentStepSize = 50;
         this.bestCumulatedRows = 0;
         this.bestCoefficients = coefficients;
