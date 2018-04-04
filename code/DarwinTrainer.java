@@ -82,7 +82,7 @@ public class DarwinTrainer extends Trainer {
         List<Double> secondCoefficient = playerCoefficients.get(resultPair[1]);
 
         ArrayList<Double> childCoefficient;
-        ArrayList<List<Double>> newGeneration = new ArrayList<List<Double>>();
+        ArrayList<List<Double>> newGeneration = new ArrayList<>();
 
         int parentCoin, mutationDice;
 
@@ -119,7 +119,7 @@ public class DarwinTrainer extends Trainer {
             childCoefficient = new ArrayList<Double>();
             for (int j = 0; j < bestCoefficient.size(); j++) {
                 parentCoin = ThreadLocalRandom.current().nextInt(0, 2);
-                mutationDice = ThreadLocalRandom.current().nextInt(0, 4);
+                mutationDice = ThreadLocalRandom.current().nextInt(0, 3);
 
                 if (parentCoin == 0) {
 
