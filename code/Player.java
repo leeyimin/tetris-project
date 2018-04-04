@@ -1,3 +1,5 @@
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 import java.util.function.Function;
 
@@ -7,6 +9,9 @@ public class Player {
     protected static final boolean RENDER_BOARD = false;
     protected static final boolean SHOW_DEATH_STATE = false;
     protected static final int MAX_NUM_MOVES = Integer.MAX_VALUE;
+    protected static final boolean WRITE_LOG = false;
+
+    protected static final int LOG_CYCLE = 100;
 
     private TFrame frame;
 
@@ -14,10 +19,12 @@ public class Player {
     private List<Function<TestState, Double>> features;
 
     private int numMoves = 0;
+    private long startTime;
 
     public Player(List<Double> coefficients, List<Function<TestState, Double>> features) {
         this.coefficients = coefficients;
         this.features = features;
+        startTime = System.currentTimeMillis();
     }
 
     public int pickMove(State currentState, int[][] legalMoves) {
@@ -64,6 +71,7 @@ public class Player {
             numMoves++;
             state.makeMove(this.pickMove(state, state.legalMoves()));
             updateBoard(state);
+            writeLog(state);
         }
 
         showDeathState(state);
@@ -73,6 +81,21 @@ public class Player {
         }
 
         return state.getRowsCleared();
+    }
+
+    private void writeLog(State state){
+        if (WRITE_LOG && numMoves % LOG_CYCLE == 0) {
+            TestState tState = new TestState(state.getField(), state.getTop(), 0);
+            try {
+                String filename = "data/player" + startTime + ".csv";
+                FileWriter fw = new FileWriter(filename, true); //the true will append the new data
+                fw.write(numMoves + ", " + Features.getTotalHeight(tState) + ", " + Features.getMaxHeight(tState) + ", " + Features.getNumHoles(tState));
+                fw.write("\n");
+                fw.close();
+            } catch (IOException ioe) {
+                System.err.println("IOException: " + ioe.getMessage());
+            }
+        }
     }
 
     private void updateBoard(State state) {
