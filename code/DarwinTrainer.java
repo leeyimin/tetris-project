@@ -182,6 +182,12 @@ public class DarwinTrainer extends Trainer {
             newGeneration.add(childCoefficient);
         }
 
+        /**
+         *  Adding back the previous 2 champions.
+         */
+        newGeneration.add(bestCoefficient);
+        newGeneration.add(secondCoefficient);
+
         return newGeneration;
     }
 
