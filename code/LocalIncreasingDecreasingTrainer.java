@@ -45,7 +45,8 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
     long lastUpdate;
     long interval = 15 * 60 * 1000;
 
-    boolean alternatingFlag;
+    static final boolean ALTERNATE_FLAG =false;
+    int incrementNum;
 
 
     int currentCoefficient;
@@ -68,6 +69,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         startTime = System.currentTimeMillis();
         lastUpdate = startTime;
         rSum = 0;
+        incrementNum = 0;
         try {
             String filename = folder + "LIDtrain" + startTime + ".txt";
             FileWriter fw = new FileWriter(filename, true); //the true will append the new data
@@ -182,20 +184,36 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         increment = direction * STARTING_INCREMENT;
 
         if (bestResult >= 0.95 * (moves * 4 / 10) * iterations) {
-            if(alternatingFlag){
-                int prevMoves = moves;
-                moves += moveIncrement;
-                moveIncrement = prevMoves;
+            if(ALTERNATE_FLAG){
+                if(incrementNum == 0){
+                    incrementIterations();
+                }
+                else{
+                    incrementMoves();
+                }
+                incrementNum = (incrementNum+1)%2;
             }
             else{
-                iterations += IT_INCREMENT;
-                resultsInRound = new int[iterations];
+                incrementMoves();
+                incrementIterations();
+
             }
-            alternatingFlag = !alternatingFlag;
+
             return true;
         }
 
         return false;
+    }
+
+    private void incrementMoves(){
+        int prevMoves = moves;
+        moves += moveIncrement;
+        moveIncrement = prevMoves;
+    }
+
+    private void incrementIterations(){
+        iterations += IT_INCREMENT;
+        resultsInRound = new int[iterations];
     }
 
     private void printLog(boolean increaseLines) {
@@ -296,8 +314,8 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         features.add(Features::getNumColsWithHoles);
         features.add(Features::getNumRowsWithHoles);
 
-//        Features.addAllColHeightFeatures(features);
-//        Features.addAllHeightDiffFeatures(features);
+        Features.addAllColHeightFeatures(features);
+        Features.addAllHeightDiffFeatures(features);
 
         initialiseCoefficients(coefficients, features.size());
 
