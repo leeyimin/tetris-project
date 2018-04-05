@@ -9,7 +9,7 @@ import java.util.function.Function;
 public class SimulatedAnnealingTrainer extends Trainer {
 
     private static final int BATCH_SIZE = 100;
-    private static final int NUM_BATCHES = 100000;
+    private static final int NUM_BATCHES = 10000;
 
     private int currBatch;
     private int currRound;
@@ -61,6 +61,7 @@ public class SimulatedAnnealingTrainer extends Trainer {
         }
 
         System.out.println("Best so far: " + (double) this.bestCumulatedRows / BATCH_SIZE);
+        this.printBestCoefficients();
 
         // pertubate the coefficients by a little every batch
         Random rng = new Random();
@@ -78,7 +79,7 @@ public class SimulatedAnnealingTrainer extends Trainer {
             System.out.println("======================================");
             System.out.println("Rows cleared: " + (double) this.bestCumulatedRows / BATCH_SIZE);
             System.out.println("--------------------------------------");
-            this.printCoefficients();
+            this.printBestCoefficients();
             System.out.println("--------------------------------------");
         }
     }
@@ -112,4 +113,12 @@ public class SimulatedAnnealingTrainer extends Trainer {
         for(int i = 0; i < size; i++) coefficients.add(0.0);
     }
 
+    public void printBestCoefficients() {
+        StringBuilder output = new StringBuilder();
+        output.append("Best Coefficients : \n");
+        for (Double coefficient : bestCoefficients) {
+            output.append(coefficient + ", ");
+        }
+        System.out.println(output.delete(output.length() - 2, output.length()).toString());
+    }
 }
