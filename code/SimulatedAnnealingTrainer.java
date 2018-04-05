@@ -44,14 +44,14 @@ public class SimulatedAnnealingTrainer extends Trainer {
     }
 
     private void onBatchDone() {
+
         // print the rows cleared
         System.out.println();
         System.out.println("======================================");
         System.out.println(" RESULT OF BATCH #" + (++currBatch));
         System.out.println("======================================");
-        System.out.println("Rows cleared: " + (double) this.cumulatedRows / BATCH_SIZE);
         System.out.println("Current step size : " +  currentStepSize);
-        this.printCoefficients();
+        System.out.println("Rows cleared: " + (double) this.cumulatedRows / BATCH_SIZE);
 
         // if the new coefficients are better than the best so far
         // update the best coefficients
@@ -59,6 +59,8 @@ public class SimulatedAnnealingTrainer extends Trainer {
             this.bestCumulatedRows = this.cumulatedRows;
             this.bestCoefficients = this.coefficients;
         }
+
+        System.out.println("Best so far: " + (double) this.bestCumulatedRows / BATCH_SIZE);
 
         // pertubate the coefficients by a little every batch
         Random rng = new Random();
@@ -68,6 +70,17 @@ public class SimulatedAnnealingTrainer extends Trainer {
             newCoefficients.add(coefficient + randomSign * (this.currentStepSize * rng.nextDouble()));
         }
         this.coefficients = newCoefficients;
+
+        if (this.currBatch == NUM_BATCHES) {
+            System.out.println();
+            System.out.println("======================================");
+            System.out.println(" RESULT OF KING BATCH");
+            System.out.println("======================================");
+            System.out.println("Rows cleared: " + (double) this.bestCumulatedRows / BATCH_SIZE);
+            System.out.println("--------------------------------------");
+            this.printCoefficients();
+            System.out.println("--------------------------------------");
+        }
     }
 
     public static void main(String args[]) {
