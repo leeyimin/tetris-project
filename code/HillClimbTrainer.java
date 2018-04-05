@@ -1,86 +1,78 @@
 import java.util.*;
 import java.util.function.*;
 
-public class LocalTrainer {
+public class HillClimbTrainer {
 
-    private static final int BATCH_SIZE = 10;
-    private static final int STARTING_MOVES = 1000;
-    private static final double STARTING_STEPS = 2.0;
+    private static final int BATCH_SIZE = 100;
+    private static final double STARTING_STEPS = 0.5;
 
-    private int currBatch;
-    private int currRound;
-    private int cumulatedRows;
-    private int bestCumulatedRows; 
-    private int maxMoves;
+    private int currDimension;
     private double stepSize;
-    private List<Double> bestCoefficients;
     private List<Double> coefficients;
     private List<Function<TestState, Double>> features;
 
-    public LocalTrainer(List<Double> coefficients, List<Function<TestState, Double>> features) {
-        this.currBatch = 0;
-        this.currRound = 0;
-        this.cumulatedRows = 0;
-        this.bestCumulatedRows = 0;
-        this.maxMoves = STARTING_MOVES;
+    public HillClimbTrainer(List<Double> coefficients, List<Function<TestState, Double>> features) {
+        this.currDimension = 0;
         this.stepSize = STARTING_STEPS;
-        this.bestCoefficients = coefficients;
         this.coefficients = coefficients;
         this.features = features;
     }
 
     public void train() {
         while (true) {
-            int rowsCleared = new Player(coefficients, features).simulate(this.maxMoves);
-            this.onSimulateDone(rowsCleared);
+            this.climb();
+            this.currDimension = (this.currDimension + 1) % this.features.size();
+            if (this.currDimension == 0) {
+                this.stepSize /= 2;
+            }
         }
     }
 
-    public void onSimulateDone(int rowsCleared) {
-        this.currRound++;
-        this.cumulatedRows += rowsCleared;
+    private void climb() {
+        int direction = this.getDirection();
+        double currDimensionCoefficient = this.coefficients.get(this.currDimension);
+        double prevScore = this.evaluate(this.coefficients);
 
-        if (this.currRound % BATCH_SIZE == 0) {
-            this.onBatchDone();
-            this.cumulatedRows = 0;
+        while (true) {
+            currDimensionCoefficient += this.stepSize * direction;
+            this.coefficients.set(this.currDimension, currDimensionCoefficient);
+            double score = this.evaluate(this.coefficients);
+
+            if (score < prevScore) {
+                currDimensionCoefficient -= this.stepSize * direction;
+                this.coefficients.set(this.currDimension, currDimensionCoefficient);
+                break;
+            }
+
+            this.printSummary(score);
+            prevScore = score;
         }
     }
 
-    private void onBatchDone() {
-        // compute row count
-        double averageRows = (double) this.cumulatedRows / BATCH_SIZE;
-        double theoreticalMax = this.maxMoves * 0.4;
+    private int getDirection() {
+        List<Double> testCoefficients = new ArrayList<>(this.coefficients);
+        double currDimensionValue = this.coefficients.get(this.currDimension);
+        testCoefficients.set(this.currDimension, currDimensionValue + this.stepSize * 2);
+        double positiveScore = this.evaluate(testCoefficients);
+        testCoefficients.set(this.currDimension, currDimensionValue - this.stepSize * 2);
+        double negativeScore = this.evaluate(testCoefficients);
+        return positiveScore > negativeScore ? 1 : 0;
+    }
 
-        // print the rows cleared
+    private double evaluate(List<Double> coefficients) {
+        int totalRowsCleared = 0;
+        for (int i = 0; i < BATCH_SIZE; i++) {
+            totalRowsCleared += new Player(coefficients, this.features).simulate();
+        }
+        return (double) totalRowsCleared / BATCH_SIZE;
+    }
+        
+    private void printSummary(double score) {
         System.out.println();
-        System.out.println("======================================");
-        System.out.println(" RESULT OF BATCH #" + (++currBatch));
-        System.out.println("======================================");
-        System.out.println("Rows cleared: " + averageRows + "/" + theoreticalMax);
+        System.out.println("Dimension : " + this.currDimension);
+        System.out.println("Step Size : " + this.stepSize);
+        System.out.println("Score     : " + score);
         this.printCoefficients();
-
-        // if the new coefficients are better than the best so far
-        // update the best coefficients
-        if (this.bestCumulatedRows < this.cumulatedRows) {
-            this.bestCumulatedRows = this.cumulatedRows;
-            this.bestCoefficients = this.coefficients;
-        }
-
-        // if the rows cleared are more than theoretical limit,
-        // increase the limit
-        if (averageRows > 0.95 * theoreticalMax) {
-            this.maxMoves *= 2;
-            this.stepSize *= 0.9;
-            return;
-        }
-
-        // pertubate the coefficients by a little every batch
-        Random rng = new Random();
-        List<Double> newCoefficients = new ArrayList<>();
-        for (Double coefficient : this.bestCoefficients) {
-            newCoefficients.add(coefficient + 2 * this.stepSize * (rng.nextDouble() - 0.5));
-        }
-        this.coefficients = newCoefficients;
     }
 
     public void printCoefficients() {
@@ -112,6 +104,11 @@ public class LocalTrainer {
         features.add(Features::getTotalHeight);
 
         List<Double> coefficients = new ArrayList<>();
+        for (int i = 0; i < features.size(); i++) {
+            coefficients.add(0.00);
+        }
+
+        /*
         coefficients.add(  4.00);
         coefficients.add(- 1.50);
         coefficients.add(- 8.00);
@@ -144,8 +141,9 @@ public class LocalTrainer {
         coefficients.add(  0.00);
         coefficients.add(  3.20);
         coefficients.add( 30.00);
+        */
 
-        new LocalTrainer(coefficients, features).train();
+        new HillClimbTrainer(coefficients, features).train();
     }
 
 }

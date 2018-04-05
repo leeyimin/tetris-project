@@ -9,7 +9,7 @@ public class GeneticTrainer {
     public static final int NEWBORN_SIZE = 20;
     public static final int MUTANT_SIZE = 20;
     public static final int COEFFICIENT_MEAN = 0;
-    public static final int COEFFICIENT_STDDEV = 30;
+    public static final int COEFFICIENT_STDDEV = 10;
 
     private List<Function<TestState, Double>> features;
     private List<Gene> population;
@@ -36,8 +36,7 @@ public class GeneticTrainer {
     }
 
     private void initializePopulation() {
-        this.population.add(Gene.ultimaton());
-        for (int i = 1; i < POPULATION_SIZE; i++) {
+        for (int i = 0; i < POPULATION_SIZE; i++) {
             Gene gene = Gene.random(features.size(), COEFFICIENT_MEAN, COEFFICIENT_STDDEV);
             this.population.add(gene);
         }
@@ -142,43 +141,6 @@ class Gene implements Comparable<Gene> {
             double randomVal = rng.nextGaussian() * stdDev + mean;
             gene.coefficients.add(randomVal);
         }
-        return gene;
-    }
-
-    public static Gene ultimaton() {
-        Gene gene = new Gene();
-        gene.coefficients.add(  4.00);
-        gene.coefficients.add(- 1.50);
-        gene.coefficients.add(- 8.00);
-        gene.coefficients.add(  0.00);
-        gene.coefficients.add(  8.00);
-        gene.coefficients.add(  0.00);
-        gene.coefficients.add(  0.50);
-        gene.coefficients.add( 26.00);
-        gene.coefficients.add(  0.00);
-        gene.coefficients.add(  0.00);
-        gene.coefficients.add(  0.00);
-        gene.coefficients.add(  0.00);
-        gene.coefficients.add(  0.00);
-        gene.coefficients.add(  0.00);
-        gene.coefficients.add(  0.00);
-        gene.coefficients.add(  0.00);
-        gene.coefficients.add(  0.00);
-        gene.coefficients.add(  0.00);
-        gene.coefficients.add(  0.00);
-        gene.coefficients.add(  0.05);
-        gene.coefficients.add(- 1.00);
-        gene.coefficients.add(  2.00);
-        gene.coefficients.add(- 2.00);
-        gene.coefficients.add(  0.00);
-        gene.coefficients.add(  0.00);
-        gene.coefficients.add(  0.00);
-        gene.coefficients.add(  0.00);
-        gene.coefficients.add(  0.00);
-        gene.coefficients.add(  0.00);
-        gene.coefficients.add(  0.00);
-        gene.coefficients.add(  3.20);
-        gene.coefficients.add( 30.00);
         return gene;
     }
 
