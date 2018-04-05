@@ -20,10 +20,12 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
     static final double STARTING_INCREMENT = 32;
     static final double EPSILON = 0.5;
     static final double factor = 4.0; // multiply increment by 1/factor after one iteration of the features
-    static final int MOVE_FACTOR = 1;
-    static final int IT_FACTOR = 2;
+    static final int MOVE_INCREMENT = 1000;
+    static final int IT_INCREMENT = 50;
     static final int STARTING_MOVES = 1000;
     static final boolean DECREASE_FLAG = true;
+
+    static final String folder = "data/local-increasing-trainer-v1/";
 
     int bestResult = Integer.MIN_VALUE;
     List<Double> bestCoefficient;
@@ -40,6 +42,8 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
     long startTime;
     long lastUpdate;
     long interval = 15 * 60 * 1000;
+
+    boolean alternatingFlag;
 
 
     int currentCoefficient;
@@ -176,9 +180,14 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         increment = direction * STARTING_INCREMENT;
 
         if (bestResult >= 0.95 * (moves * 4 / 10) * iterations) {
-            moves = 2000;
-            iterations *= IT_FACTOR;
-            resultsInRound = new int[iterations];
+            if(alternatingFlag){
+                moves += MOVE_INCREMENT;
+            }
+            else{
+                iterations += IT_INCREMENT;
+                resultsInRound = new int[iterations];
+            }
+            alternatingFlag = !alternatingFlag;
             return true;
         }
 
@@ -190,7 +199,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         if (System.currentTimeMillis() - lastUpdate > interval || increaseLines) {
             lastUpdate = System.currentTimeMillis();
             try {
-                String filename = "LIDtrain" + startTime + ".txt";
+                String filename = folder + "LIDtrain" + startTime + ".txt";
                 FileWriter fw = new FileWriter(filename, true); //the true will append the new data
 
                 if (increaseLines) {
