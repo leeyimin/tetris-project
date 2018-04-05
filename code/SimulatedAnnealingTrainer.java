@@ -25,9 +25,9 @@ public class SimulatedAnnealingTrainer extends Trainer {
         this.currBatch = 0;
         this.currRound = 0;
         this.cumulatedRows = 0;
-        this.initialStepSize = 5;
-        this.stepSizeFloor = 0.05;
-        this.currentStepSize = 50;
+        this.initialStepSize = 2.00;
+        this.stepSizeFloor = 0.00005;
+        this.currentStepSize = initialStepSize;
         this.bestCumulatedRows = 0;
         this.bestCoefficients = coefficients;
     }
@@ -71,7 +71,7 @@ public class SimulatedAnnealingTrainer extends Trainer {
     }
 
     public static void main(String args[]) {
-        Double[] coefficients = new Double[] {1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00,};
+        List<Double> coefficients = new ArrayList<>();
 
         List<Function<TestState, Double>> features = new ArrayList<>();
         features.add(Features::getNegativeOfRowsCleared);
@@ -83,8 +83,20 @@ public class SimulatedAnnealingTrainer extends Trainer {
         features.add(Features::getSignificantHoleAndTopDifference);
         features.add(Features::getNumOfSignificantTopDifference);
         features.add(Features::hasLevelSurface);
+        features.add(Features::getNumColsWithHoles);
+        features.add(Features::getNumRowsWithHoles);
+        features.add(Features::getBumpiness);
+        features.add(Features::getTotalHeight);
+        Features.addAllColHeightFeatures(features);
+        Features.addAllHeightDiffFeatures(features);
 
-        new SimulatedAnnealingTrainer(Arrays.asList(coefficients), features).train();
+        initialiseCoefficients(coefficients, features.size());
+
+        new SimulatedAnnealingTrainer(coefficients, features).train();
+    }
+
+    public static void initialiseCoefficients(List<Double> coefficients, int size){
+        for(int i = 0; i < size; i++) coefficients.add(0.0);
     }
 
 }
