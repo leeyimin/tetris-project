@@ -20,8 +20,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
     static final double STARTING_INCREMENT = 32;
     static final double EPSILON = 0.5;
     static final double factor = 4.0; // multiply increment by 1/factor after one iteration of the features
-    static final int MOVE_INCREMENT = 1000;
-    static final int IT_INCREMENT = 50;
+    static final int IT_INCREMENT = 10;
     static final int STARTING_MOVES = 1000;
     static final boolean DECREASE_FLAG = true;
 
@@ -32,9 +31,12 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
     int rounds;
     double increment;
     int[] resultsInRound;
-    int rSum = 0;
+    int rSum;
     int direction;
     int order[];
+
+
+    int moveIncrement = 1000;
 
     int moves;
     int iterations;
@@ -67,7 +69,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         lastUpdate = startTime;
         rSum = 0;
         try {
-            String filename = "LIDtrain" + startTime + ".txt";
+            String filename = folder + "LIDtrain" + startTime + ".txt";
             FileWriter fw = new FileWriter(filename, true); //the true will append the new data
             fw.write("iterations: " + iterations + "\n");
             fw.write("max moves: " + moves + "\n");
@@ -181,7 +183,9 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
 
         if (bestResult >= 0.95 * (moves * 4 / 10) * iterations) {
             if(alternatingFlag){
-                moves += MOVE_INCREMENT;
+                int prevMoves = moves;
+                moves += moveIncrement;
+                moveIncrement = prevMoves;
             }
             else{
                 iterations += IT_INCREMENT;
@@ -292,8 +296,8 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         features.add(Features::getNumColsWithHoles);
         features.add(Features::getNumRowsWithHoles);
 
-        Features.addAllColHeightFeatures(features);
-        Features.addAllHeightDiffFeatures(features);
+//        Features.addAllColHeightFeatures(features);
+//        Features.addAllHeightDiffFeatures(features);
 
         initialiseCoefficients(coefficients, features.size());
 
