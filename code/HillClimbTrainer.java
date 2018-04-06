@@ -3,33 +3,49 @@ import java.util.function.*;
 
 public class HillClimbTrainer {
 
-    private static final int BATCH_SIZE = 100;
-    private static final double STARTING_STEPS = 0.5;
+    private static final int BATCH_SIZE = 50;
+    private static final int STARTING_MOVES = 1000;
+    private static final double THRESHOLD_MOVES = 0.95;
+    private static final double STARTING_STEPS = 10.0;
+    private static final double DECAY_STEPS = 1.1;
 
     private int currDimension;
+    private int numBatches;
+    private int numMoves;
     private double stepSize;
     private List<Double> coefficients;
     private List<Function<TestState, Double>> features;
 
     public HillClimbTrainer(List<Double> coefficients, List<Function<TestState, Double>> features) {
         this.currDimension = 0;
+        this.numBatches = -1;
+        this.numMoves = STARTING_MOVES;
         this.stepSize = STARTING_STEPS;
         this.coefficients = coefficients;
         this.features = features;
     }
 
-    public void train() {
-        while (true) {
+    public HillClimbTrainer(List<Double> coefficients, List<Function<TestState, Double>> features, int numBatches) {
+        this(coefficients, features);
+        this.numBatches = numBatches;
+    }
+
+    public List<Double> train() {
+        while (this.numBatches != 0) {
             this.climb();
             this.currDimension = (this.currDimension + 1) % this.features.size();
             if (this.currDimension == 0) {
-                this.stepSize /= 2;
+                this.stepSize /= DECAY_STEPS;
             }
+            if (this.numBatches > 0) this.numBatches--;
         }
+        return this.coefficients;
     }
 
     private void climb() {
         int direction = this.getDirection();
+        if (direction == 0) return;
+
         double currDimensionCoefficient = this.coefficients.get(this.currDimension);
         double prevScore = this.evaluate(this.coefficients);
 
@@ -52,25 +68,38 @@ public class HillClimbTrainer {
     private int getDirection() {
         List<Double> testCoefficients = new ArrayList<>(this.coefficients);
         double currDimensionValue = this.coefficients.get(this.currDimension);
-        testCoefficients.set(this.currDimension, currDimensionValue + this.stepSize * 2);
+
+        double neutralScore = this.evaluate(testCoefficients);
+        testCoefficients.set(this.currDimension, currDimensionValue + this.stepSize);
         double positiveScore = this.evaluate(testCoefficients);
-        testCoefficients.set(this.currDimension, currDimensionValue - this.stepSize * 2);
+        testCoefficients.set(this.currDimension, currDimensionValue - this.stepSize);
         double negativeScore = this.evaluate(testCoefficients);
-        return positiveScore > negativeScore ? 1 : 0;
+
+        if (neutralScore > positiveScore && neutralScore > negativeScore) return 0; 
+        return positiveScore > negativeScore ? 1 : -1;
     }
 
     private double evaluate(List<Double> coefficients) {
         int totalRowsCleared = 0;
         for (int i = 0; i < BATCH_SIZE; i++) {
-            totalRowsCleared += new Player(coefficients, this.features).simulate();
+            totalRowsCleared += new Player(coefficients, this.features).simulate(this.numMoves);
         }
-        return (double) totalRowsCleared / BATCH_SIZE;
+
+        double averageRowsCleared = (double) totalRowsCleared / BATCH_SIZE;
+        double maxRowsCleared = this.numMoves * 0.4;
+
+        if (averageRowsCleared > THRESHOLD_MOVES * maxRowsCleared) {
+            this.numMoves *= 2;
+        }
+
+        return averageRowsCleared;
     }
         
     private void printSummary(double score) {
         System.out.println();
+        if (this.numBatches > 0) System.out.println("Batch Num : " + this.numBatches);
         System.out.println("Dimension : " + this.currDimension);
-        System.out.println("Step Size : " + this.stepSize);
+        System.out.println("Step Size : " + String.format("%.4f", this.stepSize));
         System.out.println("Score     : " + score);
         this.printCoefficients();
     }
@@ -87,61 +116,12 @@ public class HillClimbTrainer {
 
     public static void main(String args[]) {
         List<Function<TestState, Double>> features = new ArrayList<>();
-        features.add(Features::getNegativeOfRowsCleared);
-        features.add(Features::getMaxHeight);
-        features.add(Features::getNumHoles);
-        features.add(Features::getSumOfDepthOfHoles);
-        features.add(Features::getMeanAbsoluteDeviationOfTop);
-        features.add(Features::getBlocksAboveHoles);
-        features.add(Features::getSignificantHoleAndTopDifference);
-        features.add(Features::getNumOfSignificantTopDifference);
-        features.add(Features::hasLevelSurface);
-        features.add(Features::getNumColsWithHoles);
-        features.add(Features::getNumRowsWithHoles);
-        Features.addAllColHeightFeatures(features);
-        Features.addAllHeightDiffFeatures(features);
-        features.add(Features::getBumpiness);
-        features.add(Features::getTotalHeight);
+        Features.addAllFeatures(features);
 
         List<Double> coefficients = new ArrayList<>();
         for (int i = 0; i < features.size(); i++) {
             coefficients.add(0.00);
         }
-
-        /*
-        coefficients.add(  4.00);
-        coefficients.add(- 1.50);
-        coefficients.add(- 8.00);
-        coefficients.add(  0.00);
-        coefficients.add(  8.00);
-        coefficients.add(  0.00);
-        coefficients.add(  0.50);
-        coefficients.add( 26.00);
-        coefficients.add(  0.00);
-        coefficients.add(  0.00);
-        coefficients.add(  0.00);
-        coefficients.add(  0.00);
-        coefficients.add(  0.00);
-        coefficients.add(  0.00);
-        coefficients.add(  0.00);
-        coefficients.add(  0.00);
-        coefficients.add(  0.00);
-        coefficients.add(  0.00);
-        coefficients.add(  0.00);
-        coefficients.add(  0.05);
-        coefficients.add(- 1.00);
-        coefficients.add(  2.00);
-        coefficients.add(- 2.00);
-        coefficients.add(  0.00);
-        coefficients.add(  0.00);
-        coefficients.add(  0.00);
-        coefficients.add(  0.00);
-        coefficients.add(  0.00);
-        coefficients.add(  0.00);
-        coefficients.add(  0.00);
-        coefficients.add(  3.20);
-        coefficients.add( 30.00);
-        */
 
         new HillClimbTrainer(coefficients, features).train();
     }
