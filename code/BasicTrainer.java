@@ -1,19 +1,30 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
 public class BasicTrainer extends Trainer {
 
+    final static int ITERATIONS_NUM =100;
+
     long sum;
     int iterations;
+    int result[];
 
     public BasicTrainer(List<Double> coefficients, List<Function<TestState, Double>> features) {
-        super(100, coefficients, features);
+        this(coefficients, features, ITERATIONS_NUM);
+    }
+
+    public BasicTrainer(List<Double> coefficients, List<Function<TestState, Double>> features, int numIterations) {
+        super(numIterations, coefficients, features);
         sum = 0;
         iterations = 0;
+        result = new int[numIterations];
     }
 
     public void onSimulateDone(int rowsCleared) {
+
+        result[iterations] = rowsCleared;
         iterations++;
         sum += rowsCleared;
         System.out.println("Iteration " + iterations);
@@ -23,11 +34,27 @@ public class BasicTrainer extends Trainer {
         System.out.println();
     }
 
-    public static double getAverage(List<Double> coefficients, List<Function<TestState, Double>> features, int numIterations){
-        BasicTrainer trainer = new BasicTrainer(coefficients, features);
+    public static BasicTrainer getTrainer(List<Double> coefficients, List<Function<TestState, Double>> features, int numIterations){
+        BasicTrainer trainer = new BasicTrainer(coefficients, features, numIterations);
         trainer.numIterations = numIterations;
         trainer.train();
-        return (double) trainer.sum/trainer.iterations;
+        return trainer;
+    }
+
+    public double getAverage(){
+        return (double)sum/iterations;
+    }
+
+    public int getFirstQuartile(){
+        Arrays.sort(result);
+        return result[numIterations/4];
+    }
+
+    public void printAllResults(){
+        System.out.println();
+        for(int r: result){
+            System.out.println(r);
+        }
     }
 
     public static void main(String args[]) {
