@@ -25,7 +25,8 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
     static final boolean DECREASE_FLAG = true;
     static final double PASS_MARK = 0.95;
 
-    static final String folder = "data/local-increasing-trainer-v1/";
+    //static final String folder = "data/local-increasing-trainer-v1/";
+    static final String folder = "";
 
     int bestResult = Integer.MIN_VALUE;
     List<Double> bestCoefficient;
@@ -100,7 +101,18 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
             if (rSum > bestResult) {
                 bestResult = rSum;
                 bestCoefficient = new ArrayList<>(coefficients);
-                coefficients.set(order[currentCoefficient], coefficients.get(order[currentCoefficient]) + increment);
+
+                if(shouldModifyTargetLines()){
+
+                    currentCoefficient = 0;
+                    updateNextRoundIfNecessary();
+
+                    updateNextCycle();
+
+                }
+                else{
+                    coefficients.set(order[currentCoefficient], coefficients.get(order[currentCoefficient]) + increment);
+                }
             }
             else {
                 currentCoefficient++;
@@ -140,7 +152,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
     private void updateNextCycle() {
         printBest();
 
-        int quartile = printLog(shouldModifyParameters());
+        int quartile = printLogAndUpdateTargetLines(shouldModifyTargetLines());
 
         modifyParameters(quartile);
 
@@ -179,17 +191,13 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         }
         increment = direction * STARTING_INCREMENT;
 
-        if (shouldModifyParameters()) {
-                incrementMoves(targetLines);
-                incrementIterations();
-
-            return true;
-        }
+        incrementMoves(targetLines);
+        incrementIterations();
 
         return false;
     }
 
-    private boolean shouldModifyParameters(){
+    private boolean shouldModifyTargetLines(){
         return bestResult >= PASS_MARK * (moves * 4 / 10) * iterations;
     }
 
@@ -204,20 +212,20 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
 
     /**
      * return first quartile of basic trainer
-     * @param toPrintParameters
+     * @param modifyTargetLines
      * @return
      */
-    private int printLog(boolean toPrintParameters) {
+    private int printLogAndUpdateTargetLines(boolean modifyTargetLines) {
         // do file writing
 
-        if (System.currentTimeMillis() - lastUpdate > interval || toPrintParameters) {
+        if (System.currentTimeMillis() - lastUpdate > interval || modifyTargetLines) {
             BasicTrainer trainer = BasicTrainer.getTrainer(bestCoefficient, features, 100);
             lastUpdate = System.currentTimeMillis();
             try {
                 String filename = folder + "LIDtrain" + startTime + ".txt";
                 FileWriter fw = new FileWriter(filename, true); //the true will append the new data
 
-                if (toPrintParameters) {
+                if (modifyTargetLines) {
                     fw.write("max moves: " + moves + "\n");
                     fw.write("iterations: " + iterations + "\n");
                 }
