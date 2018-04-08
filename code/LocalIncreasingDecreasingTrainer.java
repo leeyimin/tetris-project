@@ -24,6 +24,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
     static final int STARTING_MOVES = 1000;
     static final boolean DECREASE_FLAG = true;
     static final double PASS_MARK = 0.95;
+    static final int TARGET_PERCENTILE = 25;
 
     //static final String folder = "data/local-increasing-trainer-v1/";
     static final String folder = "";
@@ -36,6 +37,9 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
     int rSum;
     int direction;
     int order[];
+
+    List<Double> backupBest;
+    double backupBestAverage;
 
 
     int moveIncrement = 1000;
@@ -67,6 +71,10 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         startTime = System.currentTimeMillis();
         lastUpdate = startTime;
         rSum = 0;
+
+        backupBest = new ArrayList<>(coefficients);
+        backupBestAverage = Double.MIN_VALUE;
+
         try {
             String filename = folder + "LIDtrain" + startTime + ".txt";
             FileWriter fw = new FileWriter(filename, true); //the true will append the new data
@@ -101,18 +109,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
             if (rSum > bestResult) {
                 bestResult = rSum;
                 bestCoefficient = new ArrayList<>(coefficients);
-
-                if(shouldModifyTargetLines()){
-
-                    currentCoefficient = 0;
-                    updateNextRoundIfNecessary();
-
-                    updateNextCycle();
-
-                }
-                else{
-                    coefficients.set(order[currentCoefficient], coefficients.get(order[currentCoefficient]) + increment);
-                }
+                coefficients.set(order[currentCoefficient], coefficients.get(order[currentCoefficient]) + increment);
             }
             else {
                 currentCoefficient++;
@@ -121,7 +118,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
 
                 coefficients = new ArrayList<>(bestCoefficient);
 
-                if (Math.abs(increment) < EPSILON) {
+                if ( (currentCoefficient == 0 && shouldModifyTargetLines()) ||  Math.abs(increment) < EPSILON) {
 
                     updateNextCycle();
 
@@ -152,9 +149,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
     private void updateNextCycle() {
         printBest();
 
-        int quartile = printLogAndUpdateTargetLines(shouldModifyTargetLines());
-
-        modifyParameters(quartile);
+        updateBackupBestAndParameters();
 
         bestResult = Integer.MIN_VALUE;
 
@@ -167,6 +162,42 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
 //                        }
 //                        coefficients = new ArrayList<>(bestCoefficient);
         }
+    }
+
+    private void updateBackupBestAndParameters() {
+
+        if(System.currentTimeMillis() - lastUpdate < interval && !shouldModifyTargetLines()){
+            modifyParameters(moves);
+            return;
+        }
+
+        lastUpdate = System.currentTimeMillis();
+
+        BasicTrainer trainer = BasicTrainer.getTrainerResults(bestCoefficient, features, 100);
+        double currAverage = trainer.getAverage();
+        if(currAverage> backupBestAverage){
+            backupBestAverage = currAverage;
+            backupBest = new ArrayList<>(bestCoefficient);
+            modifyParameters(trainer.getPercentile(TARGET_PERCENTILE) * 10 / 4);
+
+        }
+        else{
+            BasicTrainer retest = BasicTrainer.getTrainerResults(backupBest, features, 100);
+            if(currAverage > (retest.getAverage()+backupBestAverage)/2){
+                backupBestAverage = currAverage;
+                backupBest = new ArrayList<>(bestCoefficient);
+                modifyParameters(trainer.getPercentile(TARGET_PERCENTILE) * 10 / 4);
+            }
+            else{
+
+                bestCoefficient = new ArrayList<>(backupBest);
+                backupBestAverage = currAverage = (retest.getAverage() + backupBestAverage) / 2;
+                modifyParameters(((trainer.getPercentile(TARGET_PERCENTILE) * 10 / 4) + moves)/2 );
+            }
+        }
+
+        printLog(currAverage);
+
     }
 
     /**
@@ -184,15 +215,17 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
      * updates increments, moves and iterations
      * @return if moves and iterations are updated
      */
-    private boolean modifyParameters(int targetLines) {
+    private boolean modifyParameters(int moves) {
 
         if (DECREASE_FLAG) {
             direction *= -1;
         }
         increment = direction * STARTING_INCREMENT;
 
-        incrementMoves(targetLines);
-        incrementIterations();
+        this.moves = moves;
+        iterations = Math.max(50, moves/1000);
+
+        resultsInRound = new int[iterations];
 
         return false;
     }
@@ -201,51 +234,29 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         return bestResult >= PASS_MARK * (moves * 4 / 10) * iterations;
     }
 
-    private void incrementMoves(int targetLines){
-        moves = targetLines * 10 / 4;
-    }
-
-    private void incrementIterations(){
-        iterations += IT_INCREMENT;
-        resultsInRound = new int[iterations];
-    }
-
-    /**
-     * return first quartile of basic trainer
-     * @param modifyTargetLines
-     * @return
-     */
-    private int printLogAndUpdateTargetLines(boolean modifyTargetLines) {
+    private void printLog(double average) {
         // do file writing
 
-        if (System.currentTimeMillis() - lastUpdate > interval || modifyTargetLines) {
-            BasicTrainer trainer = BasicTrainer.getTrainer(bestCoefficient, features, 100);
-            lastUpdate = System.currentTimeMillis();
-            try {
-                String filename = folder + "LIDtrain" + startTime + ".txt";
-                FileWriter fw = new FileWriter(filename, true); //the true will append the new data
+        try {
+            String filename = folder + "LIDtrain" + startTime + ".txt";
+            FileWriter fw = new FileWriter(filename, true); //the true will append the new data
+            fw.write("time: " + (lastUpdate - startTime) / (60 * 1000.0) + "\n");
+            fw.write("sum: " + bestResult + "\n");
 
-                if (modifyTargetLines) {
-                    fw.write("max moves: " + moves + "\n");
-                    fw.write("iterations: " + iterations + "\n");
-                }
-                fw.write("time: " + (lastUpdate - startTime) / (60 * 1000.0) + "\n");
-                fw.write("sum: " + bestResult + "\n");
-
-                fw.write("average over 100: " + trainer.getAverage() + "\n");
-                fw.write(bestCoefficient.get(0) + "");
-                for (int i = 1; i < coefficients.size(); i++) {
-                    fw.write(", " + bestCoefficient.get(i));
-                }
-                fw.write("\n\n");
-                fw.close();
-            } catch (IOException ioe) {
-                System.err.println("IOException: " + ioe.getMessage());
+            fw.write("average over 100: " + average + "\n");
+            fw.write(bestCoefficient.get(0) + "");
+            for (int i = 1; i < coefficients.size(); i++) {
+                fw.write(", " + bestCoefficient.get(i));
             }
+            fw.write("\n\n");
 
-            return trainer.getFirstQuartile();
+
+            fw.write("max moves: " + moves + "\n");
+            fw.write("iterations: " + iterations + "\n");
+            fw.close();
+        } catch (IOException ioe) {
+            System.err.println("IOException: " + ioe.getMessage());
         }
-        return moves*4/10;
     }
 
     private void printBest() {

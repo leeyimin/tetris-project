@@ -34,7 +34,7 @@ public class BasicTrainer extends Trainer {
         System.out.println();
     }
 
-    public static BasicTrainer getTrainer(List<Double> coefficients, List<Function<TestState, Double>> features, int numIterations){
+    public static BasicTrainer getTrainerResults(List<Double> coefficients, List<Function<TestState, Double>> features, int numIterations){
         BasicTrainer trainer = new BasicTrainer(coefficients, features, numIterations);
         trainer.numIterations = numIterations;
         trainer.train();
@@ -45,9 +45,9 @@ public class BasicTrainer extends Trainer {
         return (double)sum/iterations;
     }
 
-    public int getFirstQuartile(){
+    public int getPercentile(int num){
         Arrays.sort(result);
-        return result[numIterations/4];
+        return result[num*numIterations/100];
     }
 
     public void printAllResults(){
