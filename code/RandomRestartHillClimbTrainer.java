@@ -3,10 +3,10 @@ import java.util.function.*;
 
 public class RandomRestartHillClimbTrainer {
 
-    private static final int NUM_BATCHES = 5000;
+    private static final int NUM_BATCHES = 1000;
     private static final int TEST_BATCH_SIZE = 30;
     private static final double RAND_MEAN = 0;
-    private static final double RAND_STDDEV = 10;
+    private static final double RAND_STDDEV = 1;
 
     private List<Function<TestState, Double>> features;
     private List<Double> bestCoefficients;

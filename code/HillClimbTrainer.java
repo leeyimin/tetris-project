@@ -5,8 +5,8 @@ public class HillClimbTrainer {
 
     private static final int BATCH_SIZE = 50;
     private static final int STARTING_MOVES = 1000;
-    private static final double THRESHOLD_MOVES = 0.95;
-    private static final double STARTING_STEPS = 10.0;
+    private static final double THRESHOLD_MOVES = 0.995;
+    private static final double STARTING_STEPS = 3.0;
     private static final double DECAY_STEPS = 1.1;
 
     private int currDimension;
@@ -118,10 +118,7 @@ public class HillClimbTrainer {
         List<Function<TestState, Double>> features = new ArrayList<>();
         Features.addAllFeatures(features);
 
-        List<Double> coefficients = new ArrayList<>();
-        for (int i = 0; i < features.size(); i++) {
-            coefficients.add(0.00);
-        }
+        List<Double> coefficients = Arrays.asList(new Double[] { 1.37, 3.24, -6.16, 0.00, 23.83, -2.93, 3.47, 37.57, -4.92, 0.00, 0.00, -6.96, 6.83, 0.75, 0.00, 8.26, 0.00, 1.43, -3.69, 5.13, -5.64, 11.19, 9.09, 8.26, 13.91, 13.47, 8.01, 17.26, 6.83, 9.02, 0.00, 73.26 });
 
         new HillClimbTrainer(coefficients, features).train();
     }

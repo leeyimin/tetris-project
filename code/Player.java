@@ -1,6 +1,6 @@
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 
 public class Player {
@@ -20,6 +20,13 @@ public class Player {
 
     private int numMoves = 0;
     private long startTime;
+
+    public static void main(String[] args) {
+        List<Double> coefficients = Arrays.asList(new Double[] { 1.37, 3.24, -6.16, 0.00, 23.83, -2.93, 3.47, 37.57, -4.92, 0.00, 0.00, -6.96, 6.83, 0.75, 0.00, 8.26, 0.00, 1.43, -3.69, 5.13, -5.64, 11.19, 9.09, 8.26, 13.91, 13.47, 8.01, 17.26, 6.83, 9.02, 0.00, 73.26 });
+        List<Function<TestState, Double>> features = new ArrayList<>();
+        Features.addAllFeatures(features);
+        System.out.println(new Player(coefficients, features).simulate());
+    }
 
     public Player(List<Double> coefficients, List<Function<TestState, Double>> features) {
         this.coefficients = coefficients;
