@@ -240,7 +240,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         increment = direction * STARTING_INCREMENT;
 
         this.moves = moves;
-        iterations = Math.max(50, moves/1000);
+        iterations = Math.max(50, moves/500);
 
         resultsInRound = new int[iterations];
 
