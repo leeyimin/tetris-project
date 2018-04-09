@@ -6,7 +6,7 @@ public class HillClimbTrainer {
     private static final int BATCH_SIZE = 50;
     private static final int STARTING_MOVES = 1000;
     private static final double THRESHOLD_MOVES = 0.995;
-    private static final double STARTING_STEPS = 3.0;
+    private static final double STARTING_STEPS = 5.30;
     private static final double DECAY_STEPS = 1.1;
 
     private int currDimension;
@@ -90,6 +90,10 @@ public class HillClimbTrainer {
 
         if (averageRowsCleared > THRESHOLD_MOVES * maxRowsCleared) {
             this.numMoves *= 2;
+            System.out.println();
+            System.out.println("Doubling numMoves to " + this.numMoves);
+            System.out.println("Rows Cleared: " + averageRowsCleared);
+            this.printCoefficients(coefficients);
         }
 
         return averageRowsCleared;
@@ -105,9 +109,13 @@ public class HillClimbTrainer {
     }
 
     public void printCoefficients() {
+        this.printCoefficients(this.coefficients);
+    }
+
+    public void printCoefficients(List<Double> coefficients) {
         StringBuilder output = new StringBuilder();
 
-        for (Double coefficient : this.coefficients) {
+        for (Double coefficient : coefficients) {
             output.append(String.format("%.2f, ", coefficient));
         }
 
@@ -118,7 +126,7 @@ public class HillClimbTrainer {
         List<Function<TestState, Double>> features = new ArrayList<>();
         Features.addAllFeatures(features);
 
-        List<Double> coefficients = Arrays.asList(new Double[] { 1.37, 3.24, -6.16, 0.00, 23.83, -2.93, 3.47, 37.57, -4.92, 0.00, 0.00, -6.96, 6.83, 0.75, 0.00, 8.26, 0.00, 1.43, -3.69, 5.13, -5.64, 11.19, 9.09, 8.26, 13.91, 13.47, 8.01, 17.26, 6.83, 9.02, 0.00, 73.26 });
+        List<Double> coefficients = Arrays.asList(new Double[] { 11.51, 3.24, -15.31, 0.00, 23.83, -2.02, 3.47, 26.01, -3.10, 0.00, 0.00, -12.97, 12.84, -4.71, 12.02, 1.65, 0.00, 5.42, 2.92, 5.13, -5.64, 19.19, 9.09, 20.28, 13.91, 13.47, 10.26, 17.26, 6.83, 9.93, 0.00, 97.06 });
 
         new HillClimbTrainer(coefficients, features).train();
     }
