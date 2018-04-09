@@ -149,28 +149,43 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
     private void updateNextCycle() {
         printBest();
 
-        updateBackupBestAndParameters();
+        boolean toPerturb = updateBackupBestAndParameters();
 
         bestResult = Integer.MIN_VALUE;
 
         //perturbation
         //TODO: perturbation strategy to be improved
-        if (direction == 1) {
-//                        System.out.println("PERTURBATION");
-//                        for (int i = 0; i < coefficients.size(); i++) {
-//                            bestCoefficient.set(i, bestCoefficient.get(i) + (1-2*(random.nextInt()%2))*STARTING_INCREMENT );
-//                        }
-//                        coefficients = new ArrayList<>(bestCoefficient);
+        if(toPerturb) perturb();
+    }
+
+    private void perturb() {
+        int countNonZero = 0;
+        for(double r: bestCoefficient){
+            if(r!=0) countNonZero++;
+        }
+        int toZero = random.nextInt()%countNonZero;
+        for(int i=0;i<bestCoefficient.size();i++){
+            if(bestCoefficient.get(i)== 0) continue;
+            if(toZero == 0){
+                bestCoefficient.set(i,0.0);
+                break;
+            }
+            else toZero--;
         }
     }
 
-    private void updateBackupBestAndParameters() {
+    /**
+     * return if perturbation should be performed.
+     * @return
+     */
+    private boolean updateBackupBestAndParameters() {
 
         if(System.currentTimeMillis() - lastUpdate < interval && !shouldModifyTargetLines()){
             modifyParameters(moves);
-            return;
+            return false;
         }
 
+        boolean shouldPerturb = false;
         lastUpdate = System.currentTimeMillis();
 
         BasicTrainer trainer = BasicTrainer.getTrainerResults(bestCoefficient, features, 100);
@@ -193,11 +208,13 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
                 bestCoefficient = new ArrayList<>(backupBest);
                 backupBestAverage = currAverage = (retest.getAverage() + backupBestAverage) / 2;
                 modifyParameters(((trainer.getPercentile(TARGET_PERCENTILE) * 10 / 4) + moves)/2 );
+                shouldPerturb = true;
+
             }
         }
 
         printLog(currAverage);
-
+        return shouldPerturb;
     }
 
     /**
