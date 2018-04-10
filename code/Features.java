@@ -71,6 +71,20 @@ public class Features {
         return (double)numBlocks;
     }
 
+    public static Double getHeightAboveHoles(TestState testState){
+        int numBlocks = 0;
+
+        for (int col = 0; col < State.COLS; col++) {
+            for (int row = 0; row < testState.top[col]; row++) {
+                if (testState.field[row][col] == 0){
+                    numBlocks += testState.top[col] - 1 - row;
+                    break;
+                }
+            }
+        }
+        return (double) numBlocks;
+    }
+
     /**
      * motivation: penalize stacking over holes/ covering tall holes
      * @param testState
@@ -447,6 +461,46 @@ public class Features {
         features.add(Features::getNinthHeightDifference);
     }
 
+    public static Function<TestState, Double> squareFunc(Function<TestState, Double> func) {
+        return (state) -> {
+            Double result = func.apply(state);
+            return result * result;
+        };
+    }
 
+    public static void addAllFeatures(List<Function<TestState, Double>> features) {
+        features.add(Features::getNegativeOfRowsCleared);
+        features.add(Features::getMaxHeight);
+        features.add(Features::getNumHoles);
+        features.add(Features::getSumOfDepthOfHoles);
+        features.add(Features::getMeanAbsoluteDeviationOfTop);
+        features.add(Features::getBlocksAboveHoles);
+        features.add(Features::getSignificantHoleAndTopDifference);
+        features.add(Features::getNumOfSignificantTopDifference);
+        features.add(Features::hasLevelSurface);
+        features.add(Features::getNumColsWithHoles);
+        features.add(Features::getNumRowsWithHoles);
+        features.add(Features::getFirstColHeight);
+        features.add(Features::getSecondColHeight);
+        features.add(Features::getThirdColHeight);
+        features.add(Features::getFourthColHeight);
+        features.add(Features::getFifthColHeight);
+        features.add(Features::getSixthColHeight);
+        features.add(Features::getSeventhColHeight);
+        features.add(Features::getEighthColHeight);
+        features.add(Features::getNinthColHeight);
+        features.add(Features::getTenthColHeight);
+        features.add(Features::getFirstHeightDifference);
+        features.add(Features::getSecondHeightDifference);
+        features.add(Features::getThirdHeightDifference);
+        features.add(Features::getFourthHeightDifference);
+        features.add(Features::getFifthHeightDifference);
+        features.add(Features::getSixthHeightDifference);
+        features.add(Features::getSeventhdHeightDifference);
+        features.add(Features::getEighthHeightDifference);
+        features.add(Features::getNinthHeightDifference);
+        features.add(Features::getBumpiness);
+        features.add(Features::getTotalHeight);
+    }
 
 }
