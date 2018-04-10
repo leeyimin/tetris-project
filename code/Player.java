@@ -13,12 +13,12 @@ public class Player {
 
     protected static final int LOG_CYCLE = 100;
 
-    private TFrame frame;
+    protected TFrame frame;
 
     private List<Double> coefficients;
     private List<Function<TestState, Double>> features;
 
-    private int numMoves = 0;
+    protected int numMoves = 0;
     private long startTime;
 
     public static void main(String[] args) {
@@ -96,7 +96,7 @@ public class Player {
         return state.getRowsCleared();
     }
 
-    private void writeLog(State state){
+    protected void writeLog(State state){
         if (WRITE_LOG && numMoves % LOG_CYCLE == 0) {
             TestState tState = new TestState(state.getField(), state.getTop(), 0);
             try {
@@ -111,7 +111,7 @@ public class Player {
         }
     }
 
-    private void updateBoard(State state) {
+    protected void updateBoard(State state) {
         if (RENDER_BOARD) {
             state.draw();
             state.drawNext(0,0);
@@ -123,7 +123,7 @@ public class Player {
         }
     }
 
-    private void showDeathState(State state){
+    protected void showDeathState(State state){
         int field[][] = state.getField();
 
         if( SHOW_DEATH_STATE && state.hasLost()){
