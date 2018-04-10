@@ -76,7 +76,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         backupBestAverage = Double.MIN_VALUE;
 
         try {
-            String filename = folder + "LIDtrain" + startTime + ".txt";
+            String filename = folder + getFilePrefix() + startTime + ".txt";
             FileWriter fw = new FileWriter(filename, true); //the true will append the new data
             fw.write("iterations: " + iterations + "\n");
             fw.write("max moves: " + moves + "\n");
@@ -87,6 +87,10 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         } catch (IOException ioe) {
             System.err.println("IOException: " + ioe.getMessage());
         }
+    }
+
+    String getFilePrefix(){
+        return "LIDtrain";
     }
 
     @Override
@@ -134,7 +138,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         }
     }
 
-    private void printCurrentBest() {
+    void printCurrentBest() {
         System.out.println("Current best");
         System.out.println(bestResult);
         System.out.println("Best coefficients");
@@ -146,7 +150,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
     /**
      * prepare for next cycle through all increments and features.
      */
-    private void updateNextCycle() {
+    void updateNextCycle() {
         printBest();
 
         boolean toPerturb = updateBackupBestAndParameters();
@@ -158,7 +162,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         if(toPerturb) perturb();
     }
 
-    private void perturb() {
+    void perturb() {
         int countNonZero = 0;
         for(double r: bestCoefficient){
             if(r!=0) countNonZero++;
@@ -226,7 +230,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
     /**
      * prepares for next round of features
      */
-    private void updateNextRoundIfNecessary() {
+    void updateNextRoundIfNecessary() {
         if (currentCoefficient % features.size() == 0) {
             randomOrder();
             currentCoefficient = 0;
@@ -238,7 +242,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
      * updates increments, moves and iterations
      * @return if moves and iterations are updated
      */
-    private boolean modifyParameters(int moves) {
+    boolean modifyParameters(int moves) {
 
         if (DECREASE_FLAG) {
             direction *= -1;
@@ -248,20 +252,21 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         this.moves = moves;
         iterations = Math.max(50, moves/500);
 
+
         resultsInRound = new int[iterations];
 
         return false;
     }
 
-    private boolean shouldModifyTargetLines(){
+    boolean shouldModifyTargetLines(){
         return bestResult >= PASS_MARK * (moves * 4 / 10) * iterations;
     }
 
-    private void printLog(double average) {
+    void printLog(double average) {
         // do file writing
 
         try {
-            String filename = folder + "LIDtrain" + startTime + ".txt";
+            String filename = folder + getFilePrefix() + startTime + ".txt";
             FileWriter fw = new FileWriter(filename, true); //the true will append the new data
             fw.write("time: " + (lastUpdate - startTime) / (60 * 1000.0) + "\n");
             fw.write("sum: " + bestResult + "\n");
@@ -282,7 +287,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         }
     }
 
-    private void printBest() {
+    void printBest() {
         System.out.println();
         System.out.println("BEST");
         System.out.println(bestResult);
@@ -297,7 +302,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
     /**
      * prints statistics for current round
      */
-    private void printCurrentRound() {
+    void printCurrentRound() {
         //print results
         System.out.println("cc " + currentCoefficient + " increment " + increment + " order[cc]" + order[currentCoefficient]);
         System.out.println("coefficients");
