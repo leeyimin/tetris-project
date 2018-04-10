@@ -2,9 +2,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
 
-public class LookAheadPlayer extends Player {
+public class WorstCaseLookAheadPlayer extends Player {
 
-    public LookAheadPlayer(List<Double> coefficients, List<Function<TestState, Double>> features) {
+    public WorstCaseLookAheadPlayer(List<Double> coefficients, List<Function<TestState, Double>> features) {
         super(coefficients, features);
     }
 

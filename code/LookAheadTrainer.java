@@ -9,7 +9,7 @@ public abstract class LookAheadTrainer extends Trainer{
 
     public void train() {
         for (int i = 0; i < this.numIterations; i++) {
-            int rowsCleared = new LookAheadPlayer(coefficients, features).simulate();
+            int rowsCleared = new WorstCaseLookAheadPlayer(coefficients, features).simulate();
             this.onSimulateDone(rowsCleared);
         }
     }
