@@ -89,14 +89,6 @@ public class LocalIncreasingDecreasingTrainer extends LookAheadTrainer {
         }
     }
 
-    @Override
-    public void train() {
-        for (int i = 0; i < this.numIterations; i++) {
-            int rowsCleared = new Player(coefficients, features).simulate(moves);
-            this.onSimulateDone(rowsCleared);
-        }
-    }
-
     public void onSimulateDone(int result) {
         rounds++;
         resultsInRound[(rounds-1) % iterations] = result;
@@ -188,16 +180,22 @@ public class LocalIncreasingDecreasingTrainer extends LookAheadTrainer {
         boolean shouldPerturb = false;
         lastUpdate = System.currentTimeMillis();
 
-        BasicTrainer trainer = BasicTrainer.getTrainerResults(bestCoefficient, features, 100);
+        BasicLookAheadTrainer trainer = BasicLookAheadTrainer.getTrainerResults(bestCoefficient, features, 100);
         double currAverage = trainer.getAverage();
-        if(currAverage> backupBestAverage){
+
+        if(bestCoefficient.equals(backupBest)){
+            modifyParameters(((trainer.getPercentile(TARGET_PERCENTILE) * 10 / 4) + moves) / 2);
+            backupBestAverage = (trainer.getPercentile(TARGET_PERCENTILE)*10/4 + moves) /2;
+            shouldPerturb = true;
+        }
+        else if(currAverage> backupBestAverage){
             backupBestAverage = currAverage;
             backupBest = new ArrayList<>(bestCoefficient);
             modifyParameters(trainer.getPercentile(TARGET_PERCENTILE) * 10 / 4);
 
         }
         else{
-            BasicTrainer retest = BasicTrainer.getTrainerResults(backupBest, features, 100);
+            BasicLookAheadTrainer retest = BasicLookAheadTrainer.getTrainerResults(backupBest, features, 100);
             if(currAverage > (retest.getAverage()+backupBestAverage)/2){
                 backupBestAverage = currAverage;
                 backupBest = new ArrayList<>(bestCoefficient);
@@ -207,7 +205,7 @@ public class LocalIncreasingDecreasingTrainer extends LookAheadTrainer {
 
                 bestCoefficient = new ArrayList<>(backupBest);
                 backupBestAverage = currAverage = (retest.getAverage() + backupBestAverage) / 2;
-                modifyParameters(((trainer.getPercentile(TARGET_PERCENTILE) * 10 / 4) + moves)/2 );
+                modifyParameters(((retest.getPercentile(TARGET_PERCENTILE) * 10 / 4) + moves)/2 );
                 shouldPerturb = true;
 
             }
@@ -345,13 +343,18 @@ public class LocalIncreasingDecreasingTrainer extends LookAheadTrainer {
         features.add(Features::getNumColsWithHoles);
         features.add(Features::getNumRowsWithHoles);
 
-        Features.addAllColHeightFeatures(features);
-        Features.addAllHeightDiffFeatures(features);
+        features.add(Features::getHoleMeasure);
+        features.add(Features::getSpaceWithLeftWallMeasure);
+        features.add(Features::getSpaceWithRightWallMeasure);
+        features.add(Features::getAggregateHoleAndWallMeasure);
+
+        //Features.addAllColHeightFeatures(features);
+        //Features.addAllHeightDiffFeatures(features);
 
         initialiseCoefficients(coefficients, features.size());
 
         features.add(Features::getBumpiness);
-        coefficients.add(STARTING_INCREMENT / 10.0);
+        coefficients.add(STARTING_INCREMENT / 8.0);
         features.add(Features::getTotalHeight);
         coefficients.add(STARTING_INCREMENT);
 

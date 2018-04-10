@@ -6,6 +6,17 @@ public class WorstCaseLookAheadPlayer extends Player {
 
     public WorstCaseLookAheadPlayer(List<Double> coefficients, List<Function<TestState, Double>> features) {
         super(coefficients, features);
+        System.out.println("WORST CASE LOOK AHEAD");
+    }
+
+
+    protected TestState testSecondMove(TestState state, int piece, int move){
+        int prevClearedLines = state.lastCleared;
+        TestState result = MoveTester.testMove(state, piece, move);
+        if(result == null) return null;
+        result.lastCleared += prevClearedLines;
+
+        return result;
     }
 
     @Override
@@ -17,15 +28,17 @@ public class WorstCaseLookAheadPlayer extends Player {
 
         for (int move = 0; move < legalMoves.length; move++) {
             TestState state = MoveTester.testMove(currentState, move);
+            double stateCost = evaluateField(state);
             double maxCost = Double.MIN_VALUE;
 
             if(state != null){
                 for (int i = 0; i < State.N_PIECES; i++) {
-                    TestState possibleState = MoveTester.testMove(state, i, 0);
 
+                    TestState possibleState = testSecondMove(state, i, 0);
                     double minCostForPiece = evaluateField(possibleState);
+
                     for (int j = 1; j < State.legalMoves[i].length && minCostForPiece > maxCost; j++) {
-                        possibleState = MoveTester.testMove(state, i, j);
+                        possibleState = testSecondMove(state, i, j);
                         double costForMove = evaluateField(possibleState);
                         if (costForMove < minCostForPiece) minCostForPiece = costForMove;
                     }
