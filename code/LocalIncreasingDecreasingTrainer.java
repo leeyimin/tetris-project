@@ -14,7 +14,7 @@ import java.util.function.Function;
  * <p>
  * Perturbation strategy to be improved.
  */
-public class LocalIncreasingDecreasingTrainer extends Trainer {
+public class LocalIncreasingDecreasingTrainer extends LookAheadTrainer {
 
     static final int STARTING_ITERATIONS = 50;
     static final double STARTING_INCREMENT = 32;
