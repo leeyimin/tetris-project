@@ -190,7 +190,13 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
 
         BasicTrainer trainer = BasicTrainer.getTrainerResults(bestCoefficient, features, 100);
         double currAverage = trainer.getAverage();
-        if(currAverage> backupBestAverage){
+
+        if(bestCoefficient.equals(backupBest)){
+            backupBestAverage = currAverage = (trainer.getAverage() + backupBestAverage) / 2;
+            modifyParameters(((trainer.getPercentile(TARGET_PERCENTILE) * 10 / 4) + moves) / 2);
+            shouldPerturb = true;
+        }
+        else if(currAverage> backupBestAverage){
             backupBestAverage = currAverage;
             backupBest = new ArrayList<>(bestCoefficient);
             modifyParameters(trainer.getPercentile(TARGET_PERCENTILE) * 10 / 4);
@@ -207,7 +213,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
 
                 bestCoefficient = new ArrayList<>(backupBest);
                 backupBestAverage = currAverage = (retest.getAverage() + backupBestAverage) / 2;
-                modifyParameters(((trainer.getPercentile(TARGET_PERCENTILE) * 10 / 4) + moves)/2 );
+                modifyParameters(((retest.getPercentile(TARGET_PERCENTILE) * 10 / 4) + moves)/2 );
                 shouldPerturb = true;
 
             }
