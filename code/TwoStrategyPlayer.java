@@ -1,10 +1,12 @@
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
 public class TwoStrategyPlayer extends FairPlayer{
 
-    public static final int CRITICAL_TOTAL_HEIGHT = 120;
+    public static final int CRITICAL_TOTAL_HEIGHT = 150;
     public static final int RETURN_TOTAL_HEIGHT = 60;
     private boolean isCritical;
     State startingState;
@@ -31,7 +33,7 @@ public class TwoStrategyPlayer extends FairPlayer{
             if(Features.getTotalHeight(t) >= CRITICAL_TOTAL_HEIGHT) isCritical = true;
         }
         else{
-            if(Features.getTotalHeight(t) <= RETURN_TOTAL_HEIGHT) isCritical = false;
+            if(Features.getTotalHeight(t) < RETURN_TOTAL_HEIGHT) isCritical = false;
         }
     }
 
@@ -129,5 +131,35 @@ public class TwoStrategyPlayer extends FairPlayer{
             result += new TwoStrategyPlayer(coefficients, features, criticalCoefficients, criticalFeatures).simulate();
         }
         return result/(double) iterations;
+    }
+
+    public static void main(String[] args) {
+
+        List<Function<TestState, Double>> features = new ArrayList<>();
+
+        features.add(Features::getNegativeOfRowsCleared);
+        features.add(Features::getMaxHeight);
+        features.add(Features::getNumHoles);
+        features.add(Features::getSumOfDepthOfHoles);
+        features.add(Features::getHeightAboveHoles);
+        features.add(Features::getMeanAbsoluteDeviationOfTop);
+        features.add(Features::getBlocksAboveHoles);
+        features.add(Features::getSignificantHoleAndTopDifference);
+        features.add(Features::getNumOfSignificantTopDifference);
+        features.add(Features::hasLevelSurface);
+
+        features.add(Features::getNumColsWithHoles);
+        features.add(Features::getNumRowsWithHoles);
+
+        Features.addAllColHeightFeatures(features);
+        Features.addAllHeightDiffFeatures(features);
+
+        features.add(Features::getBumpiness);
+        features.add(Features::getTotalHeight);
+        for(int i=0;i<100;i++)
+            System.out.println((new TwoStrategyPlayer(Arrays.asList(6.0, 0.0, -10.0, 0.0, 0.5, 16.0, 0.0, 0.0, 38.0, -4.0, 0.0, 0.0, -2.0, 0.5, -2.0, 2.0, 0.0, 0.0, 2.0, -0.5, 0.0, -2.0, 2.0, 0.0, 2.0, 0.0, 0.0, 0.0, 2.0, -0.5, 0.0, 3.2, 44.0),
+                features,
+                Arrays.asList(14.0, 0.0, -10.0, 0.0, 2.5, 16.0, 0.0, 0.0, 38.0, -4.0, 0.0, 0.0, -2.0, 0.5, -2.0, 2.0, 0.0, 0.0, 2.0, -0.5, 0.0, -2.0, 2.0, 0.0, 2.0, 0.0, 2.0, 0.0, 2.0, -0.5, 2.0, 3.2, 44.0),
+                features)).simulate());
     }
 }
