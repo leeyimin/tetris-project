@@ -7,7 +7,7 @@ public class Player {
 
     protected static final int REFRESH_DELAY = 1;
     protected static final boolean RENDER_BOARD = false;
-    protected static final boolean SHOW_DEATH_STATE = true;
+    protected static final boolean SHOW_DEATH_STATE = false;
     protected static final int MAX_NUM_MOVES = Integer.MAX_VALUE;
     protected static final boolean WRITE_LOG = false;
     protected static final int LAST_MOVES = 500;

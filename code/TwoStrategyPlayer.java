@@ -157,9 +157,10 @@ public class TwoStrategyPlayer extends FairPlayer{
         features.add(Features::getBumpiness);
         features.add(Features::getTotalHeight);
         for(int i=0;i<100;i++)
-            System.out.println((new TwoStrategyPlayer(Arrays.asList(6.0, 0.0, -10.0, 0.0, 0.5, 16.0, 0.0, 0.0, 38.0, -4.0, 0.0, 0.0, -2.0, 0.5, -2.0, 2.0, 0.0, 0.0, 2.0, -0.5, 0.0, -2.0, 2.0, 0.0, 2.0, 0.0, 0.0, 0.0, 2.0, -0.5, 0.0, 3.2, 44.0),
-                features,
-                Arrays.asList(14.0, 0.0, -10.0, 0.0, 2.5, 16.0, 0.0, 0.0, 38.0, -4.0, 0.0, 0.0, -2.0, 0.5, -2.0, 2.0, 0.0, 0.0, 2.0, -0.5, 0.0, -2.0, 2.0, 0.0, 2.0, 0.0, 2.0, 0.0, 2.0, -0.5, 2.0, 3.2, 44.0),
-                features)).simulate());
+            System.out.println((new TwoStrategyPlayer(
+                    Arrays.asList(6.0, 0.0, -10.0, 0.0, 0.5, 16.0, 0.0, 0.0, 38.0, -4.0, 0.0, 0.0, -2.0, 0.5, -2.0, 2.0, 0.0, 0.0, 2.0, -0.5, 0.0, -2.0, 2.0, 0.0, 2.0, 0.0, 0.0, 0.0, 2.0, -0.5, 0.0, 3.2, 44.0),
+                    features,
+                    Arrays.asList(14.0, 0.0, -10.0, 0.0, 2.5, 16.0, 0.0, 0.0, 38.0, -4.0, 0.0, 0.0, -2.0, 0.5, -2.0, 2.0, 0.0, 0.0, 2.0, -0.5, 0.0, -2.0, 2.0, 0.0, 2.0, 0.0, 2.0, 0.0, 2.0, -0.5, 2.0, 3.2, 44.0),
+                    features)).simulate());
     }
 }

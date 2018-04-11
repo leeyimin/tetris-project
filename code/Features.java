@@ -117,7 +117,7 @@ public class Features {
 
     /**
      * penalizes more for taller holes and significant top difference
-     * For each hole, cost = height
+     * For each hole, cost = height of hole
      * For each dip, cost = smaller of the height difference
      *
      * ( may be similar to sum of bumpiness and num of holes...)
@@ -133,6 +133,7 @@ public class Features {
                     consec++;
                 }else{
                     sum += consec;
+                    consec = 0;
                 }
             }
             if ((i == 0 || testState.top[i - 1] >= testState.top[i] + 3) && (i == State.COLS - 1 || testState.top[i + 1] >= testState.top[i] + 3)){

@@ -5,7 +5,7 @@ import java.util.function.Function;
 
 public class CriticalStrategyTrainer extends LocalIncreasingDecreasingTrainer {
 
-    public static final int TRIES_PER_STATE = 20;
+    public static final int TRIES_PER_STATE = 10;
 
     State startingState[];
 
@@ -20,7 +20,7 @@ public class CriticalStrategyTrainer extends LocalIncreasingDecreasingTrainer {
                                    List<Double> criticalCoefficients, List<Function<TestState, Double>> criticalFeatures) {
         super(criticalCoefficients, criticalFeatures);
 
-        this.iterations = 2000;
+        this.iterations = 5000;
         this.moves = 5000;
 
         this.normalCoefficients = normalCoefficients;
@@ -29,8 +29,13 @@ public class CriticalStrategyTrainer extends LocalIncreasingDecreasingTrainer {
         numStates = iterations/TRIES_PER_STATE;
         startingState = new State[numStates];
         resultsInRound = new int[iterations];
-        backupBestAverage = 215881.28;
+
         generateStartingState();
+        backupBestAverage = 0;
+        for (int i = 0; i < iterations; i++) {
+            backupBestAverage += new TwoStrategyPlayer(normalCoefficients, normalFeatures, bestCoefficient, features, startingState[i % numStates]).simulateToNotCritical(moves);
+        }
+        backupBestAverage /= iterations;
     }
 
     private void generateStartingState() {
@@ -49,7 +54,6 @@ public class CriticalStrategyTrainer extends LocalIncreasingDecreasingTrainer {
                 this.onSimulateDone(result);
             }
         }
-
     }
 
     @Override
@@ -128,7 +132,11 @@ public class CriticalStrategyTrainer extends LocalIncreasingDecreasingTrainer {
         boolean shouldPerturb = false;
         lastUpdate = System.currentTimeMillis();
 
-        double currAverage = TwoStrategyPlayer.getAverage(normalCoefficients, normalFeatures, bestCoefficient, features, 100);
+        double currAverage = 0;
+        for (int i = 0; i < iterations; i++) {
+            currAverage += new TwoStrategyPlayer(normalCoefficients, normalFeatures, bestCoefficient, features, startingState[i % numStates]).simulateToNotCritical(moves);
+        }
+        currAverage /= iterations;
 
         if (bestCoefficient.equals(backupBest)) {
             backupBestAverage = currAverage = (currAverage+ backupBestAverage) / 2;
@@ -138,7 +146,11 @@ public class CriticalStrategyTrainer extends LocalIncreasingDecreasingTrainer {
             backupBest = new ArrayList<>(bestCoefficient);
 
         } else {
-            double retest = TwoStrategyPlayer.getAverage(normalCoefficients, normalFeatures, backupBest, features, 100);
+            double retest = 0;
+            for (int i = 0; i < iterations; i++) {
+                retest += new TwoStrategyPlayer(normalCoefficients, normalFeatures, backupBest, features, startingState[i % numStates]).simulateToNotCritical(moves);
+            }
+            retest /= iterations;
             if (currAverage > (retest + backupBestAverage) / 2) {
                 backupBestAverage = currAverage;
                 backupBest = new ArrayList<>(bestCoefficient);
@@ -150,7 +162,7 @@ public class CriticalStrategyTrainer extends LocalIncreasingDecreasingTrainer {
             }
         }
 
-        printLog(currAverage);
+        printLog(currAverage, shouldPerturb);
         return shouldPerturb;
     }
 
