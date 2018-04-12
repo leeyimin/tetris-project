@@ -29,12 +29,13 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
     //static final String folder = "data/local-increasing-trainer-v1/";
     static final String folder = "";
 
-    int bestResult = Integer.MIN_VALUE;
+    long bestResult = Long.MIN_VALUE;
     List<Double> bestCoefficient;
     int rounds;
     double increment;
     int[] resultsInRound;
-    int rSum;
+    long rSum;
+    long squareSum;
     int direction;
     int order[];
 
@@ -71,6 +72,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         startTime = System.currentTimeMillis();
         lastUpdate = startTime;
         rSum = 0;
+        squareSum = 0;
 
         backupBest = new ArrayList<>(coefficients);
         backupBestAverage = Double.MIN_VALUE;
@@ -114,11 +116,32 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         }
     }
 
+    public boolean shouldPrune(){
+        if(rounds <30 || (iterations - rounds) < 30){
+            return false;
+            //cannot apply CLT
+        }
+
+        if((double)rSum/rounds >= (double) bestResult/iterations) return false;
+
+        double avgStdDev = Math.sqrt((squareSum - (double) rSum*rSum/rounds )/ (rounds-1) / (iterations-rounds));
+        if((double) rSum / rounds + 3 * avgStdDev < (double) (bestResult-rSum) / (iterations-rounds)){
+            System.out.println("CI prune");
+            return true;
+        }
+
+        return false;
+    }
+
     public void onSimulateDone(int result) {
         rounds++;
         resultsInRound[(rounds-1) % iterations] = result;
         rSum+=result;
-        if (rounds % iterations == 0 || rSum + (iterations - rounds)*moves*4/10.0 < bestResult) {
+        squareSum += result*result;
+        boolean toPrune = shouldPrune();
+
+
+        if (rounds % iterations == 0 || rSum + (iterations - rounds)*moves*4/10.0 < bestResult || toPrune) {
             printCurrentRound();
 
             rounds = 0;
@@ -146,6 +169,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
             }
 
             rSum = 0;
+            squareSum = 0;
             printCurrentBest();
 
         }
@@ -168,7 +192,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
 
         boolean toPerturb = updateBackupBestAndParameters();
 
-        bestResult = Integer.MIN_VALUE;
+        bestResult = Long.MIN_VALUE;
 
         //perturbation
         //TODO: perturbation strategy to be improved
