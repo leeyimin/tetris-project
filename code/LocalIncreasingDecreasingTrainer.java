@@ -24,7 +24,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
     static final int STARTING_MOVES = 1000;
     static final boolean DECREASE_FLAG = true;
     static final double PASS_MARK = 0.95;
-    static final int TARGET_PERCENTILE = 25;
+    static final int TARGET_PERCENTILE = 15;
 
     //static final String folder = "data/local-increasing-trainer-v1/";
     static final String folder = "";
