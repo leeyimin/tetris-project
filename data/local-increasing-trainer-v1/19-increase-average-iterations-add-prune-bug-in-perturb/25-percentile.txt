@@ -40,3 +40,19 @@ should perturb: false
 
 max moves: 22467
 iterations: 50
+time: 96.0621
+sum: 405170
+average: 35463.42
+224.0, 24.0, -0.5, 8.0, 30.0, 0.0, 152.0, 0.0, 0.0, 0.0, 34.0, 40.0, 164.0
+should perturb: false
+
+max moves: 35532
+iterations: 50
+time: 165.58293333333333
+sum: 590216
+average: 29656.68
+224.0, 24.0, -0.5, 8.0, 30.0, 0.0, 152.0, 0.0, 0.0, 0.0, 34.0, 40.0, 164.0
+should perturb: true
+
+max moves: 23147
+iterations: 50

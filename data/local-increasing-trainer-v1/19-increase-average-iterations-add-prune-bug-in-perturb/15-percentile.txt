@@ -16,3 +16,27 @@ epsilon: 0.5
         features.add(Features::getBumpiness);
         features.add(Features::getTotalHeight);
 
+time: 2.430066666666667
+sum: 19849
+average: 50028.36
+8.0, 0.0, 0.0, 0.0, 32.5, 0.0, 64.0, 0.0, 0.0, 0.0, 0.0, 32.0, 128.0
+should perturb: false
+
+max moves: 33075
+iterations: 50
+time: 22.38455
+sum: 634516
+average: 120986.54
+40.0, 0.0, 0.0, 0.0, 32.5, 0.0, 64.0, 0.0, 0.0, 0.0, 0.0, 32.0, 160.0
+should perturb: false
+
+max moves: 48475
+iterations: 50
+time: 112.33725
+sum: 934663
+average: 112375.62
+40.0, -0.5, -16.0, 0.0, 24.5, 0.0, 64.0, 0.0, 0.0, 0.0, 0.0, 32.0, 160.0
+should perturb: false
+
+max moves: 83235
+iterations: 83

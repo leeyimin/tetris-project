@@ -201,14 +201,14 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
 
     void perturb() {
         int countNonZero = 0;
-        for(double r: bestCoefficient){
+        for(double r: coefficients){
             if(r!=0) countNonZero++;
         }
         int toZero = random.nextInt()%countNonZero;
-        for(int i=0;i<bestCoefficient.size();i++){
-            if(bestCoefficient.get(i)== 0) continue;
+        for(int i=0;i<coefficients.size();i++){
+            if(coefficients.get(i)== 0) continue;
             if(toZero == 0){
-                bestCoefficient.set(i,0.0);
+                coefficients.set(i,0.0);
                 break;
             }
             else toZero--;
@@ -244,7 +244,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
 
         }
         else{
-            BasicTrainer retest = BasicFairTrainer.getTrainerResults(bestCoefficient, features, 50);
+            BasicTrainer retest = BasicFairTrainer.getTrainerResults(backupBest, features, 50);
             backupBestAverage = (retest.getAverage() + backupBestAverage) / 2;
             if (currAverage > backupBestAverage) {
                 backupBestAverage = currAverage;
@@ -258,6 +258,8 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
                 shouldPerturb = true;
             }
         }
+
+        coefficients =  new ArrayList<>(bestCoefficient);
 
         printLog(currAverage, shouldPerturb);
         return shouldPerturb;
