@@ -36,3 +36,27 @@ should perturb: false
 
 max moves: 68857
 iterations: 68
+time: 197.18396666666666
+sum: 1666056
+average over 30: 88053.43333333333
+0.0, 0.0, 0.0, 72.0, 0.0, 128.0, 0.0, 0.0, 34.0, 0.0, 0.0, 0.0, 0.0, 34.0, 96.0
+should perturb: false
+
+max moves: 56227
+iterations: 56
+time: 370.00285
+sum: 1132332
+average over 30: 57736.8
+0.0, 0.0, 0.0, 72.0, 0.0, 128.0, 0.0, 0.0, 34.0, 0.0, 0.0, 0.0, 0.0, 34.0, 96.0
+should perturb: true
+
+max moves: 56227
+iterations: 56
+time: 471.88558333333333
+sum: 1185999
+average over 30: 86529.56666666667
+0.0, 0.0, 0.0, 72.0, 0.0, 128.0, 0.0, 0.0, 34.0, 0.0, 0.0, 0.0, 0.0, 34.0, 96.0
+should perturb: true
+
+max moves: 56227
+iterations: 56

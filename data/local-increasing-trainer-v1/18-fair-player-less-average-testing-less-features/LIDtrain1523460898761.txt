@@ -1,0 +1,142 @@
+iterations: 50
+max moves: 1000
+increment: 32.0
+epsilon: 0.5
+        features.add(Features::getNegativeOfRowsCleared);
+        features.add(Features::getMaxHeight);
+        features.add(Features::getSumOfDepthOfHoles);
+        features.add(Features::getMeanAbsoluteDeviationOfTop);
+        features.add(Features::getBlocksAboveHoles);
+        features.add(Features::getSignificantHoleAndTopDifference);
+        features.add(Features::hasLevelSurface);
+        features.add(Features::hasRightStep);
+        features.add(Features::hasLeftStep);
+        features.add(Features::getAggregateHoleAndWallMeasure);
+        features.add(Features::getHoleMeasure);
+
+
+        features.add(Features::getNumColsWithHoles);
+        features.add(Features::getNumRowsWithHoles);
+        features.add(Features::getBumpiness);
+        features.add(Features::getTotalHeight);
+
+time: 1.55715
+sum: 19687
+average over 100: 8207.5
+32.0, 0.0, 0.0, 32.0, 0.0, 32.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 4.0, 32.0
+should perturb: false
+
+max moves: 8090
+iterations: 50
+time: 27.557933333333335
+sum: 147549
+average over 100: 7832.433333333333
+32.0, 0.0, 0.0, 32.0, 0.0, 32.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 4.0, 32.0
+should perturb: true
+
+max moves: 8336
+iterations: 50
+time: 54.65696666666667
+sum: 162831
+average over 100: 16987.6
+32.0, 8.0, 0.0, 32.0, 0.0, 34.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 8.0, 6.0, 32.0
+should perturb: false
+
+max moves: 13400
+iterations: 50
+time: 77.04865
+sum: 257933
+average over 100: 26291.0
+32.0, 0.0, 0.0, 32.0, 0.0, 34.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 8.0, 6.0, 24.0
+should perturb: false
+
+max moves: 17325
+iterations: 50
+time: 151.2696
+sum: 321692
+average over 100: 23017.566666666666
+32.0, 0.0, 0.0, 32.0, 0.0, 34.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 8.0, 6.0, 24.0
+should perturb: true
+
+max moves: 17325
+iterations: 50
+time: 210.34321666666668
+sum: 317181
+average over 100: 18175.233333333334
+32.0, 0.0, 0.0, 32.0, 0.0, 34.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 8.0, 6.0, 24.0
+should perturb: true
+
+max moves: 17325
+iterations: 50
+time: 297.78055
+sum: 298291
+average over 100: 13264.533333333333
+32.0, 0.0, 0.0, 32.0, 0.0, 34.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 8.0, 6.0, 24.0
+should perturb: true
+
+max moves: 17325
+iterations: 50
+time: 380.36063333333334
+sum: 321398
+average over 100: 22939.266666666666
+32.0, 0.0, 0.0, 32.0, 0.0, 34.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 8.0, 6.0, 24.0
+should perturb: true
+
+max moves: 17325
+iterations: 50
+time: 428.45345
+sum: 334100
+average over 100: 34745.53333333333
+32.5, 0.0, 0.0, 32.0, 0.0, 34.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 8.0, 8.0, 24.0
+should perturb: false
+
+max moves: 26522
+iterations: 50
+time: 547.7983166666667
+sum: 496738
+average over 100: 24099.633333333335
+32.5, 0.0, 0.0, 32.0, 0.0, 34.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 8.0, 8.0, 24.0
+should perturb: true
+
+max moves: 26522
+iterations: 50
+time: 600.7741166666667
+sum: 490503
+average over 100: 39332.666666666664
+32.5, 0.0, 0.0, 24.0, 0.0, 34.5, 0.0, 0.0, -1.0, 0.0, 0.0, 0.0, 7.5, 8.0, 24.0
+should perturb: false
+
+max moves: 24575
+iterations: 50
+time: 640.1313333333334
+sum: 488259
+average over 100: 39596.73333333333
+30.5, 0.0, 0.0, 16.0, 0.0, 26.5, -2.0, -2.0, -1.0, 0.0, 0.0, 0.0, 7.5, 8.0, 24.0
+should perturb: false
+
+max moves: 18367
+iterations: 50
+time: 674.7280166666667
+sum: 359607
+average over 100: 76679.6
+38.5, 0.0, 0.0, 18.0, 0.0, 26.5, -2.0, -2.0, -1.0, 0.0, 0.0, 0.0, 7.5, 8.0, 36.0
+should perturb: false
+
+max moves: 62782
+iterations: 62
+time: 870.33475
+sum: 1484144
+average over 100: 92665.33333333333
+34.5, -2.0, 0.0, 16.0, 0.0, 18.5, -2.0, -2.0, -1.0, 0.0, 0.0, -0.5, 7.5, 8.0, 36.0
+should perturb: false
+
+max moves: 67217
+iterations: 67
+time: 1072.7646
+sum: 1696359
+average over 100: 114243.03333333334
+34.5, -2.0, 0.0, 24.0, 0.0, 18.5, -2.0, -2.0, -1.0, 0.0, 0.0, -0.5, 9.5, 8.0, 36.0
+should perturb: false
+
+max moves: 140932
+iterations: 140
