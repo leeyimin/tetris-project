@@ -84,17 +84,13 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
             fw.write("epsilon: " + EPSILON + "\n");
             fw.write("        features.add(Features::getNegativeOfRowsCleared);\n" +
                     "        features.add(Features::getMaxHeight);\n" +
+                    "        features.add(Features::getNumHoles);\n" +
                     "        features.add(Features::getSumOfDepthOfHoles);\n" +
                     "        features.add(Features::getMeanAbsoluteDeviationOfTop);\n" +
                     "        features.add(Features::getBlocksAboveHoles);\n" +
-                    "        features.add(Features::getSignificantHoleAndTopDifference);\n" +
-                    "        features.add(Features::hasLevelSurface);\n" +
-                    "        features.add(Features::hasRightStep);\n" +
-                    "        features.add(Features::hasLeftStep);\n" +
+                    "        features.add(Features::getSignificantHoleAndTopDifferenceFixed);\n" +
                     "        features.add(Features::getAggregateHoleAndWallMeasure);\n" +
                     "        features.add(Features::getHoleMeasure);\n" +
-                    "\n" +
-                    "\n" +
                     "        features.add(Features::getNumColsWithHoles);\n" +
                     "        features.add(Features::getNumRowsWithHoles);\n" +
                     "        features.add(Features::getBumpiness);\n" +
@@ -209,7 +205,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         boolean shouldPerturb = false;
         lastUpdate = System.currentTimeMillis();
 
-        BasicTrainer trainer = BasicFairTrainer.getTrainerResults(bestCoefficient, features, 30);
+        BasicTrainer trainer = BasicFairTrainer.getTrainerResults(bestCoefficient, features, 50);
         double currAverage = trainer.getAverage();
 
         if(bestCoefficient.equals(backupBest)){
@@ -217,16 +213,26 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
             modifyParameters(((trainer.getPercentile(TARGET_PERCENTILE) * 10 / 4) + moves) / 2);
             shouldPerturb = true;
         }
-        else if(currAverage> backupBestAverage){
+        else if(currAverage > backupBestAverage){
             backupBestAverage = currAverage;
             backupBest = new ArrayList<>(bestCoefficient);
             modifyParameters(trainer.getPercentile(TARGET_PERCENTILE) * 10 / 4);
 
         }
         else{
-            bestCoefficient = new ArrayList<>(backupBest);
-            modifyParameters(moves);
-            shouldPerturb = true;
+            BasicTrainer retest = BasicFairTrainer.getTrainerResults(bestCoefficient, features, 50);
+            backupBestAverage = (retest.getAverage() + backupBestAverage) / 2;
+            if (currAverage > backupBestAverage) {
+                backupBestAverage = currAverage;
+                backupBest = new ArrayList<>(bestCoefficient);
+                modifyParameters(trainer.getPercentile(TARGET_PERCENTILE) * 10 / 4);
+
+            } else {
+                currAverage = backupBestAverage;
+                bestCoefficient = new ArrayList<>(backupBest);
+                modifyParameters(((retest.getPercentile(TARGET_PERCENTILE) * 10 / 4) + moves) / 2);
+                shouldPerturb = true;
+            }
         }
 
         printLog(currAverage, shouldPerturb);
@@ -352,13 +358,11 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
 
         features.add(Features::getNegativeOfRowsCleared);
         features.add(Features::getMaxHeight);
+        features.add(Features::getNumHoles);
         features.add(Features::getSumOfDepthOfHoles);
         features.add(Features::getMeanAbsoluteDeviationOfTop);
         features.add(Features::getBlocksAboveHoles);
         features.add(Features::getSignificantHoleAndTopDifferenceFixed);
-        features.add(Features::hasLevelSurface);
-        features.add(Features::hasRightStep);
-        features.add(Features::hasLeftStep);
         features.add(Features::getAggregateHoleAndWallMeasure);
         features.add(Features::getHoleMeasure);
 
