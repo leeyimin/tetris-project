@@ -369,7 +369,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         initialiseCoefficients(coefficients, features.size());
 
         features.add(Features::getBumpiness);
-        coefficients.add(STARTING_INCREMENT / 8.0);
+        coefficients.add(STARTING_INCREMENT);
         features.add(Features::getTotalHeight);
         coefficients.add(STARTING_INCREMENT);
 
