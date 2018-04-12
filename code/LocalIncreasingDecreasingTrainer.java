@@ -277,7 +277,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
             fw.write("time: " + (lastUpdate - startTime) / (60 * 1000.0) + "\n");
             fw.write("sum: " + bestResult + "\n");
 
-            fw.write("average over 30: " + average + "\n");
+            fw.write("average: " + average + "\n");
             fw.write(bestCoefficient.get(0) + "");
             for (int i = 1; i < coefficients.size(); i++) {
                 fw.write(", " + bestCoefficient.get(i));
