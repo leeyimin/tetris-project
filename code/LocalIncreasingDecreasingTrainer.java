@@ -355,7 +355,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         features.add(Features::getSumOfDepthOfHoles);
         features.add(Features::getMeanAbsoluteDeviationOfTop);
         features.add(Features::getBlocksAboveHoles);
-        features.add(Features::getSignificantHoleAndTopDifference);
+        features.add(Features::getSignificantHoleAndTopDifferenceFixed);
         features.add(Features::hasLevelSurface);
         features.add(Features::hasRightStep);
         features.add(Features::hasLeftStep);

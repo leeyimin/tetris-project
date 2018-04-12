@@ -124,7 +124,7 @@ public class Features {
      * @param testState
      * @return
      */
-    public static Double getSignificantHoleAndTopDifference(TestState testState){
+    public static Double getSignificantHoleAndTopDifferenceFixed(TestState testState){
         int sum = 0;
         for (int i = 0; i < State.COLS; i++) {
             int consec = 0;

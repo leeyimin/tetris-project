@@ -194,7 +194,7 @@ public class CriticalStrategyTrainer extends LocalIncreasingDecreasingTrainer {
         features.add(Features::getHeightAboveHoles);
         features.add(Features::getMeanAbsoluteDeviationOfTop);
         features.add(Features::getBlocksAboveHoles);
-        features.add(Features::getSignificantHoleAndTopDifference);
+        features.add(Features::getSignificantHoleAndTopDifferenceFixed);
         features.add(Features::getNumOfSignificantTopDifference);
         features.add(Features::hasLevelSurface);
 
