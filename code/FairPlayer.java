@@ -9,7 +9,6 @@ public class FairPlayer extends Player{
 
     public FairPlayer(List<Double> coefficients, List<Function<TestState, Double>> features) {
         super(coefficients, features);
-        System.out.println("FAIR PLAYER");
     }
 
     @Override
