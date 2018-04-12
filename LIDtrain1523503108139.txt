@@ -28,3 +28,11 @@ should perturb: false
 
 max moves: 24967
 iterations: 50
+time: 11.11555
+sum: 486126
+average over 30: 83470.76666666666
+0.0, 0.0, 0.0, 64.0, 0.0, 128.0, 0.0, 0.0, 32.0, 0.0, 0.0, 0.0, 0.0, 32.0, 96.0
+should perturb: false
+
+max moves: 68857
+iterations: 68
