@@ -22,7 +22,7 @@ public class Player {
     private long startTime;
 
     public static void main(String[] args) {
-        List<Double> coefficients = Arrays.asList(new Double[] { 11.51, 3.24, -15.31, 0.00, 23.83, -2.02, 3.47, 26.01, -3.10, 0.00, 0.00, -12.97, 12.84, -4.71, 12.02, 1.65, 0.00, 5.42, 2.92, 5.13, -5.64, 19.19, 9.09, 20.28, 13.91, 13.47, 10.26, 17.26, 6.83, 9.93, 0.00, 97.06 });
+        List<Double> coefficients = Arrays.asList(new Double[] { 27.41, -2.06, -4.71, 0.00, 23.83, -2.02, 3.47, 26.01, -3.10, 0.00, 0.00, -12.97, 12.84, -4.71, 12.02, 1.65, 0.00, 5.42, 2.92, 5.13, -5.64, 19.19, 9.09, 20.28, 13.91, 13.47, 10.26, 17.26, 6.83, 9.93, 0.00, 97.06 });
         List<Function<TestState, Double>> features = new ArrayList<>();
         Features.addAllFeatures(features);
         int total = 0;

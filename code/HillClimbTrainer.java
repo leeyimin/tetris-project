@@ -4,7 +4,7 @@ import java.util.function.*;
 public class HillClimbTrainer {
 
     private static final int BATCH_SIZE = 50;
-    private static final int STARTING_MOVES = 1000;
+    private static final int STARTING_MOVES = 2000;
     private static final double THRESHOLD_MOVES = 0.995;
     private static final double STARTING_STEPS = 5.30;
     private static final double DECAY_STEPS = 1.1;
