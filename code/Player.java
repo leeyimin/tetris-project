@@ -10,19 +10,24 @@ public class Player {
     protected static final boolean SHOW_DEATH_STATE = false;
     protected static final int MAX_NUM_MOVES = Integer.MAX_VALUE;
     protected static final boolean WRITE_LOG = false;
+    protected static final int LAST_MOVES = 500;
 
     protected static final int LOG_CYCLE = 100;
 
-    private TFrame frame;
+    protected TFrame frame;
 
     private List<Double> coefficients;
     private List<Function<TestState, Double>> features;
 
-    private int numMoves = 0;
+    protected int numMoves = 0;
     private long startTime;
 
+    private LinkedList<Integer> totalHeightOfState = new LinkedList<>();
+    private int countCritical = 0;
+    private boolean wasCritical = false;
+
     public static void main(String[] args) {
-        List<Double> coefficients = Arrays.asList(new Double[] { 27.41, -2.06, -4.71, 0.00, 23.83, -2.02, 3.47, 26.01, -3.10, 0.00, 0.00, -12.97, 12.84, -4.71, 12.02, 1.65, 0.00, 5.42, 2.92, 5.13, -5.64, 19.19, 9.09, 20.28, 13.91, 13.47, 10.26, 17.26, 6.83, 9.93, 0.00, 97.06 });
+        List<Double> coefficients = Arrays.asList(new Double[]{11.51, 3.24, -15.31, 0.00, 23.83, -2.02, 3.47, 26.01, -3.10, 0.00, 0.00, -12.97, 12.84, -4.71, 12.02, 1.65, 0.00, 5.42, 2.92, 5.13, -5.64, 19.19, 9.09, 20.28, 13.91, 13.47, 10.26, 17.26, 6.83, 9.93, 0.00, 97.06});
         List<Function<TestState, Double>> features = new ArrayList<>();
         Features.addAllFeatures(features);
         int total = 0;
@@ -96,9 +101,23 @@ public class Player {
         return state.getRowsCleared();
     }
 
-    private void writeLog(State state){
-        if (WRITE_LOG && numMoves % LOG_CYCLE == 0) {
-            TestState tState = new TestState(state.getField(), state.getTop(), 0);
+    protected void writeLog(State state){
+        if(!WRITE_LOG) return;
+        TestState tState = new TestState(state.getField(), state.getTop(), 0);
+        totalHeightOfState.addLast(Features.getTotalHeight(tState).intValue());
+        if(totalHeightOfState.size() > LAST_MOVES){
+            totalHeightOfState.removeFirst();
+        }
+
+        if(wasCritical && totalHeightOfState.getLast() < TwoStrategyPlayer.RETURN_TOTAL_HEIGHT){
+            wasCritical = false;
+        }
+        else if(!wasCritical && totalHeightOfState.getLast() >= TwoStrategyPlayer.CRITICAL_TOTAL_HEIGHT){
+            wasCritical = true;
+            countCritical++;
+        }
+
+        if (numMoves % LOG_CYCLE == 0 || state.hasLost()) {
             try {
                 String filename = "data/player" + startTime + ".csv";
                 FileWriter fw = new FileWriter(filename, true); //the true will append the new data
@@ -109,9 +128,23 @@ public class Player {
                 System.err.println("IOException: " + ioe.getMessage());
             }
         }
+        if(state.hasLost()){
+            try {
+                String filename = "data/player" + startTime + ".csv";
+                FileWriter fw = new FileWriter(filename, true); //the true will append the new data
+                for(int i:totalHeightOfState){
+                    fw.write(i +",");
+                }
+                fw.write("\n");
+                fw.write(countCritical + "\n");
+                fw.close();
+            } catch (IOException ioe) {
+                System.err.println("IOException: " + ioe.getMessage());
+            }
+        }
     }
 
-    private void updateBoard(State state) {
+    protected void updateBoard(State state) {
         if (RENDER_BOARD) {
             state.draw();
             state.drawNext(0,0);
@@ -123,7 +156,7 @@ public class Player {
         }
     }
 
-    private void showDeathState(State state){
+    protected void showDeathState(State state){
         int field[][] = state.getField();
 
         if( SHOW_DEATH_STATE && state.hasLost()){
