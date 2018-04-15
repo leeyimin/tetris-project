@@ -1,0 +1,393 @@
+iterations: 50
+max moves: 1000
+increment: 32.0
+epsilon: 0.5
+        features.add(Features::getNegativeOfRowsCleared);
+        features.add(Features::getMaxHeight);
+        features.add(Features::getSumOfDepthOfHoles);
+        features.add(Features::getMeanAbsoluteDeviationOfTop);
+        features.add(Features::getBlocksAboveHoles);
+        features.add(Features::getSignificantHoleAndTopDifferenceFixed);
+        features.add(Features::getBumpiness);
+        features.add(Features::getTotalHeight);
+
+time: 0.3773166666666667
+sum: 19866
+average: 33864.88
+96.0, 0.0, 0.0, 0.0, 0.0, 64.0, 32.0, 160.0
+should perturb: false
+
+max moves: 16137
+iterations: 50
+time: 5.974116666666666
+sum: 314264
+average: 37290.14
+64.0, 0.0, 0.0, 0.0, 0.0, 64.0, 32.0, 160.0
+should perturb: false
+
+max moves: 21210
+iterations: 50
+time: 13.873233333333333
+sum: 405780
+average: 43161.48
+96.0, 0.0, 0.0, 32.0, 0.0, 64.0, 32.0, 160.0
+should perturb: false
+
+max moves: 17462
+iterations: 50
+time: 20.359466666666666
+sum: 341384
+average: 94845.02
+64.0, 0.0, 0.0, 32.0, 0.0, 64.0, 32.0, 160.0
+should perturb: false
+
+max moves: 43715
+iterations: 50
+time: 50.891533333333335
+sum: 844048
+average: 76469.63
+64.0, 0.0, 0.0, 32.0, 0.0, 64.0, 32.0, 160.0
+should perturb: true
+
+max moves: 36467
+iterations: 50
+time: 85.12293333333334
+sum: 320487
+average: 80596.82500000001
+64.0, 0.0, 0.0, 32.0, 0.0, 64.0, 32.0, 160.0
+should perturb: true
+
+max moves: 47257
+iterations: 50
+time: 136.4379
+sum: 807672
+average: 74035.7225
+64.0, 0.0, 0.0, 32.0, 0.0, 64.0, 32.0, 160.0
+should perturb: true
+
+max moves: 45259
+iterations: 50
+time: 180.58575
+sum: 748352
+average: 76648.81125
+64.0, 0.0, 0.0, 32.0, 0.0, 64.0, 32.0, 160.0
+should perturb: true
+
+max moves: 46720
+iterations: 50
+time: 232.13931666666667
+sum: 882526
+average: 86132.1
+64.0, 0.0, 2.0, 64.0, 0.0, 64.0, 32.0, 160.0
+should perturb: false
+
+max moves: 51965
+iterations: 51
+time: 249.01825
+sum: 1025707
+average: 107848.12
+32.0, 0.0, 2.0, 64.0, 0.0, 64.0, 32.0, 160.0
+should perturb: false
+
+max moves: 38497
+iterations: 50
+time: 280.9296
+sum: 736745
+average: 112826.26
+64.0, 0.0, 2.0, 72.0, 0.0, 64.0, 32.0, 168.0
+should perturb: false
+
+max moves: 73140
+iterations: 73
+time: 378.92473333333334
+sum: 1901005
+average: 96541.92
+64.0, 0.0, 2.0, 72.0, 0.0, 64.0, 32.0, 168.0
+should perturb: true
+
+max moves: 55111
+iterations: 55
+time: 450.19938333333334
+sum: 1140477
+average: 101247.96
+64.0, 0.0, 2.0, 72.0, 0.0, 64.0, 33.0, 168.0
+should perturb: false
+
+max moves: 44822
+iterations: 50
+time: 477.02495
+sum: 859149
+average: 101007.05
+64.0, 0.0, 2.0, 72.0, 0.0, 64.0, 33.0, 168.0
+should perturb: true
+
+max moves: 43902
+iterations: 50
+time: 532.7854166666667
+sum: 849081
+average: 93373.22
+66.0, 0.0, 2.0, 72.0, 0.0, 64.0, 32.0, 176.5
+should perturb: false
+
+max moves: 29302
+iterations: 50
+time: 558.18525
+sum: 560600
+average: 93729.77
+66.0, 0.0, 2.0, 72.0, 0.0, 64.0, 32.0, 176.5
+should perturb: true
+
+max moves: 42366
+iterations: 50
+time: 591.9538666666666
+sum: 228909
+average: 85647.155
+66.0, 0.0, 2.0, 72.0, 0.0, 64.0, 32.0, 176.5
+should perturb: true
+
+max moves: 49204
+iterations: 50
+time: 640.0431833333333
+sum: 932784
+average: 96633.4675
+66.0, 0.0, 2.0, 72.0, 0.0, 64.0, 32.0, 176.5
+should perturb: true
+
+max moves: 47310
+iterations: 50
+time: 696.5291
+sum: 865615
+average: 98736.01375
+66.0, 0.0, 2.0, 72.0, 0.0, 64.0, 32.0, 176.5
+should perturb: true
+
+max moves: 40705
+iterations: 50
+time: 746.0447666666666
+sum: 712082
+average: 87323.376875
+66.0, 0.0, 2.0, 72.0, 0.0, 64.0, 32.0, 176.5
+should perturb: true
+
+max moves: 30460
+iterations: 50
+time: 769.54845
+sum: 593866
+average: 85976.0484375
+66.0, 0.0, 2.0, 72.0, 0.0, 64.0, 32.0, 176.5
+should perturb: true
+
+max moves: 35896
+iterations: 50
+time: 811.9828166666666
+sum: 655158
+average: 91210.28421874999
+66.0, 0.0, 2.0, 72.0, 0.0, 64.0, 32.0, 176.5
+should perturb: true
+
+max moves: 31151
+iterations: 50
+time: 835.7369666666667
+sum: 601098
+average: 99108.94
+66.0, 0.0, 0.0, 104.0, 0.0, 96.0, 32.0, 176.5
+should perturb: false
+
+max moves: 63057
+iterations: 63
+time: 917.79305
+sum: 1494771
+average: 81668.39
+66.0, 0.0, 0.0, 104.0, 0.0, 96.0, 32.0, 176.5
+should perturb: true
+
+max moves: 42953
+iterations: 50
+time: 961.8661333333333
+sum: 838197
+average: 86811.56
+40.0, 0.0, 0.0, 144.0, 0.0, 96.0, 32.0, 184.5
+should perturb: false
+
+max moves: 15577
+iterations: 50
+time: 976.5541333333333
+sum: 310613
+average: 100152.36
+40.0, -32.0, 0.0, 112.0, 0.0, 96.0, 32.0, 152.5
+should perturb: false
+
+max moves: 70702
+iterations: 70
+time: 1073.1054333333334
+sum: 1770956
+average: 99658.65
+40.0, -32.0, 0.0, 112.0, 0.0, 96.0, 32.0, 152.5
+should perturb: true
+
+max moves: 62222
+iterations: 62
+time: 1098.38035
+sum: 127435
+average: 98799.135
+40.0, -32.0, 0.0, 112.0, 0.0, 96.0, 32.0, 152.5
+should perturb: true
+
+max moves: 40294
+iterations: 50
+time: 1149.7865833333333
+sum: 765077
+average: 105052.8075
+40.0, -32.0, 0.0, 112.0, 0.0, 96.0, 32.0, 152.5
+should perturb: true
+
+max moves: 33655
+iterations: 50
+time: 1172.7346833333334
+sum: 27600
+average: 95793.55374999999
+40.0, -32.0, 0.0, 112.0, 0.0, 96.0, 32.0, 152.5
+should perturb: true
+
+max moves: 39807
+iterations: 50
+time: 1215.44575
+sum: 751765
+average: 91869.236875
+40.0, -32.0, 0.0, 112.0, 0.0, 96.0, 32.0, 152.5
+should perturb: true
+
+max moves: 49377
+iterations: 50
+time: 1252.6112166666667
+sum: 938213
+average: 107377.62
+40.0, -32.0, 0.0, 104.0, 0.0, 64.0, 32.0, 152.5
+should perturb: false
+
+max moves: 52865
+iterations: 52
+time: 1293.1443833333333
+sum: 1071331
+average: 128523.12
+40.0, -32.0, 0.0, 144.0, 0.0, 64.0, 32.0, 192.5
+should perturb: false
+
+max moves: 29382
+iterations: 50
+time: 1318.7415833333334
+sum: 568744
+average: 120092.62
+40.0, -32.0, 0.0, 144.0, 0.0, 64.0, 32.0, 192.5
+should perturb: true
+
+max moves: 30784
+iterations: 50
+time: 1364.8462833333333
+sum: 416351
+average: 131324.69
+40.0, -32.0, 0.0, 144.0, 0.0, 64.0, 32.0, 192.5
+should perturb: true
+
+max moves: 54482
+iterations: 54
+time: 1422.76345
+sum: 1126020
+average: 132145.18
+0.0, -32.0, 0.0, 134.0, 0.0, 64.0, 30.0, 160.5
+should perturb: false
+
+max moves: 31180
+iterations: 50
+time: 1451.5240333333334
+sum: 596530
+average: 124871.01999999999
+0.0, -32.0, 0.0, 134.0, 0.0, 64.0, 30.0, 160.5
+should perturb: true
+
+max moves: 44698
+iterations: 50
+time: 1476.2149333333334
+sum: 13106
+average: 125691.2
+0.0, -32.0, 0.0, 134.0, 0.0, 64.0, 30.0, 160.5
+should perturb: true
+
+max moves: 42700
+iterations: 50
+time: 1513.2515666666666
+sum: 832119
+average: 133600.41
+0.0, -32.0, 0.0, 134.0, 0.0, 64.0, 30.0, 160.5
+should perturb: true
+
+max moves: 52841
+iterations: 52
+time: 1538.75985
+sum: 5738
+average: 145722.845
+0.0, -32.0, 0.0, 134.0, 0.0, 64.0, 30.0, 160.5
+should perturb: true
+
+max moves: 51421
+iterations: 51
+time: 1577.2595666666666
+sum: 999517
+average: 128366.28
+0.0, -24.0, 0.0, 134.0, 0.0, 64.0, 30.0, 160.0
+should perturb: false
+
+max moves: 70690
+iterations: 70
+time: 1680.7798833333334
+sum: 1874568
+average: 165234.76
+0.0, -24.0, 0.0, 102.0, 0.0, 64.0, 27.5, 128.0
+should perturb: false
+
+max moves: 48215
+iterations: 50
+time: 1720.7460166666667
+sum: 941372
+average: 171018.90000000002
+0.0, -24.0, 0.0, 102.0, 0.0, 64.0, 27.5, 128.0
+should perturb: true
+
+max moves: 59427
+iterations: 59
+time: 1759.65365
+sum: 22112
+average: 164680.13
+0.0, -24.0, 0.0, 102.0, 0.0, 64.0, 27.5, 128.0
+should perturb: true
+
+max moves: 53742
+iterations: 53
+time: 1848.1690666666666
+sum: 1021466
+average: 137388.95500000002
+0.0, -24.0, 0.0, 102.0, 0.0, 64.0, 27.5, 128.0
+should perturb: true
+
+max moves: 57423
+iterations: 57
+time: 1877.5984333333333
+sum: 43479
+average: 129978.5075
+0.0, -24.0, 0.0, 102.0, 0.0, 64.0, 27.5, 128.0
+should perturb: true
+
+max moves: 59749
+iterations: 59
+time: 1916.3864666666666
+sum: 1353528
+average: 133006.81375
+0.0, -24.0, 0.0, 102.0, 0.0, 64.0, 27.5, 128.0
+should perturb: true
+
+max moves: 61269
+iterations: 61
+
+
+0.0, -24.0, 0.0, 102.0, 0.0, 64.0, 27.5, 128.0
+

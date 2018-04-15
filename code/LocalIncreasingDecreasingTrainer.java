@@ -86,15 +86,10 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
             fw.write("epsilon: " + EPSILON + "\n");
             fw.write("        features.add(Features::getNegativeOfRowsCleared);\n" +
                     "        features.add(Features::getMaxHeight);\n" +
-                    "        features.add(Features::getNumHoles);\n" +
                     "        features.add(Features::getSumOfDepthOfHoles);\n" +
                     "        features.add(Features::getMeanAbsoluteDeviationOfTop);\n" +
                     "        features.add(Features::getBlocksAboveHoles);\n" +
                     "        features.add(Features::getSignificantHoleAndTopDifferenceFixed);\n" +
-                    "        features.add(Features::getAggregateHoleAndWallMeasure);\n" +
-                    "        features.add(Features::getHoleMeasure);\n" +
-                    "        features.add(Features::getNumColsWithHoles);\n" +
-                    "        features.add(Features::getNumRowsWithHoles);\n" +
                     "        features.add(Features::getBumpiness);\n" +
                     "        features.add(Features::getTotalHeight);\n");
             fw.write("\n");
@@ -204,7 +199,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         for(double r: coefficients){
             if(r!=0) countNonZero++;
         }
-        int toZero = random.nextInt()%countNonZero;
+        int toZero = random.nextInt(countNonZero);
         for(int i=0;i<coefficients.size();i++){
             if(coefficients.get(i)== 0) continue;
             if(toZero == 0){
@@ -384,18 +379,10 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
 
         features.add(Features::getNegativeOfRowsCleared);
         features.add(Features::getMaxHeight);
-        features.add(Features::getNumHoles);
         features.add(Features::getSumOfDepthOfHoles);
         features.add(Features::getMeanAbsoluteDeviationOfTop);
         features.add(Features::getBlocksAboveHoles);
         features.add(Features::getSignificantHoleAndTopDifferenceFixed);
-        features.add(Features::getAggregateHoleAndWallMeasure);
-        features.add(Features::getHoleMeasure);
-
-
-        features.add(Features::getNumColsWithHoles);
-        features.add(Features::getNumRowsWithHoles);
-
         initialiseCoefficients(coefficients, features.size());
 
         features.add(Features::getBumpiness);

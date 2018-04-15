@@ -1,0 +1,170 @@
+iterations: 50
+max moves: 1000
+increment: 32.0
+epsilon: 0.5
+        features.add(Features::getNegativeOfRowsCleared);
+        features.add(Features::getMaxHeight);
+        features.add(Features::getNumHoles);
+        features.add(Features::getSumOfDepthOfHoles);
+        features.add(Features::getMeanAbsoluteDeviationOfTop);
+        features.add(Features::getBlocksAboveHoles);
+        features.add(Features::getSignificantHoleAndTopDifferenceFixed);
+        features.add(Features::getAggregateHoleAndWallMeasure);
+        features.add(Features::getHoleMeasure);
+        features.add(Features::getNumColsWithHoles);
+        features.add(Features::getNumRowsWithHoles);
+        features.add(Features::getBumpiness);
+        features.add(Features::getTotalHeight);
+
+time: 1.7589833333333333
+sum: 19815
+average: 9086.1
+-32.0, 2.0, 0.0, 0.0, 32.0, 32.0, 64.0, 0.0, 0.0, 0.0, 2.0, 32.0, 128.0
+should perturb: false
+
+max moves: 5100
+iterations: 50
+time: 4.82445
+sum: 98057
+average: 19697.9
+-32.0, 2.0, 0.0, 0.0, 96.0, 32.0, 96.0, 0.0, 0.0, 0.0, 2.0, 32.0, 160.0
+should perturb: false
+
+max moves: 3012
+iterations: 50
+time: 7.967733333333333
+sum: 59363
+average: 20327.66
+-32.0, 2.0, 0.0, 0.0, 96.0, 32.0, 64.0, 0.0, 0.0, 0.0, 2.0, 32.0, 160.0
+should perturb: false
+
+max moves: 11595
+iterations: 50
+time: 17.41755
+sum: 226079
+average: 30061.56
+0.0, 2.0, 0.0, 0.0, 96.0, 32.0, 80.0, 0.0, 0.0, 0.0, 2.0, 40.0, 192.0
+should perturb: false
+
+max moves: 19977
+iterations: 50
+time: 23.40955
+sum: 390988
+average: 28376.33
+0.0, 2.0, 0.0, 0.0, 96.0, 32.0, 80.0, 0.0, 0.0, 0.0, 2.0, 40.0, 192.0
+should perturb: true
+
+max moves: 13662
+iterations: 50
+time: 42.0202
+sum: 271687
+average: 43842.82
+0.0, -30.0, 0.0, 0.0, 96.0, 0.0, 144.0, 0.0, 0.0, 0.0, 2.0, 42.0, 96.0
+should perturb: false
+
+max moves: 22767
+iterations: 50
+time: 52.29163333333333
+sum: 432945
+average: 55135.14
+0.0, -30.0, 0.0, 0.0, 128.0, 0.0, 144.0, 0.0, 0.0, 0.0, 2.0, 42.0, 96.0
+should perturb: false
+
+max moves: 16555
+iterations: 50
+time: 65.94936666666666
+sum: 322054
+average: 71345.7
+0.0, -30.0, 0.0, 0.0, 128.0, 0.0, 136.0, 0.0, 0.0, 0.0, 2.0, 34.0, 96.0
+should perturb: false
+
+max moves: 19560
+iterations: 50
+time: 76.83045
+sum: 387239
+average: 78589.63
+0.0, -30.0, 0.0, 0.0, 128.0, 0.0, 136.0, 0.0, 0.0, 0.0, 2.0, 34.0, 96.0
+should perturb: true
+
+max moves: 40231
+iterations: 50
+time: 102.5663
+sum: 770785
+average: 80786.225
+0.0, -30.0, 0.0, 0.0, 128.0, 0.0, 136.0, 0.0, 0.0, 0.0, 2.0, 34.0, 96.0
+should perturb: true
+
+max moves: 33339
+iterations: 50
+time: 124.0683
+sum: 655446
+average: 83669.42
+32.0, -30.0, 0.0, 0.0, 128.0, 0.0, 136.0, 0.0, 0.0, 0.0, 0.0, 34.0, 96.0
+should perturb: false
+
+max moves: 30430
+iterations: 50
+time: 147.82301666666666
+sum: 586728
+average: 79388.36
+32.0, -30.0, 0.0, 0.0, 128.0, 0.0, 136.0, 0.0, 0.0, 0.0, 0.0, 34.0, 96.0
+should perturb: true
+
+max moves: 31152
+iterations: 50
+time: 197.11053333333334
+sum: 564890
+average: 74624.45999999999
+32.0, -30.0, 0.0, 0.0, 128.0, 0.0, 136.0, 0.0, 0.0, 0.0, 0.0, 34.0, 96.0
+should perturb: true
+
+max moves: 27583
+iterations: 50
+time: 213.39435
+sum: 64575
+average: 72605.56
+32.0, -30.0, 0.0, 0.0, 128.0, 0.0, 136.0, 0.0, 0.0, 0.0, 0.0, 34.0, 96.0
+should perturb: true
+
+max moves: 28517
+iterations: 50
+time: 235.47348333333332
+sum: 542239
+average: 67468.33
+32.0, -30.0, 0.0, 0.0, 128.0, 0.0, 136.0, 0.0, 0.0, 0.0, 0.0, 34.0, 96.0
+should perturb: true
+
+max moves: 28417
+iterations: 50
+time: 260.1845333333333
+sum: 544634
+average: 74178.505
+32.0, -30.0, 0.0, 0.0, 128.0, 0.0, 136.0, 0.0, 0.0, 0.0, 0.0, 34.0, 96.0
+should perturb: true
+
+max moves: 22691
+iterations: 50
+time: 278.8959
+sum: 431497
+average: 70516.1525
+32.0, -30.0, 0.0, 0.0, 128.0, 0.0, 136.0, 0.0, 0.0, 0.0, 0.0, 34.0, 96.0
+should perturb: true
+
+max moves: 27018
+iterations: 50
+time: 297.0833666666667
+sum: 46427
+average: 70039.94625000001
+32.0, -30.0, 0.0, 0.0, 128.0, 0.0, 136.0, 0.0, 0.0, 0.0, 0.0, 34.0, 96.0
+should perturb: true
+
+max moves: 23612
+iterations: 50
+time: 320.80811666666665
+sum: 462982
+average: 64650.403125000004
+32.0, -30.0, 0.0, 0.0, 128.0, 0.0, 136.0, 0.0, 0.0, 0.0, 0.0, 34.0, 96.0
+should perturb: true
+
+max moves: 19417
+iterations: 50

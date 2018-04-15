@@ -1,0 +1,74 @@
+iterations: 50
+max moves: 1000
+increment: 32.0
+epsilon: 0.5
+        features.add(Features::getNegativeOfRowsCleared);
+        features.add(Features::getMaxHeight);
+        features.add(Features::getNumHoles);
+        features.add(Features::getSumOfDepthOfHoles);
+        features.add(Features::getMeanAbsoluteDeviationOfTop);
+        features.add(Features::getBlocksAboveHoles);
+        features.add(Features::getSignificantHoleAndTopDifferenceFixed);
+        features.add(Features::getAggregateHoleAndWallMeasure);
+        features.add(Features::getHoleMeasure);
+        features.add(Features::getNumColsWithHoles);
+        features.add(Features::getNumRowsWithHoles);
+        features.add(Features::getBumpiness);
+        features.add(Features::getTotalHeight);
+
+time: 0.883
+sum: 19873
+average: 90098.5
+32.0, 0.0, 0.0, 0.0, 96.0, 0.0, 64.0, 0.0, 0.0, 0.0, 0.0, 32.0, 160.0
+should perturb: false
+
+max moves: 58880
+iterations: 58
+time: 95.43156666666667
+sum: 1336909
+average: 110048.98
+24.0, 0.0, 0.0, 0.0, 64.0, 0.0, 64.0, 0.0, 0.0, 0.0, -2.0, 32.0, 160.0
+should perturb: false
+
+max moves: 49077
+iterations: 50
+time: 165.45866666666666
+sum: 937606
+average: 108511.1
+24.0, 0.0, 0.0, 0.0, 64.0, 0.0, 64.0, 0.0, 0.0, 0.0, -2.0, 32.0, 160.0
+should perturb: true
+
+max moves: 55628
+iterations: 55
+time: 202.75253333333333
+sum: 21177
+average: 104935.21
+24.0, 0.0, 0.0, 0.0, 64.0, 0.0, 64.0, 0.0, 0.0, 0.0, -2.0, 32.0, 160.0
+should perturb: true
+
+max moves: 78910
+iterations: 78
+time: 429.44006666666667
+sum: 2272779
+average: 112671.46
+24.0, 0.0, 0.0, 0.0, 64.5, 0.0, 72.0, 0.0, 0.0, 0.0, -2.0, 32.0, 168.5
+should perturb: false
+
+max moves: 47490
+iterations: 50
+time: 494.64175
+sum: 902677
+average: 126892.51000000001
+24.0, 0.0, 0.0, 0.0, 64.5, 0.0, 72.0, 0.0, 0.0, 0.0, -2.0, 32.0, 168.5
+should perturb: true
+
+max moves: 89433
+iterations: 89
+time: 759.8569166666666
+sum: 2858528
+average: 113221.07500000001
+24.0, 0.0, 0.0, 0.0, 64.5, 0.0, 72.0, 0.0, 0.0, 0.0, -2.0, 32.0, 168.5
+should perturb: true
+
+max moves: 96919
+iterations: 96
