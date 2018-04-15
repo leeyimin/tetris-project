@@ -86,9 +86,9 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
             fw.write("epsilon: " + EPSILON + "\n");
             fw.write("        features.add(Features::getNegativeOfRowsCleared);\n" +
                     "        features.add(Features::getMaxHeight);\n" +
-                    "        features.add(Features::getSumOfDepthOfHoles);\n" +
                     "        features.add(Features::getMeanAbsoluteDeviationOfTop);\n" +
                     "        features.add(Features::getBlocksAboveHoles);\n" +
+                    "        features.add(Features::getNumHoles);\n" +
                     "        features.add(Features::getSignificantHoleAndTopDifferenceFixed);\n" +
                     "        features.add(Features::getBumpiness);\n" +
                     "        features.add(Features::getTotalHeight);\n");
@@ -112,7 +112,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
     }
 
     public boolean shouldPrune(){
-        if(rounds <30 || (iterations - rounds) < 30){
+        if(rounds < 30){
             return false;
             //cannot apply CLT
         }
@@ -120,7 +120,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         if((double)rSum/rounds >= (double) bestResult/iterations) return false;
 
         double avgStdDev = Math.sqrt((squareSum - (double) rSum*rSum/rounds )/ (rounds-1) / (iterations-rounds));
-        if((double) rSum / rounds + 3 * avgStdDev < (double) (bestResult-rSum) / (iterations-rounds)){
+        if((double) rSum / rounds + 3 * avgStdDev < (double) rSum /iterations){
             System.out.println("CI prune");
             return true;
         }
@@ -224,35 +224,40 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         boolean shouldPerturb = false;
         lastUpdate = System.currentTimeMillis();
 
-        BasicTrainer trainer = BasicFairTrainer.getTrainerResults(bestCoefficient, features, 50);
+        BasicTrainer trainer = BasicFairTrainer.getTrainerResults(bestCoefficient, features, 100);
         double currAverage = trainer.getAverage();
 
-        if(bestCoefficient.equals(backupBest)){
-            backupBestAverage = currAverage = (trainer.getAverage() + backupBestAverage) / 2;
-            modifyParameters(((trainer.getPercentile(TARGET_PERCENTILE) * 10 / 4) + moves) / 2);
-            shouldPerturb = true;
-        }
-        else if(currAverage > backupBestAverage){
-            backupBestAverage = currAverage;
-            backupBest = new ArrayList<>(bestCoefficient);
-            modifyParameters(trainer.getPercentile(TARGET_PERCENTILE) * 10 / 4);
 
-        }
-        else{
-            BasicTrainer retest = BasicFairTrainer.getTrainerResults(backupBest, features, 50);
-            backupBestAverage = (retest.getAverage() + backupBestAverage) / 2;
-            if (currAverage > backupBestAverage) {
-                backupBestAverage = currAverage;
-                backupBest = new ArrayList<>(bestCoefficient);
-                modifyParameters(trainer.getPercentile(TARGET_PERCENTILE) * 10 / 4);
+        backupBestAverage = currAverage;
+        backupBest = new ArrayList<>(bestCoefficient);
+        modifyParameters(trainer.getPercentile(TARGET_PERCENTILE) * 10 / 4);
 
-            } else {
-                currAverage = backupBestAverage;
-                bestCoefficient = new ArrayList<>(backupBest);
-                modifyParameters(((retest.getPercentile(TARGET_PERCENTILE) * 10 / 4) + moves) / 2);
-                shouldPerturb = true;
-            }
-        }
+//        if(bestCoefficient.equals(backupBest)){
+//            backupBestAverage = currAverage = (trainer.getAverage() + backupBestAverage) / 2;
+//            modifyParameters(((trainer.getPercentile(TARGET_PERCENTILE) * 10 / 4) + moves) / 2);
+//            shouldPerturb = true;
+//        }
+//        else if(currAverage > backupBestAverage){
+//            backupBestAverage = currAverage;
+//            backupBest = new ArrayList<>(bestCoefficient);
+//            modifyParameters(trainer.getPercentile(TARGET_PERCENTILE) * 10 / 4);
+//
+//        }
+//        else{
+//            BasicTrainer retest = BasicFairTrainer.getTrainerResults(backupBest, features, 50);
+//            backupBestAverage = (retest.getAverage() + backupBestAverage) / 2;
+//            if (currAverage > backupBestAverage) {
+//                backupBestAverage = currAverage;
+//                backupBest = new ArrayList<>(bestCoefficient);
+//                modifyParameters(trainer.getPercentile(TARGET_PERCENTILE) * 10 / 4);
+//
+//            } else {
+//                currAverage = backupBestAverage;
+//                bestCoefficient = new ArrayList<>(backupBest);
+//                modifyParameters(((retest.getPercentile(TARGET_PERCENTILE) * 10 / 4) + moves) / 2);
+//                shouldPerturb = true;
+//            }
+//        }
 
         coefficients =  new ArrayList<>(bestCoefficient);
 
@@ -283,7 +288,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         increment = direction * STARTING_INCREMENT;
 
         this.moves = moves;
-        iterations = Math.max(50, moves/1000);
+        iterations = Math.max(50, moves/500);
 
 
         resultsInRound = new int[iterations];
@@ -379,9 +384,9 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
 
         features.add(Features::getNegativeOfRowsCleared);
         features.add(Features::getMaxHeight);
-        features.add(Features::getSumOfDepthOfHoles);
         features.add(Features::getMeanAbsoluteDeviationOfTop);
         features.add(Features::getBlocksAboveHoles);
+        features.add(Features::getNumHoles);
         features.add(Features::getSignificantHoleAndTopDifferenceFixed);
         initialiseCoefficients(coefficients, features.size());
 
