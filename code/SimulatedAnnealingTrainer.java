@@ -68,7 +68,11 @@ public class SimulatedAnnealingTrainer extends Trainer {
         double randomSign = (double)((rng.nextInt(2)) * 2 - 1);
         List<Double> newCoefficients = new ArrayList<>();
         for (Double coefficient : this.bestCoefficients) {
-            newCoefficients.add(coefficient + randomSign * (this.currentStepSize * rng.nextDouble()));
+            if (rng.nextInt(3) <= 1) {
+                newCoefficients.add(coefficient + randomSign * (this.currentStepSize * rng.nextDouble()));
+            } else {
+                newCoefficients.add(coefficient);
+            }
         }
         this.coefficients = newCoefficients;
 
