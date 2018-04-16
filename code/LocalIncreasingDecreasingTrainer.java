@@ -84,14 +84,24 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
             fw.write("max moves: " + moves + "\n");
             fw.write("increment: " + STARTING_INCREMENT + "\n");
             fw.write("epsilon: " + EPSILON + "\n");
-            fw.write("        features.add(Features::getNegativeOfRowsCleared);\n" +
+            fw.write("        Features.addAllColHeightFeatures(features);\n" +
+                    "        Features.addAllHeightDiffFeatures(features);\n" +
+                    "        features.add(Features::getNumHoles);\n" +
+                    "        features.add(Features::getAggregateHoleAndWallMeasure);\n" +
+                    "        features.add(Features::hasLeftStep);\n" +
+                    "        features.add(Features::hasRightStep);\n" +
+                    "        features.add(Features::hasLevelSurface);\n" +
+                    "        features.add(Features::getNumOfSignificantTopDifference);\n" +
+                    "        features.add(Features::getNumRowsWithHoles);\n" +
+                    "        features.add(Features::getNumColsWithHoles);\n" +
+                    "        features.add(Features::getNegativeOfRowsCleared);\n" +
                     "        features.add(Features::getMaxHeight);\n" +
+                    "        features.add(Features::getSumOfDepthOfHoles);\n" +
                     "        features.add(Features::getMeanAbsoluteDeviationOfTop);\n" +
                     "        features.add(Features::getBlocksAboveHoles);\n" +
-                    "        features.add(Features::getNumHoles);\n" +
                     "        features.add(Features::getSignificantHoleAndTopDifferenceFixed);\n" +
                     "        features.add(Features::getBumpiness);\n" +
-                    "        features.add(Features::getTotalHeight);\n");
+                    "        features.add(Features::getTotalHeight);");
             fw.write("\n");
             fw.close();
         } catch (IOException ioe) {
@@ -224,40 +234,40 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         boolean shouldPerturb = false;
         lastUpdate = System.currentTimeMillis();
 
-        BasicTrainer trainer = BasicFairTrainer.getTrainerResults(bestCoefficient, features, 100);
+        BasicTrainer trainer = BasicFairTrainer.getTrainerResults(bestCoefficient, features, 50);
         double currAverage = trainer.getAverage();
 
 
-        backupBestAverage = currAverage;
-        backupBest = new ArrayList<>(bestCoefficient);
-        modifyParameters(trainer.getPercentile(TARGET_PERCENTILE) * 10 / 4);
+//        backupBestAverage = currAverage;
+//        backupBest = new ArrayList<>(bestCoefficient);
+//        modifyParameters(trainer.getPercentile(TARGET_PERCENTILE) * 10 / 4);
 
-//        if(bestCoefficient.equals(backupBest)){
-//            backupBestAverage = currAverage = (trainer.getAverage() + backupBestAverage) / 2;
-//            modifyParameters(((trainer.getPercentile(TARGET_PERCENTILE) * 10 / 4) + moves) / 2);
-//            shouldPerturb = true;
-//        }
-//        else if(currAverage > backupBestAverage){
-//            backupBestAverage = currAverage;
-//            backupBest = new ArrayList<>(bestCoefficient);
-//            modifyParameters(trainer.getPercentile(TARGET_PERCENTILE) * 10 / 4);
-//
-//        }
-//        else{
-//            BasicTrainer retest = BasicFairTrainer.getTrainerResults(backupBest, features, 50);
-//            backupBestAverage = (retest.getAverage() + backupBestAverage) / 2;
-//            if (currAverage > backupBestAverage) {
-//                backupBestAverage = currAverage;
-//                backupBest = new ArrayList<>(bestCoefficient);
-//                modifyParameters(trainer.getPercentile(TARGET_PERCENTILE) * 10 / 4);
-//
-//            } else {
-//                currAverage = backupBestAverage;
-//                bestCoefficient = new ArrayList<>(backupBest);
-//                modifyParameters(((retest.getPercentile(TARGET_PERCENTILE) * 10 / 4) + moves) / 2);
-//                shouldPerturb = true;
-//            }
-//        }
+        if(bestCoefficient.equals(backupBest)){
+            backupBestAverage = currAverage = (trainer.getAverage() + backupBestAverage) / 2;
+            modifyParameters(((trainer.getPercentile(TARGET_PERCENTILE) * 10 / 4) + moves) / 2);
+            shouldPerturb = true;
+        }
+        else if(currAverage > backupBestAverage){
+            backupBestAverage = currAverage;
+            backupBest = new ArrayList<>(bestCoefficient);
+            modifyParameters(trainer.getPercentile(TARGET_PERCENTILE) * 10 / 4);
+
+        }
+        else{
+            BasicTrainer retest = BasicFairTrainer.getTrainerResults(backupBest, features, 50);
+            backupBestAverage = (retest.getAverage() + backupBestAverage) / 2;
+            if (currAverage > backupBestAverage) {
+                backupBestAverage = currAverage;
+                backupBest = new ArrayList<>(bestCoefficient);
+                modifyParameters(trainer.getPercentile(TARGET_PERCENTILE) * 10 / 4);
+
+            } else {
+                currAverage = backupBestAverage;
+                bestCoefficient = new ArrayList<>(backupBest);
+                modifyParameters(((retest.getPercentile(TARGET_PERCENTILE) * 10 / 4) + moves) / 2);
+                shouldPerturb = true;
+            }
+        }
 
         coefficients =  new ArrayList<>(bestCoefficient);
 
@@ -288,7 +298,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         increment = direction * STARTING_INCREMENT;
 
         this.moves = moves;
-        iterations = Math.max(50, moves/500);
+        iterations = Math.max(50, moves/1000);
 
 
         resultsInRound = new int[iterations];
@@ -382,18 +392,31 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
 
         List<Function<TestState, Double>> features = new ArrayList<>();
 
-        features.add(Features::getNegativeOfRowsCleared);
-        features.add(Features::getMaxHeight);
-        features.add(Features::getMeanAbsoluteDeviationOfTop);
-        features.add(Features::getBlocksAboveHoles);
+        Features.addAllColHeightFeatures(features);
+        Features.addAllHeightDiffFeatures(features);
         features.add(Features::getNumHoles);
-        features.add(Features::getSignificantHoleAndTopDifferenceFixed);
+        features.add(Features::getAggregateHoleAndWallMeasure);
+        features.add(Features::hasLeftStep);
+        features.add(Features::hasRightStep);
+        features.add(Features::hasLevelSurface);
+        features.add(Features::getNumOfSignificantTopDifference);
+        features.add(Features::getNumRowsWithHoles);
+        features.add(Features::getNumColsWithHoles);
+
+
         initialiseCoefficients(coefficients, features.size());
 
+
+        features.add(Features::getNegativeOfRowsCleared);
+        features.add(Features::getMaxHeight);
+        features.add(Features::getSumOfDepthOfHoles);
+        features.add(Features::getMeanAbsoluteDeviationOfTop);
+        features.add(Features::getBlocksAboveHoles);
+        features.add(Features::getSignificantHoleAndTopDifferenceFixed);
         features.add(Features::getBumpiness);
-        coefficients.add(STARTING_INCREMENT);
         features.add(Features::getTotalHeight);
-        coefficients.add(STARTING_INCREMENT);
+
+        coefficients.addAll(Arrays.asList(44.0, -6.0, 0.0, 72.0, 2.0, 97.5, 48.0, 226.0));
 
         new LocalIncreasingDecreasingTrainer(coefficients, features).train();
     }
