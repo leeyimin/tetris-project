@@ -5,9 +5,9 @@ import java.util.stream.*;
 public class SATrainer {
 
     private static final int BATCH_SIZE = 100;
-    private static final int STARTING_MOVES = 1000;
+    private static final int STARTING_MOVES = 4000;
     private static final double THRESHOLD_MOVES = 1.0;
-    private static final double DELTA_TIME = 0.01;
+    private static final double DELTA_TIME = 0.001;
 
     private int numBatches;
     private int numMoves;
