@@ -6,7 +6,7 @@ import java.util.function.Function;
 
 //Trigonometric additive cooling
 // http://what-when-how.com/artificial-intelligence/a-comparison-of-cooling-schedules-for-simulated-annealing-artificial-intelligence/
-public class SimulatedAnnealingTrainer extends Trainer {
+public class ExponentialStepDecayLocalTrainer extends Trainer {
 
     private static final int BATCH_SIZE = 100;
     private static final int NUM_BATCHES = 10000;
