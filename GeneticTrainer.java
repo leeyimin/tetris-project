@@ -80,10 +80,10 @@ public class GeneticTrainer {
         double firstRowsCleared = (double) this.population.get(0).fitness / BATCH_SIZE;
         double secondRowsCleared = (double) this.population.get(1).fitness / BATCH_SIZE;
         double thirdRowsCleared = (double) this.population.get(2).fitness / BATCH_SIZE;
-        double theoreticalMaxRowsCleared = this.numMoves * 0.4;
-        double threshold = 1.0 * theoreticalMaxRowsCleared;
+	double theoreticalMaxRowsCleared = this.numMoves * 0.4;
+	double threshold = 1.0 * theoreticalMaxRowsCleared;
 
-        if (firstRowsCleared > threshold && secondRowsCleared > threshold && thirdRowsCleared > threshold) {
+	if (firstRowsCleared > threshold && secondRowsCleared > threshold && thirdRowsCleared > threshold) {
             this.numMoves *= 2;
         }
     }
@@ -100,19 +100,20 @@ public class GeneticTrainer {
         System.out.println("===========================");
         System.out.println(" RESULT OF GENERATION #" + this.generation);
         System.out.println("===========================");
-        System.out.println();
+	System.out.println();
         this.population.get(0).print();
-        System.out.println();
+	System.out.println();
         this.population.get(1).print();
-        System.out.println();
+	System.out.println();
         this.population.get(2).print();
-        System.out.println();
+	System.out.println();
     }
 
 
     public static void main(String args[]) {
         List<BiFunction<TestableState, TestableState, Integer>> features = new ArrayList<>();
         Features.addAllFeatures(features);
+
         new GeneticTrainer(features).train();
     }
 

@@ -36,21 +36,6 @@ public class Player {
         return bestMove;
     }
 
-    public double eval(TestableState state, TestableState prevState) {
-        if (state == null) {
-            return Double.MAX_VALUE;
-        }
-
-        int score = 0;
-        System.out.println("%%%%%%%%%");
-        for (int i = 0; i < this.coefficients.size(); i++) {
-            System.out.println(this.features.get(i).apply(state, prevState));
-            score += this.coefficients.get(i) * this.features.get(i).apply(state, prevState);
-        }
-        System.out.println("%%%%%%%%%");
-        return score;
-    }
-
     public double evaluateState(TestableState state, TestableState prevState) {
         if (state == null) {
             return Double.MAX_VALUE;

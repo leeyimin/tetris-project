@@ -28,8 +28,6 @@ public class Features {
     }
 
     /**
-     * This code is buggy. Someone please fix.
-     *
      * @param state
      * @return height of the landing piece
      */
@@ -106,6 +104,7 @@ public class Features {
         }
         return numTransitions;
     }
+
     /**
      * @param state
      * @return the number of row transitions
@@ -120,32 +119,6 @@ public class Features {
             }
         }
         return numTransitions;
-    }
-
-    /**
-     * Penalizes more for taller holes and significant top difference
-     * For each hole, cost = height of hole
-     * For each dip, cost = smaller of the height difference
-     *
-     * @param state
-     * @return
-     */
-    public static Integer getSignificantHoleAndTopDifference(TestableState state, TestableState prevState) {
-        int sum = 0;
-        for (int i = 0; i < TestableState.COLS; i++) {
-            int consec = 0;
-            for (int j = 0; j < state.getTop()[i]; j++) {
-                if (state.getField()[j][i] == 0) consec++;
-                else sum += consec;
-            }
-            if ((i == 0 || state.getTop()[i - 1] >= state.getTop()[i] + 3) && (i == TestableState.COLS - 1 || state.getTop()[i + 1] >= state.getTop()[i] + 3)) {
-                if (i == TestableState.COLS - 1) sum += (state.getTop()[i - 1] - state.getTop()[i]);
-                else if (i == 0) sum += (state.getTop()[i + 1] - state.getTop()[i]);
-                else sum += Math.min(state.getTop()[i - 1] - state.getTop()[i], state.getTop()[i + 1] - state.getTop()[i]);
-            }
-
-        }
-        return sum;
     }
 
     /**

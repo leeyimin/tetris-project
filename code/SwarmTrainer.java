@@ -6,10 +6,10 @@ public class SwarmTrainer {
 
     public static final int STARTING_MOVES = 1000;
     public static final int BATCH_SIZE = 20;
-    public static final int SWARM_SIZE = 20;
-    public static final double PHI_P = 1;
-    public static final double PHI_G = 1;
-    public static final double OMEGA = 1;
+    public static final int SWARM_SIZE = 50;
+    public static final double PHI_P = 0.5;
+    public static final double PHI_G = 0.3;
+    public static final double OMEGA = 0.2;
 
     private List<BiFunction<TestableState, TestableState, Integer>> features;
     private List<Particle> swarm;
@@ -45,8 +45,8 @@ public class SwarmTrainer {
     private void evolveSwarm() {
         this.swarm
             .stream()
-            .unordered()
             .parallel()
+            .unordered()
             .forEach((Particle p) -> {
                 this.evaluateParticle(p);
                 System.out.print(".");
@@ -97,14 +97,21 @@ public class SwarmTrainer {
         System.out.println();
         this.swarm.get(2).print();
         System.out.println();
+        System.out.println("Best so far: ");
+        StringBuilder output = new StringBuilder();
+        for (Double pos : this.globalBestPosition) {
+            output.append(String.format("%.2f, ", pos));
+        }
+        System.out.println("Lines: " + String.format("%.2f", (double) this.globalBestFitness / BATCH_SIZE));
+        System.out.println(output.delete(output.length() - 2, output.length()).toString());
+        System.out.println();
     }
 
 
     public static void main(String args[]) {
         List<BiFunction<TestableState, TestableState, Integer>> features = new ArrayList<>();
         Features.addAllFeatures(features);
-
-        new GeneticTrainer(features).train();
+        new SwarmTrainer(features).train();
     }
 
 }
@@ -146,13 +153,13 @@ class Particle implements Comparable<Particle> {
         List<Double> newVelocity = new ArrayList<>();
 
         Random rng = new Random();
-        for (int i = 0; i < newVelocity.size(); i++) {
+        for (int i = 0; i < this.velocity.size(); i++) {
             newVelocity.add(SwarmTrainer.OMEGA * this.velocity.get(i) +
                 SwarmTrainer.PHI_P * rng.nextDouble() * (this.bestPosition.get(i) - this.position.get(i)) +
                 SwarmTrainer.PHI_G * rng.nextDouble() * (globalBestPosition.get(i) - this.position.get(i)));
         }
 
-        for (int i = 0; i < newPosition.size(); i++) {
+        for (int i = 0; i < this.position.size(); i++) {
             newPosition.add(this.position.get(i) + this.velocity.get(i));
         }
 
