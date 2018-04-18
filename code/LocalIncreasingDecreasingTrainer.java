@@ -23,8 +23,8 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
     static final int IT_INCREMENT = 5;
     static final int STARTING_MOVES = 1000;
     static final boolean DECREASE_FLAG = true;
-    static final double PASS_MARK = 0.95;
-    static final int TARGET_PERCENTILE = 15;
+    static final double PASS_MARK = 0.97;
+    static final int TARGET_PERCENTILE = 10;
 
     //static final String folder = "data/local-increasing-trainer-v1/";
     static final String folder = "";
@@ -84,24 +84,14 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
             fw.write("max moves: " + moves + "\n");
             fw.write("increment: " + STARTING_INCREMENT + "\n");
             fw.write("epsilon: " + EPSILON + "\n");
-            fw.write("        Features.addAllColHeightFeatures(features);\n" +
-                    "        Features.addAllHeightDiffFeatures(features);\n" +
-                    "        features.add(Features::getNumHoles);\n" +
-                    "        features.add(Features::getAggregateHoleAndWallMeasure);\n" +
-                    "        features.add(Features::hasLeftStep);\n" +
-                    "        features.add(Features::hasRightStep);\n" +
-                    "        features.add(Features::hasLevelSurface);\n" +
-                    "        features.add(Features::getNumOfSignificantTopDifference);\n" +
-                    "        features.add(Features::getNumRowsWithHoles);\n" +
-                    "        features.add(Features::getNumColsWithHoles);\n" +
-                    "        features.add(Features::getNegativeOfRowsCleared);\n" +
+            fw.write("        features.add(Features::getNegativeOfRowsCleared);\n" +
                     "        features.add(Features::getMaxHeight);\n" +
                     "        features.add(Features::getSumOfDepthOfHoles);\n" +
                     "        features.add(Features::getMeanAbsoluteDeviationOfTop);\n" +
                     "        features.add(Features::getBlocksAboveHoles);\n" +
                     "        features.add(Features::getSignificantHoleAndTopDifferenceFixed);\n" +
                     "        features.add(Features::getBumpiness);\n" +
-                    "        features.add(Features::getTotalHeight);");
+                    "        features.add(Features::getTotalHeight);\n");
             fw.write("\n");
             fw.close();
         } catch (IOException ioe) {
@@ -122,7 +112,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
     }
 
     public boolean shouldPrune(){
-        if(rounds < 30){
+        if(rounds <30 || (iterations - rounds) < 30){
             return false;
             //cannot apply CLT
         }
@@ -130,7 +120,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         if((double)rSum/rounds >= (double) bestResult/iterations) return false;
 
         double avgStdDev = Math.sqrt((squareSum - (double) rSum*rSum/rounds )/ (rounds-1) / (iterations-rounds));
-        if((double) rSum / rounds + 3 * avgStdDev < (double) rSum /iterations){
+        if((double) rSum / rounds + 3 * avgStdDev < (double) (bestResult-rSum) / (iterations-rounds)){
             System.out.println("CI prune");
             return true;
         }
@@ -234,13 +224,8 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         boolean shouldPerturb = false;
         lastUpdate = System.currentTimeMillis();
 
-        BasicTrainer trainer = BasicFairTrainer.getTrainerResults(bestCoefficient, features, 50);
+        BasicTrainer trainer = BasicFairTrainer.getTrainerResults(bestCoefficient, features, 100);
         double currAverage = trainer.getAverage();
-
-
-//        backupBestAverage = currAverage;
-//        backupBest = new ArrayList<>(bestCoefficient);
-//        modifyParameters(trainer.getPercentile(TARGET_PERCENTILE) * 10 / 4);
 
         if(bestCoefficient.equals(backupBest)){
             backupBestAverage = currAverage = (trainer.getAverage() + backupBestAverage) / 2;
@@ -254,7 +239,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
 
         }
         else{
-            BasicTrainer retest = BasicFairTrainer.getTrainerResults(backupBest, features, 50);
+            BasicTrainer retest = BasicFairTrainer.getTrainerResults(backupBest, features, 100);
             backupBestAverage = (retest.getAverage() + backupBestAverage) / 2;
             if (currAverage > backupBestAverage) {
                 backupBestAverage = currAverage;
@@ -392,31 +377,18 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
 
         List<Function<TestState, Double>> features = new ArrayList<>();
 
-        Features.addAllColHeightFeatures(features);
-        Features.addAllHeightDiffFeatures(features);
-        features.add(Features::getNumHoles);
-        features.add(Features::getAggregateHoleAndWallMeasure);
-        features.add(Features::hasLeftStep);
-        features.add(Features::hasRightStep);
-        features.add(Features::hasLevelSurface);
-        features.add(Features::getNumOfSignificantTopDifference);
-        features.add(Features::getNumRowsWithHoles);
-        features.add(Features::getNumColsWithHoles);
-
-
-        initialiseCoefficients(coefficients, features.size());
-
-
         features.add(Features::getNegativeOfRowsCleared);
         features.add(Features::getMaxHeight);
         features.add(Features::getSumOfDepthOfHoles);
         features.add(Features::getMeanAbsoluteDeviationOfTop);
         features.add(Features::getBlocksAboveHoles);
         features.add(Features::getSignificantHoleAndTopDifferenceFixed);
-        features.add(Features::getBumpiness);
-        features.add(Features::getTotalHeight);
+        initialiseCoefficients(coefficients, features.size());
 
-        coefficients.addAll(Arrays.asList(44.0, -6.0, 0.0, 72.0, 2.0, 97.5, 48.0, 226.0));
+        features.add(Features::getBumpiness);
+        coefficients.add(STARTING_INCREMENT);
+        features.add(Features::getTotalHeight);
+        coefficients.add(STARTING_INCREMENT);
 
         new LocalIncreasingDecreasingTrainer(coefficients, features).train();
     }
