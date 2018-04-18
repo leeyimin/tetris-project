@@ -22,7 +22,7 @@ public class SATrainer {
         this.numBatches = -1;
         this.numMoves = STARTING_MOVES;
         this.score = Double.NEGATIVE_INFINITY;
-        this.time = 0;
+        this.time = 1;
         this.coefficients = coefficients;
         this.features = features;
     }
