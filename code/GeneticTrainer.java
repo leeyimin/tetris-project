@@ -4,7 +4,7 @@ import java.util.stream.*;
 
 public class GeneticTrainer {
 
-    public static final int STARTING_MOVES = 1000;
+    public static final int STARTING_MOVES = Integer.MAX_VALUE;
     public static final int BATCH_SIZE = 20;
     public static final int POPULATION_SIZE = 200;
     public static final int NEWBORN_SIZE = 60;

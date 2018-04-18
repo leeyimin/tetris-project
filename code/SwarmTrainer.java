@@ -7,9 +7,9 @@ public class SwarmTrainer {
     public static final int STARTING_MOVES = Integer.MAX_VALUE;
     public static final int BATCH_SIZE = 20;
     public static final int SWARM_SIZE = 50;
-    public static final double PHI_P = 0.5;
-    public static final double PHI_G = 0.3;
-    public static final double OMEGA = 0.2;
+    public static final double PHI_P = 0.35;
+    public static final double PHI_G = 0.45;
+    public static final double OMEGA = 0.20;
 
     private List<BiFunction<TestableState, TestableState, Integer>> features;
     private List<Particle> swarm;

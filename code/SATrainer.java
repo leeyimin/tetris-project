@@ -5,7 +5,7 @@ import java.util.stream.*;
 public class SATrainer {
 
     private static final int BATCH_SIZE = 20;
-    private static final int STARTING_MOVES = 4000;
+    private static final int STARTING_MOVES = Integer.MAX_VALUE;
     private static final double THRESHOLD_MOVES = 1.0;
     private static final double HALF_PROB = 25;
     private static final double NORM_FACTOR = Math.log(2) / HALF_PROB;
@@ -127,9 +127,16 @@ public class SATrainer {
         Features.addAllFeatures(features);
 
         List<Double> coefficients = new ArrayList<>();
-        for (int i = 0; i < features.size(); i++) {
+        /*for (int i = 0; i < features.size(); i++) {
             coefficients.add(0.0);
-        }
+        }*/
+        coefficients.add( 0.00);
+        coefficients.add( 4.50);
+        coefficients.add(-3.42);
+        coefficients.add( 3.22);
+        coefficients.add( 9.35);
+        coefficients.add( 7.89);
+        coefficients.add( 3.39);
 
         new SATrainer(coefficients, features).train();
     }

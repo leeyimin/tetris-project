@@ -32,8 +32,13 @@ public class Player {
             }
         }
 
-        //eval(testState.testMove(bestMove), testState);
+        // eval(testState.testMove(bestMove), testState);
         return bestMove;
+    }
+
+
+    public void eval(TestableState state, TestableState prevState) {
+        System.out.println(this.features.get(6).apply(state, prevState));
     }
 
     public double evaluateState(TestableState state, TestableState prevState) {
