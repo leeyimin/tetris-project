@@ -261,7 +261,7 @@ public class Features {
         features.add(Features::getRowTransitions);
         features.add(Features::getColumnTransitions);
         features.add(Features::getNumHoles);
-        features.add(Features::getSquareSumOfWell);
+        features.add(Features::getAggregateHoleAndWallMeasure);
     }
 
 }
