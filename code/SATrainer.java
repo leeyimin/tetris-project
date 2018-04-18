@@ -1,23 +1,24 @@
 import java.util.*;
 import java.util.function.*;
+import java.util.stream.*;
 
 public class SATrainer {
 
-    private static final int BATCH_SIZE = 50;
-    private static final int STARTING_MOVES = 2000;
-    private static final double THRESHOLD_MOVES = 0.995;
-    private static final double STARTING_STEPS = 5.30;
-    private static final double DECAY_STEPS = 1.1;
-    private static final double DELTA_TIME = 0.001;
+    private static final int BATCH_SIZE = 20;
+    private static final int STARTING_MOVES = 4000;
+    private static final double THRESHOLD_MOVES = 1.0;
+    private static final double HALF_PROB = 25;
+    private static final double NORM_FACTOR = Math.log(2) / HALF_PROB;
+    private static final double DELTA_TIME = 0.01;
 
     private int numBatches;
     private int numMoves;
     private double score;
     private double time;
     private List<Double> coefficients;
-    private List<Function<TestState, Double>> features;
+    private List<BiFunction<TestableState, TestableState, Integer>> features;
 
-    public SATrainer(List<Double> coefficients, List<Function<TestState, Double>> features) {
+    public SATrainer(List<Double> coefficients, List<BiFunction<TestableState, TestableState, Integer>> features) {
         this.numBatches = -1;
         this.numMoves = STARTING_MOVES;
         this.score = Double.NEGATIVE_INFINITY;
@@ -26,7 +27,7 @@ public class SATrainer {
         this.features = features;
     }
 
-    public SATrainer(List<Double> coefficients, List<Function<TestState, Double>> features, int numBatches) {
+    public SATrainer(List<Double> coefficients, List<BiFunction<TestableState, TestableState, Integer>> features, int numBatches) {
         this(coefficients, features);
         this.numBatches = numBatches;
     }
@@ -56,7 +57,7 @@ public class SATrainer {
         if (newScore > this.score) return true;
 
         Random rng = new Random();
-        return rng.nextDouble() <= Math.exp(-this.time * (this.score - newScore));
+        return rng.nextDouble() <= Math.exp(-this.time * NORM_FACTOR * (this.score - newScore));
     }
 
     private List<Double> getNeighbour() {
@@ -65,17 +66,24 @@ public class SATrainer {
 
         for (int i = 0; i < newCoefficients.size(); i++) {
             double coefficient = newCoefficients.get(i);
-            newCoefficients.set(i, coefficient + rng.nextGaussian());
+            newCoefficients.set(i, coefficient + 0.5 * rng.nextGaussian());
         }
 
         return newCoefficients;
     }
 
     private double evaluate(List<Double> coefficients) {
-        int totalRowsCleared = 0;
+        int totalRowsCleared = IntStream
+            .range(0, BATCH_SIZE)
+            .parallel()
+            .unordered()
+            .map(i -> new Player(coefficients, this.features).simulate(this.numMoves))
+            .sum();
+
+        /*int totalRowsCleared = 0;
         for (int i = 0; i < BATCH_SIZE; i++) {
             totalRowsCleared += new Player(coefficients, this.features).simulate(this.numMoves);
-        }
+        }*/
 
         double averageRowsCleared = (double) totalRowsCleared / BATCH_SIZE;
         double maxRowsCleared = this.numMoves * 0.4;
@@ -94,9 +102,9 @@ public class SATrainer {
     private void printSummary(double score) {
         System.out.println();
         if (this.numBatches > 0) System.out.println("Batch Num : " + this.numBatches);
-        System.out.println("Time        : " + this.time);
+        System.out.println("Time        : " + String.format("%.3f", this.time));
         System.out.println("Score       : " + score);
-        System.out.println("Temperature : " + Math.exp(-this.time));
+        System.out.println("Temperature : " + Math.exp(-this.time * NORM_FACTOR * HALF_PROB));
         this.printCoefficients();
     }
 
@@ -115,14 +123,13 @@ public class SATrainer {
     }
 
     public static void main(String args[]) {
-        List<Function<TestState, Double>> features = new ArrayList<>();
+        List<BiFunction<TestableState, TestableState, Integer>> features = new ArrayList<>();
         Features.addAllFeatures(features);
 
         List<Double> coefficients = new ArrayList<>();
         for (int i = 0; i < features.size(); i++) {
             coefficients.add(0.0);
         }
-        //List<Double> coefficients = Arrays.asList(new Double[] { 11.51, 3.24, -15.31, 0.00, 23.83, -2.02, 3.47, 26.01, -3.10, 0.00, 0.00, -12.97, 12.84, -4.71, 12.02, 1.65, 0.00, 5.42, 2.92, 5.13, -5.64, 19.19, 9.09, 20.28, 13.91, 13.47, 10.26, 17.26, 6.83, 9.93, 0.00, 97.06 });
 
         new SATrainer(coefficients, features).train();
     }

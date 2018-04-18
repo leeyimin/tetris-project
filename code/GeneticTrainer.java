@@ -1,24 +1,25 @@
 import java.util.*;
 import java.util.function.*;
+import java.util.stream.*;
 
 public class GeneticTrainer {
 
-    public static final int STARTING_MOVES = 500;
-    public static final int BATCH_SIZE = 50;
-    public static final int POPULATION_SIZE = 100;
-    public static final int NEWBORN_SIZE = 20;
-    public static final int MUTANT_SIZE = 20;
+    public static final int STARTING_MOVES = 1000;
+    public static final int BATCH_SIZE = 20;
+    public static final int POPULATION_SIZE = 200;
+    public static final int NEWBORN_SIZE = 60;
+    public static final int MUTANT_SIZE = 60;
     public static final int COEFFICIENT_MEAN = 0;
     public static final int COEFFICIENT_STDDEV = 10;
 
-    private List<Function<TestState, Double>> features;
+    private List<BiFunction<TestableState, TestableState, Integer>> features;
     private List<Gene> population;
     private int numMoves;
     private int generation;
 
-    public GeneticTrainer(List<Function<TestState, Double>> features) {
+    public GeneticTrainer(List<BiFunction<TestableState, TestableState, Integer>> features) {
         this.features = features;
-        this.population = new ArrayList<>();
+        this.population = Collections.synchronizedList(new ArrayList<>());
         this.numMoves = STARTING_MOVES;
         this.generation = 0;
     }
@@ -60,9 +61,17 @@ public class GeneticTrainer {
     }
 
     private void evolvePopulation() {
-        for (Gene gene : this.population) {
-            this.evaluateGene(gene);
-        }
+        this.population
+            .stream()
+            .unordered()
+            .parallel()
+            .forEach((Gene g) -> {
+                this.evaluateGene(g);
+                System.out.print(".");
+            });
+
+        System.out.println();    
+        System.out.println();    
         Collections.sort(this.population);
         this.population = this.population.subList(0, POPULATION_SIZE);
     }
@@ -72,7 +81,7 @@ public class GeneticTrainer {
         double secondRowsCleared = (double) this.population.get(1).fitness / BATCH_SIZE;
         double thirdRowsCleared = (double) this.population.get(2).fitness / BATCH_SIZE;
 	double theoreticalMaxRowsCleared = this.numMoves * 0.4;
-	double threshold = 0.95 * theoreticalMaxRowsCleared;
+	double threshold = 1.0 * theoreticalMaxRowsCleared;
 
 	if (firstRowsCleared > threshold && secondRowsCleared > threshold && thirdRowsCleared > threshold) {
             this.numMoves *= 2;
@@ -102,22 +111,8 @@ public class GeneticTrainer {
 
 
     public static void main(String args[]) {
-        List<Function<TestState, Double>> features = new ArrayList<>();
-        features.add(Features::getNegativeOfRowsCleared);
-        features.add(Features::getMaxHeight);
-        features.add(Features::getNumHoles);
-        features.add(Features::getSumOfDepthOfHoles);
-        features.add(Features::getMeanAbsoluteDeviationOfTop);
-        features.add(Features::getBlocksAboveHoles);
-        features.add(Features::getSignificantHoleAndTopDifference);
-        features.add(Features::getNumOfSignificantTopDifference);
-        features.add(Features::hasLevelSurface);
-        features.add(Features::getNumColsWithHoles);
-        features.add(Features::getNumRowsWithHoles);
-        Features.addAllColHeightFeatures(features);
-        Features.addAllHeightDiffFeatures(features);
-        features.add(Features::getBumpiness);
-        features.add(Features::getTotalHeight);
+        List<BiFunction<TestableState, TestableState, Integer>> features = new ArrayList<>();
+        Features.addAllFeatures(features);
 
         new GeneticTrainer(features).train();
     }
