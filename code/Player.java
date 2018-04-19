@@ -101,6 +101,36 @@ public class Player {
         return state.getRowsCleared();
     }
 
+    public int simulate(int maxMoves, State startState){
+        State state = new State();
+        if (startState != null) {
+            int sField[][] = state.getField();
+            for (int i = 0; i < State.ROWS; i++) {
+                System.arraycopy(startState.getField()[i], 0, sField[i], 0, State.COLS);
+            }
+
+            System.arraycopy(startState.getTop(), 0, state.getTop(), 0, State.COLS);
+        }
+        if (RENDER_BOARD) {
+            this.frame = new TFrame(state);
+        }
+
+        while (!state.hasLost() && numMoves < maxMoves) {
+            numMoves++;
+            state.makeMove(this.pickMove(state, state.legalMoves()));
+            updateBoard(state);
+            writeLog(state);
+        }
+
+        showDeathState(state);
+
+        if (RENDER_BOARD) {
+            this.frame.dispose();
+        }
+
+        return state.getRowsCleared();
+    }
+
     protected void writeLog(State state){
         if(!WRITE_LOG) return;
         TestState tState = new TestState(state.getField(), state.getTop(), 0);

@@ -38,13 +38,7 @@ public class CriticalStrategyTrainer extends LocalIncreasingDecreasingTrainer {
         backupBestAverage /= iterations;
     }
 
-    private void generateStartingState() {
-        for(int i=0;i<numStates;i++){
-            System.out.print('.');
-            startingState[i] = new TwoStrategyPlayer(normalCoefficients, normalFeatures, coefficients, features).simulateToCritical();
-        }
-        System.out.println();
-    }
+
 
     @Override
     public void train() {
