@@ -16,12 +16,12 @@ import java.util.function.Function;
  */
 public class LocalIncreasingDecreasingTrainer extends Trainer {
 
-    static final int STARTING_ITERATIONS = 50;
+    static final int STARTING_ITERATIONS = 89;
     static final double STARTING_INCREMENT = 32;
     static final double EPSILON = 0.5;
     static final double factor = 4.0; // multiply increment by 1/factor after one iteration of the features
     static final int IT_INCREMENT = 5;
-    static final int STARTING_MOVES = 1000;
+    static final int STARTING_MOVES = 89000;
     static final boolean DECREASE_FLAG = true;
     static final double PASS_MARK = 0.97;
     static final int TARGET_PERCENTILE = 10;
@@ -84,14 +84,16 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
             fw.write("max moves: " + moves + "\n");
             fw.write("increment: " + STARTING_INCREMENT + "\n");
             fw.write("epsilon: " + EPSILON + "\n");
-            fw.write("        features.add(Features::getNegativeOfRowsCleared);\n" +
+            fw.write("         Features.addAllHeightDiffFeatures(features);\n" +
+                    "        Features.addAllColHeightFeatures(features);\n" +
+                    "        features.add(Features::getNegativeOfRowsCleared);\n" +
                     "        features.add(Features::getMaxHeight);\n" +
                     "        features.add(Features::getSumOfDepthOfHoles);\n" +
                     "        features.add(Features::getMeanAbsoluteDeviationOfTop);\n" +
                     "        features.add(Features::getBlocksAboveHoles);\n" +
                     "        features.add(Features::getSignificantHoleAndTopDifferenceFixed);\n" +
                     "        features.add(Features::getBumpiness);\n" +
-                    "        features.add(Features::getTotalHeight);\n");
+                    "        features.add(Features::getTotalHeight);");
             fw.write("\n");
             fw.close();
         } catch (IOException ioe) {
@@ -377,19 +379,21 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
 
         List<Function<TestState, Double>> features = new ArrayList<>();
 
+        Features.addAllHeightDiffFeatures(features);
+        Features.addAllColHeightFeatures(features);
+
+        initialiseCoefficients(coefficients, features.size());
+
         features.add(Features::getNegativeOfRowsCleared);
         features.add(Features::getMaxHeight);
         features.add(Features::getSumOfDepthOfHoles);
         features.add(Features::getMeanAbsoluteDeviationOfTop);
         features.add(Features::getBlocksAboveHoles);
         features.add(Features::getSignificantHoleAndTopDifferenceFixed);
-        initialiseCoefficients(coefficients, features.size());
-
         features.add(Features::getBumpiness);
-        coefficients.add(STARTING_INCREMENT);
         features.add(Features::getTotalHeight);
-        coefficients.add(STARTING_INCREMENT);
 
+        coefficients.addAll(Arrays.asList(88.0, -12.0, 0.0, 144.0, 4.0, 195.0, 96.0, 452.0));
         new LocalIncreasingDecreasingTrainer(coefficients, features).train();
     }
 
