@@ -216,6 +216,13 @@ public class DarwinTrainer extends Trainer {
         Features.addAllHeightDiffFeatures(features);
         features.add(Features::getBumpiness);
         features.add(Features::getTotalHeight);
+/*
+        @@@@@@@@@@@@ BATTLE ROYALE RESULTS @@@@@@@@@@@@@
+        Best player index: 42 with score of 90117
+                [6.072514737228467, -0.31974855636294697, -7.50071108723186, 7.1796240122843145, 0.04150852452366571, 26.239337282132727, 2.0, 0.5, -1.0, 2.0, 0.0, 0.5, 3.2, 32.166355239655076]
+        Second best player index: 218 with score of 87587
+                [5.715536806394777, 0.5, -7.855029323766315, 8.677859289895409, 0.04150852452366571, 25.77897475381983, 0.7864887230626558, 0.5, -2.0116438850754146, 0.8946661007437196, -0.698780547726666, 0.0, 3.2, 32.166355239655076]
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
 
         /**
          *  Adding increasing decreasing trainer's champion with trimmedFeatures
