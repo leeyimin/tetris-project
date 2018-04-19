@@ -24,4 +24,22 @@ public class BasicFairTrainer extends BasicTrainer {
         }
     }
 
+    public static void main(String[] args) {
+        List<Function<TestState, Double>> features = new ArrayList<>();
+
+        Features.addAllHeightDiffFeatures(features);
+        Features.addAllColHeightFeatures(features);
+        features.add(Features::getNegativeOfRowsCleared);
+        features.add(Features::getMaxHeight);
+        features.add(Features::getSumOfDepthOfHoles);
+        features.add(Features::getMeanAbsoluteDeviationOfTop);
+        features.add(Features::getBlocksAboveHoles);
+        features.add(Features::getSignificantHoleAndTopDifferenceFixed);
+        features.add(Features::getBumpiness);
+        features.add(Features::getTotalHeight);
+        BasicFairTrainer trainer = BasicFairTrainer.getTrainerResults(Arrays.asList(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 32.0, 0.0, 0.0, 0.0, 0.0, 0.5, 2.0, 32.0, 0.5, 0.0, 32.0, 0.0, 0.0, 88.0, -12.0, 0.0, 144.0, 4.0, 195.0, 96.0, 484.0),features,100);
+        System.out.println(trainer.getAverage());
+        System.out.println(trainer.getPercentile(50));
+    }
+
 }
