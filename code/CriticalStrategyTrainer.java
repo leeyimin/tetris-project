@@ -33,7 +33,7 @@ public class CriticalStrategyTrainer extends LocalIncreasingDecreasingTrainer {
         generateStartingState();
         backupBestAverage = 0;
         for (int i = 0; i < iterations; i++) {
-            backupBestAverage += new TwoStrategyPlayer(normalCoefficients, normalFeatures, bestCoefficient, features, startingState[i % numStates]).simulateToNotCritical(moves);
+            backupBestAverage += new TwoStrategyPlayer(normalCoefficients, normalFeatures, bestCoefficient[0], features, startingState[i % numStates]).simulateToNotCritical(moves);
         }
         backupBestAverage /= iterations;
     }
@@ -61,22 +61,22 @@ public class CriticalStrategyTrainer extends LocalIncreasingDecreasingTrainer {
         rounds++;
         resultsInRound[(rounds - 1)% iterations] = result;
         rSum += result;
-        if (rounds % iterations == 0 || rSum + (iterations - rounds) < bestResult) {
+        if (rounds % iterations == 0 || rSum + (iterations - rounds) < bestResult[0]) {
 
             printCurrentRound();
 
             rounds = 0;
 
-            if (rSum > bestResult) {
-                bestResult = rSum;
-                bestCoefficient = new ArrayList<>(coefficients);
+            if (rSum > bestResult[0]) {
+                bestResult[0] = rSum;
+                bestCoefficient[0] = new ArrayList<>(coefficients);
                 coefficients.set(order[currentCoefficient], coefficients.get(order[currentCoefficient]) + increment);
             } else {
                 currentCoefficient++;
 
                 updateNextRoundIfNecessary();
 
-                coefficients = new ArrayList<>(bestCoefficient);
+                coefficients = new ArrayList<>(bestCoefficient[0]);
 
                 if (Math.abs(increment) < EPSILON) {
 
@@ -104,7 +104,7 @@ public class CriticalStrategyTrainer extends LocalIncreasingDecreasingTrainer {
 
         boolean toPerturb = updateBackupBestAndParameters();
 
-        bestResult = Integer.MIN_VALUE;
+        bestResult[0] = Integer.MIN_VALUE;
 
         //perturbation
         //TODO: perturbation strategy to be improved
@@ -134,7 +134,7 @@ public class CriticalStrategyTrainer extends LocalIncreasingDecreasingTrainer {
 
         double currAverage = 0;
         for (int i = 0; i < iterations; i++) {
-            currAverage += new TwoStrategyPlayer(normalCoefficients, normalFeatures, bestCoefficient, features, startingState[i % numStates]).simulateToNotCritical(moves);
+            currAverage += new TwoStrategyPlayer(normalCoefficients, normalFeatures, bestCoefficient[0], features, startingState[i % numStates]).simulateToNotCritical(moves);
         }
         currAverage /= iterations;
 
@@ -143,7 +143,7 @@ public class CriticalStrategyTrainer extends LocalIncreasingDecreasingTrainer {
             shouldPerturb = true;
         } else if (currAverage > backupBestAverage) {
             backupBestAverage = currAverage;
-            backupBest = new ArrayList<>(bestCoefficient);
+            backupBest = new ArrayList<>(bestCoefficient[0]);
 
         } else {
             double retest = 0;
@@ -153,9 +153,9 @@ public class CriticalStrategyTrainer extends LocalIncreasingDecreasingTrainer {
             retest /= iterations;
             if (currAverage > (retest + backupBestAverage) / 2) {
                 backupBestAverage = currAverage;
-                backupBest = new ArrayList<>(bestCoefficient);
+                backupBest = new ArrayList<>(bestCoefficient[0]);
             } else {
-                bestCoefficient = new ArrayList<>(backupBest);
+                bestCoefficient[0] = new ArrayList<>(backupBest);
                 backupBestAverage = currAverage = (retest + backupBestAverage) / 2;
                 shouldPerturb = true;
 

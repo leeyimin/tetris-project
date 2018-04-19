@@ -16,21 +16,22 @@ import java.util.function.Function;
  */
 public class LocalIncreasingDecreasingTrainer extends Trainer {
 
-    static final int STARTING_ITERATIONS = 89;
+    static final int STARTING_ITERATIONS = 50;
     static final double STARTING_INCREMENT = 32;
     static final double EPSILON = 0.5;
     static final double factor = 4.0; // multiply increment by 1/factor after one iteration of the features
     static final int IT_INCREMENT = 5;
-    static final int STARTING_MOVES = 89000;
+    static final int STARTING_MOVES = 1000;
     static final boolean DECREASE_FLAG = true;
-    static final double PASS_MARK = 0.97;
-    static final int TARGET_PERCENTILE = 10;
+    static final double PASS_MARK = 0.95;
+    static final int TARGET_PERCENTILE = 15;
+    static final int BEST_NUM = 3;
 
     //static final String folder = "data/local-increasing-trainer-v1/";
     static final String folder = "";
 
-    long bestResult = Long.MIN_VALUE;
-    List<Double> bestCoefficient;
+    long bestResult[];
+    ArrayList[] bestCoefficient;
     int rounds;
     double increment;
     int[] resultsInRound;
@@ -63,7 +64,13 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
 
         iterations = STARTING_ITERATIONS;
         resultsInRound = new int[iterations];
-        bestCoefficient = new ArrayList<>(coefficients);
+
+        bestResult = new long[BEST_NUM];
+        for(int i=0;i<BEST_NUM;i++) bestResult[i] = Long.MIN_VALUE;
+
+        bestCoefficient = new ArrayList[3];
+        bestCoefficient[0] = new ArrayList<Double>(coefficients);
+
         increment = STARTING_INCREMENT;
         currentCoefficient = 0;
         direction = 1;
@@ -84,16 +91,15 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
             fw.write("max moves: " + moves + "\n");
             fw.write("increment: " + STARTING_INCREMENT + "\n");
             fw.write("epsilon: " + EPSILON + "\n");
-            fw.write("         Features.addAllHeightDiffFeatures(features);\n" +
-                    "        Features.addAllColHeightFeatures(features);\n" +
-                    "        features.add(Features::getNegativeOfRowsCleared);\n" +
+            fw.write("        features.add(Features::getNegativeOfRowsCleared);\n" +
                     "        features.add(Features::getMaxHeight);\n" +
                     "        features.add(Features::getSumOfDepthOfHoles);\n" +
                     "        features.add(Features::getMeanAbsoluteDeviationOfTop);\n" +
                     "        features.add(Features::getBlocksAboveHoles);\n" +
                     "        features.add(Features::getSignificantHoleAndTopDifferenceFixed);\n" +
+                    "        features.add(Features::getNumHoles);\n" +
                     "        features.add(Features::getBumpiness);\n" +
-                    "        features.add(Features::getTotalHeight);");
+                    "        features.add(Features::getTotalHeight);\n");
             fw.write("\n");
             fw.close();
         } catch (IOException ioe) {
@@ -119,10 +125,10 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
             //cannot apply CLT
         }
 
-        if((double)rSum/rounds >= (double) bestResult/iterations) return false;
+        if((double)rSum/rounds >= (double) bestResult[BEST_NUM-1]/iterations) return false;
 
         double avgStdDev = Math.sqrt((squareSum - (double) rSum*rSum/rounds )/ (rounds-1) / (iterations-rounds));
-        if((double) rSum / rounds + 3 * avgStdDev < (double) (bestResult-rSum) / (iterations-rounds)){
+        if((double) rSum / rounds + 3 * avgStdDev < (double) (bestResult[BEST_NUM-1]-rSum) / (iterations-rounds)){
             System.out.println("CI prune");
             return true;
         }
@@ -138,14 +144,26 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         boolean toPrune = shouldPrune();
 
 
-        if (rounds % iterations == 0 || rSum + (iterations - rounds)*moves*4/10.0 < bestResult || toPrune) {
+        if (rounds % iterations == 0 || rSum + (iterations - rounds)*moves*4/10.0 < bestResult[BEST_NUM-1] || toPrune) {
             printCurrentRound();
 
             rounds = 0;
 
-            if (rSum > bestResult) {
-                bestResult = rSum;
-                bestCoefficient = new ArrayList<>(coefficients);
+            boolean isTop = false;
+            for (int i = 0; i < BEST_NUM; i++) {
+                if (rSum > bestResult[i]) {
+                    if(i == 0) isTop = true;
+                    for (int j = BEST_NUM - 1; j > i; j--) {
+                        bestResult[j] = bestResult[j - 1];
+                        bestCoefficient[j] = bestCoefficient[j - 1];
+                    }
+                    bestCoefficient[i] = new ArrayList<Double>(coefficients);
+                    bestResult[i] = rSum;
+                    break;
+                }
+            }
+
+            if (isTop) {
                 coefficients.set(order[currentCoefficient], coefficients.get(order[currentCoefficient]) + increment);
             }
             else {
@@ -153,7 +171,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
 
                 updateNextRoundIfNecessary();
 
-                coefficients = new ArrayList<>(bestCoefficient);
+                coefficients = new ArrayList<Double>(bestCoefficient[0]);
 
                 if ( (currentCoefficient == 0 && shouldModifyTargetLines()) ||  Math.abs(increment) < EPSILON) {
 
@@ -174,9 +192,9 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
 
     void printCurrentBest() {
         System.out.println("Current best");
-        System.out.println(bestResult);
+        System.out.println(bestResult[0]);
         System.out.println("Best coefficients");
-        for (double r : bestCoefficient) System.out.print(r + " ");
+        for (double r : (ArrayList<Double>)bestCoefficient[0]) System.out.print(r + " ");
         System.out.println();
         System.out.println();
     }
@@ -189,7 +207,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
 
         boolean toPerturb = updateBackupBestAndParameters();
 
-        bestResult = Long.MIN_VALUE;
+        for (int i = 0; i < BEST_NUM; i++) bestResult[i] = Long.MIN_VALUE;
 
         //perturbation
         //TODO: perturbation strategy to be improved
@@ -226,37 +244,32 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         boolean shouldPerturb = false;
         lastUpdate = System.currentTimeMillis();
 
-        BasicTrainer trainer = BasicFairTrainer.getTrainerResults(bestCoefficient, features, 100);
-        double currAverage = trainer.getAverage();
-
-        if(bestCoefficient.equals(backupBest)){
-            backupBestAverage = currAverage = (trainer.getAverage() + backupBestAverage) / 2;
-            modifyParameters(((trainer.getPercentile(TARGET_PERCENTILE) * 10 / 4) + moves) / 2);
-            shouldPerturb = true;
-        }
-        else if(currAverage > backupBestAverage){
-            backupBestAverage = currAverage;
-            backupBest = new ArrayList<>(bestCoefficient);
-            modifyParameters(trainer.getPercentile(TARGET_PERCENTILE) * 10 / 4);
-
-        }
-        else{
-            BasicTrainer retest = BasicFairTrainer.getTrainerResults(backupBest, features, 100);
-            backupBestAverage = (retest.getAverage() + backupBestAverage) / 2;
-            if (currAverage > backupBestAverage) {
+        int bestDifferent;
+        double currAverage = 0;
+        BasicTrainer trainer;
+        for(bestDifferent=0;bestDifferent<BEST_NUM;bestDifferent++){
+            if(((ArrayList<Double>)bestCoefficient[bestDifferent]).equals(backupBest)){
+                continue;
+            }
+            trainer = BasicFairTrainer.getTrainerResults(bestCoefficient[bestDifferent], features, 100);
+            currAverage = trainer.getAverage();
+            if(currAverage > backupBestAverage){
                 backupBestAverage = currAverage;
-                backupBest = new ArrayList<>(bestCoefficient);
+                backupBest = new ArrayList<Double>(bestCoefficient[bestDifferent]);
+                bestCoefficient[0] = bestCoefficient[bestDifferent];
                 modifyParameters(trainer.getPercentile(TARGET_PERCENTILE) * 10 / 4);
-
-            } else {
-                currAverage = backupBestAverage;
-                bestCoefficient = new ArrayList<>(backupBest);
-                modifyParameters(((retest.getPercentile(TARGET_PERCENTILE) * 10 / 4) + moves) / 2);
-                shouldPerturb = true;
+                break;
             }
         }
 
-        coefficients =  new ArrayList<>(bestCoefficient);
+        if (bestDifferent == BEST_NUM) {
+            currAverage = backupBestAverage;
+            bestCoefficient[0] = new ArrayList<Double>(backupBest);
+            modifyParameters(moves);
+            shouldPerturb = true;
+        }
+
+        coefficients =  new ArrayList<>(bestCoefficient[0]);
 
         printLog(currAverage, shouldPerturb);
         return shouldPerturb;
@@ -294,7 +307,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
     }
 
     boolean shouldModifyTargetLines(){
-        return bestResult >= PASS_MARK * (moves * 4 / 10) * iterations;
+        return bestResult[0] >= PASS_MARK * (moves * 4 / 10) * iterations;
     }
 
     void printLog(double average, boolean shouldPerturb) {
@@ -304,12 +317,12 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
             String filename = folder + getFilePrefix() + startTime + ".txt";
             FileWriter fw = new FileWriter(filename, true); //the true will append the new data
             fw.write("time: " + (lastUpdate - startTime) / (60 * 1000.0) + "\n");
-            fw.write("sum: " + bestResult + "\n");
+            fw.write("sum: " + bestResult[0] + "\n");
 
             fw.write("average: " + average + "\n");
-            fw.write(bestCoefficient.get(0) + "");
+            fw.write(bestCoefficient[0].get(0) + "");
             for (int i = 1; i < coefficients.size(); i++) {
-                fw.write(", " + bestCoefficient.get(i));
+                fw.write(", " + bestCoefficient[0].get(i));
             }
             fw.write("\n");
             fw.write("should perturb: " + shouldPerturb + "\n\n");
@@ -327,9 +340,9 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
     void printBest() {
         System.out.println();
         System.out.println("BEST");
-        System.out.println(bestResult);
+        System.out.println(bestResult[0]);
         for (int i = 0; i < coefficients.size(); i++) {
-            System.out.print(bestCoefficient.get(i) + " ");
+            System.out.print(bestCoefficient[0].get(i) + " ");
         }
 
         System.out.println();
@@ -379,21 +392,20 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
 
         List<Function<TestState, Double>> features = new ArrayList<>();
 
-        Features.addAllHeightDiffFeatures(features);
-        Features.addAllColHeightFeatures(features);
-
-        initialiseCoefficients(coefficients, features.size());
-
         features.add(Features::getNegativeOfRowsCleared);
         features.add(Features::getMaxHeight);
         features.add(Features::getSumOfDepthOfHoles);
         features.add(Features::getMeanAbsoluteDeviationOfTop);
         features.add(Features::getBlocksAboveHoles);
         features.add(Features::getSignificantHoleAndTopDifferenceFixed);
-        features.add(Features::getBumpiness);
-        features.add(Features::getTotalHeight);
+        features.add(Features::getNumHoles);
+        initialiseCoefficients(coefficients, features.size());
 
-        coefficients.addAll(Arrays.asList(88.0, -12.0, 0.0, 144.0, 4.0, 195.0, 96.0, 452.0));
+        features.add(Features::getBumpiness);
+        coefficients.add(STARTING_INCREMENT);
+        features.add(Features::getTotalHeight);
+        coefficients.add(STARTING_INCREMENT);
+
         new LocalIncreasingDecreasingTrainer(coefficients, features).train();
     }
 
