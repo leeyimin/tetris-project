@@ -20,11 +20,11 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
     static final double STARTING_INCREMENT = 32;
     static final double EPSILON = 0.5;
     static final double factor = 4.0; // multiply increment by 1/factor after one iteration of the features
-    static final int IT_INCREMENT = 25;
+    static final int IT_INCREMENT = 5;
     static final int STARTING_MOVES = 1000;
     static final boolean DECREASE_FLAG = true;
-    static final double PASS_MARK = 0.9;
-    static final int TARGET_PERCENTILE = 5;
+    static final double PASS_MARK = 0.95;
+    static final int TARGET_PERCENTILE = 15;
     static final int BEST_NUM = 3;
 
     //static final String folder = "data/local-increasing-trainer-v1/";
@@ -39,7 +39,6 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
     long squareSum;
     int direction;
     int order[];
-    State startingState[];
 
     List<Double> backupBest;
     double backupBestAverage;
@@ -63,17 +62,14 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         moves = STARTING_MOVES;
         rounds = 0;
 
+        iterations = STARTING_ITERATIONS;
+        resultsInRound = new int[iterations];
 
         bestResult = new long[BEST_NUM];
-        for (int i = 0; i < BEST_NUM; i++) bestResult[i] = Long.MIN_VALUE;
+        for(int i=0;i<BEST_NUM;i++) bestResult[i] = Long.MIN_VALUE;
 
         bestCoefficient = new ArrayList[3];
         bestCoefficient[0] = new ArrayList<Double>(coefficients);
-
-        iterations = STARTING_ITERATIONS;
-        resultsInRound = new int[iterations];
-        startingState = new State[iterations];
-        generateStartingState();
 
         increment = STARTING_INCREMENT;
         currentCoefficient = 0;
@@ -111,14 +107,6 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         }
     }
 
-    protected void generateStartingState() {
-        for (int i = 0; i < iterations; i++) {
-            System.out.print('.');
-            startingState[i] = new TwoStrategyPlayer(bestCoefficient[0], features, bestCoefficient[0], features).simulateToCritical();
-        }
-        System.out.println();
-    }
-
     String getFilePrefix(){
         return "LIDtrain";
     }
@@ -126,29 +114,26 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
     @Override
     public void train() {
         for (int i = 0; i < this.numIterations; i++) {
-            int rowsCleared = new FairPlayer(coefficients, features).simulate(moves, startingState[rounds]);
+            int rowsCleared = new FairPlayer(coefficients, features).simulate(moves);
             this.onSimulateDone(rowsCleared);
         }
     }
 
     public boolean shouldPrune(){
-        //using different starting states, not independent trials
-        return false;
+        if(rounds <30 || (iterations - rounds) < 30){
+            return false;
+            //cannot apply CLT
+        }
 
-//        if(rounds <30 || (iterations - rounds) < 30){
-//            return false;
-//            //cannot apply CLT
-//        }
-//
-//        if((double)rSum/rounds >= (double) bestResult[BEST_NUM-1]/iterations) return false;
-//
-//        double avgStdDev = Math.sqrt((squareSum - (double) rSum*rSum/rounds )/ (rounds-1) / (iterations-rounds));
-//        if((double) rSum / rounds + 3 * avgStdDev < (double) (bestResult[BEST_NUM-1]-rSum) / (iterations-rounds)){
-//            System.out.println("CI prune");
-//            return true;
-//        }
-//
-//        return false;
+        if((double)rSum/rounds >= (double) bestResult[BEST_NUM-1]/iterations) return false;
+
+        double avgStdDev = Math.sqrt((squareSum - (double) rSum*rSum/rounds )/ (rounds-1) / (iterations-rounds));
+        if((double) rSum / rounds + 3 * avgStdDev < (double) (bestResult[BEST_NUM-1]-rSum) / (iterations-rounds)){
+            System.out.println("CI prune");
+            return true;
+        }
+
+        return false;
     }
 
     public void onSimulateDone(int result) {
@@ -159,7 +144,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         boolean toPrune = shouldPrune();
 
 
-        if (rounds % iterations == 0 || rSum + (iterations - rounds)*(moves*4/10.0+15) < bestResult[BEST_NUM-1] || toPrune) {
+        if (rounds % iterations == 0 || rSum + (iterations - rounds)*moves*4/10.0 < bestResult[BEST_NUM-1] || toPrune) {
             printCurrentRound();
 
             rounds = 0;
@@ -226,7 +211,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
 
         //perturbation
         //TODO: perturbation strategy to be improved
-        if(toPerturb) perturb();
+        //if(toPerturb) perturb();
     }
 
     void perturb() {
@@ -312,10 +297,8 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         }
         increment = direction * STARTING_INCREMENT;
 
-        this.moves = Math.max(moves, 1000);
-        iterations += IT_INCREMENT;
-        startingState = new State[iterations];
-        generateStartingState();
+        this.moves = Math.max(STARTING_MOVES, moves);
+        iterations = Math.max(STARTING_ITERATIONS, moves/1000);
 
 
         resultsInRound = new int[iterations];
