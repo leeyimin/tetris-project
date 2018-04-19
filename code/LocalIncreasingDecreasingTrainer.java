@@ -20,11 +20,11 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
     static final double STARTING_INCREMENT = 32;
     static final double EPSILON = 0.5;
     static final double factor = 4.0; // multiply increment by 1/factor after one iteration of the features
-    static final int IT_INCREMENT = 5;
+    static final int IT_INCREMENT = 25;
     static final int STARTING_MOVES = 1000;
     static final boolean DECREASE_FLAG = true;
     static final double PASS_MARK = 0.9;
-    static final int TARGET_PERCENTILE = 15;
+    static final int TARGET_PERCENTILE = 5;
     static final int BEST_NUM = 3;
 
     //static final String folder = "data/local-increasing-trainer-v1/";
@@ -312,8 +312,8 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         }
         increment = direction * STARTING_INCREMENT;
 
-        this.moves = moves;
-        iterations = Math.max(50, moves/1000);
+        this.moves = Math.max(moves, 1000);
+        iterations += IT_INCREMENT;
         startingState = new State[iterations];
         generateStartingState();
 
