@@ -1,0 +1,14 @@
+iterations: 110
+max moves: 110907
+increment: 32.0
+epsilon: 0.5
+         Features.addAllHeightDiffFeatures(features);
+        Features.addAllColHeightFeatures(features);
+        features.add(Features::getNegativeOfRowsCleared);
+        features.add(Features::getMaxHeight);
+        features.add(Features::getSumOfDepthOfHoles);
+        features.add(Features::getMeanAbsoluteDeviationOfTop);
+        features.add(Features::getBlocksAboveHoles);
+        features.add(Features::getSignificantHoleAndTopDifferenceFixed);
+        features.add(Features::getBumpiness);
+        features.add(Features::getTotalHeight);

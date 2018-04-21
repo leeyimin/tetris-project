@@ -16,12 +16,12 @@ import java.util.function.Function;
  */
 public class LocalIncreasingDecreasingTrainer extends Trainer {
 
-    static final int STARTING_ITERATIONS = 89;
+    static final int STARTING_ITERATIONS = 110;
     static final double STARTING_INCREMENT = 32;
     static final double EPSILON = 0.5;
     static final double factor = 4.0; // multiply increment by 1/factor after one iteration of the features
     static final int IT_INCREMENT = 5;
-    static final int STARTING_MOVES = 89000;
+    static final int STARTING_MOVES = 110907;
     static final boolean DECREASE_FLAG = true;
     static final double PASS_MARK = 0.97;
     static final int TARGET_PERCENTILE = 10;
@@ -381,6 +381,11 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
 
         Features.addAllHeightDiffFeatures(features);
         Features.addAllColHeightFeatures(features);
+        features.add(Features::getNumColsWithHoles);
+        features.add(Features::getNumRowsWithHoles);
+        features.add(Features::hasLevelSurface);
+        features.add(Features::hasRightStep);
+        features.add(Features::hasLeftStep);
 
         initialiseCoefficients(coefficients, features.size());
 
@@ -390,10 +395,12 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         features.add(Features::getMeanAbsoluteDeviationOfTop);
         features.add(Features::getBlocksAboveHoles);
         features.add(Features::getSignificantHoleAndTopDifferenceFixed);
+        features.add(Features::getNumHoles);
         features.add(Features::getBumpiness);
         features.add(Features::getTotalHeight);
 
-        coefficients.addAll(Arrays.asList(88.0, -12.0, 0.0, 144.0, 4.0, 195.0, 96.0, 452.0));
+
+        coefficients.addAll(Arrays.asList(0.0, -64.0, -4.0, 304.0, 23.0, 192.0, 0.0, 80.0, 416.0));
         new LocalIncreasingDecreasingTrainer(coefficients, features).train();
     }
 
