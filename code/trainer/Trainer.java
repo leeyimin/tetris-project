@@ -1,13 +1,17 @@
+package trainer;
+
+import player.PlayerSkeleton;
+
 import java.util.*;
 import java.util.function.*;
 
 public abstract class Trainer {
 
     protected List<Double> coefficients;
-    protected List<Function<TestState, Double>> features;
+    protected List<Function<PlayerSkeleton.TestState, Double>> features;
     protected int numIterations;
 
-    public Trainer(int numIterations, List<Double> coefficients, List<Function<TestState, Double>> features) {
+    public Trainer(int numIterations, List<Double> coefficients, List<Function<PlayerSkeleton.TestState, Double>> features) {
         this.coefficients = coefficients;
         this.features = features;
         this.numIterations = numIterations;

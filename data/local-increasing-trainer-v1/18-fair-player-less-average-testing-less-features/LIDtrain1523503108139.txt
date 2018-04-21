@@ -2,23 +2,23 @@ iterations: 50
 max moves: 1000
 increment: 32.0
 epsilon: 0.5
-        features.add(Features::getNegativeOfRowsCleared);
-        features.add(Features::getMaxHeight);
-        features.add(Features::getSumOfDepthOfHoles);
-        features.add(Features::getMeanAbsoluteDeviationOfTop);
-        features.add(Features::getBlocksAboveHoles);
-        features.add(Features::getSignificantHoleAndTopDifference);
-        features.add(Features::hasLevelSurface);
-        features.add(Features::hasRightStep);
-        features.add(Features::hasLeftStep);
-        features.add(Features::getAggregateHoleAndWallMeasure);
-        features.add(Features::getHoleMeasure);
+        features.add(player.PlayerSkeleton.Features::getNegativeOfRowsCleared);
+        features.add(player.PlayerSkeleton.Features::getMaxHeight);
+        features.add(player.PlayerSkeleton.Features::getSumOfDepthOfHoles);
+        features.add(player.PlayerSkeleton.Features::getMeanAbsoluteDeviationOfTop);
+        features.add(player.PlayerSkeleton.Features::getBlocksAboveHoles);
+        features.add(player.PlayerSkeleton.Features::getSignificantHoleAndTopDifference);
+        features.add(player.PlayerSkeleton.Features::hasLevelSurface);
+        features.add(player.PlayerSkeleton.Features::hasRightStep);
+        features.add(player.PlayerSkeleton.Features::hasLeftStep);
+        features.add(player.PlayerSkeleton.Features::getAggregateHoleAndWallMeasure);
+        features.add(player.PlayerSkeleton.Features::getHoleMeasure);
 
 
-        features.add(Features::getNumColsWithHoles);
-        features.add(Features::getNumRowsWithHoles);
-        features.add(Features::getBumpiness);
-        features.add(Features::getTotalHeight);
+        features.add(player.PlayerSkeleton.Features::getNumColsWithHoles);
+        features.add(player.PlayerSkeleton.Features::getNumRowsWithHoles);
+        features.add(player.PlayerSkeleton.Features::getBumpiness);
+        features.add(player.PlayerSkeleton.Features::getTotalHeight);
 
 time: 0.7838166666666667
 sum: 19864

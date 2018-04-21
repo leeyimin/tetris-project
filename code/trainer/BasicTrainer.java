@@ -1,3 +1,7 @@
+package trainer;
+
+import player.PlayerSkeleton;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,11 +15,11 @@ public class BasicTrainer extends Trainer {
     int iterations;
     int result[];
 
-    public BasicTrainer(List<Double> coefficients, List<Function<TestState, Double>> features) {
+    public BasicTrainer(List<Double> coefficients, List<Function<PlayerSkeleton.TestState, Double>> features) {
         this(coefficients, features, ITERATIONS_NUM);
     }
 
-    public BasicTrainer(List<Double> coefficients, List<Function<TestState, Double>> features, int numIterations) {
+    public BasicTrainer(List<Double> coefficients, List<Function<PlayerSkeleton.TestState, Double>> features, int numIterations) {
         super(numIterations, coefficients, features);
         sum = 0;
         iterations = 0;
@@ -34,7 +38,7 @@ public class BasicTrainer extends Trainer {
         System.out.println();
     }
 
-    public static BasicTrainer getTrainerResults(List<Double> coefficients, List<Function<TestState, Double>> features, int numIterations){
+    public static BasicTrainer getTrainerResults(List<Double> coefficients, List<Function<PlayerSkeleton.TestState, Double>> features, int numIterations){
         BasicTrainer trainer = new BasicTrainer(coefficients, features, numIterations);
         trainer.numIterations = numIterations;
         trainer.train();
@@ -63,10 +67,10 @@ public class BasicTrainer extends Trainer {
         coefficients.add(10.0);
         coefficients.add(0.5);
 
-        List<Function<TestState, Double>> features = new ArrayList<>();
-        features.add(Features::getBumpiness);
-        features.add(Features::getTotalHeight);
-        features.add(Features::getMaxHeight);
+        List<Function<PlayerSkeleton.TestState, Double>> features = new ArrayList<>();
+        features.add(PlayerSkeleton.Features::getBumpiness);
+        features.add(PlayerSkeleton.Features::getTotalHeight);
+        features.add(PlayerSkeleton.Features::getMaxHeight);
 
         new BasicTrainer(coefficients, features).train();
     }

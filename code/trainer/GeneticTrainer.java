@@ -1,3 +1,7 @@
+package trainer;
+
+import player.PlayerSkeleton;
+
 import java.util.*;
 import java.util.function.*;
 
@@ -11,12 +15,12 @@ public class GeneticTrainer {
     public static final int COEFFICIENT_MEAN = 0;
     public static final int COEFFICIENT_STDDEV = 10;
 
-    private List<Function<TestState, Double>> features;
+    private List<Function<PlayerSkeleton.TestState, Double>> features;
     private List<Gene> population;
     private int numMoves;
     private int generation;
 
-    public GeneticTrainer(List<Function<TestState, Double>> features) {
+    public GeneticTrainer(List<Function<PlayerSkeleton.TestState, Double>> features) {
         this.features = features;
         this.population = new ArrayList<>();
         this.numMoves = STARTING_MOVES;
@@ -102,22 +106,22 @@ public class GeneticTrainer {
 
 
     public static void main(String args[]) {
-        List<Function<TestState, Double>> features = new ArrayList<>();
-        features.add(Features::getNegativeOfRowsCleared);
-        features.add(Features::getMaxHeight);
-        features.add(Features::getNumHoles);
-        features.add(Features::getSumOfDepthOfHoles);
-        features.add(Features::getMeanAbsoluteDeviationOfTop);
-        features.add(Features::getBlocksAboveHoles);
-        features.add(Features::getSignificantHoleAndTopDifference);
-        features.add(Features::getNumOfSignificantTopDifference);
-        features.add(Features::hasLevelSurface);
-        features.add(Features::getNumColsWithHoles);
-        features.add(Features::getNumRowsWithHoles);
-        Features.addAllColHeightFeatures(features);
-        Features.addAllHeightDiffFeatures(features);
-        features.add(Features::getBumpiness);
-        features.add(Features::getTotalHeight);
+        List<Function<PlayerSkeleton.TestState, Double>> features = new ArrayList<>();
+        features.add(PlayerSkeleton.Features::getNegativeOfRowsCleared);
+        features.add(PlayerSkeleton.Features::getMaxHeight);
+        features.add(PlayerSkeleton.Features::getNumHoles);
+        features.add(PlayerSkeleton.Features::getSumOfDepthOfHoles);
+        features.add(PlayerSkeleton.Features::getMeanAbsoluteDeviationOfTop);
+        features.add(PlayerSkeleton.Features::getBlocksAboveHoles);
+        features.add(PlayerSkeleton.Features::getSignificantHoleAndTopDifference);
+        features.add(PlayerSkeleton.Features::getNumOfSignificantTopDifference);
+        features.add(PlayerSkeleton.Features::hasLevelSurface);
+        features.add(PlayerSkeleton.Features::getNumColsWithHoles);
+        features.add(PlayerSkeleton.Features::getNumRowsWithHoles);
+        PlayerSkeleton.Features.addAllColHeightFeatures(features);
+        PlayerSkeleton.Features.addAllHeightDiffFeatures(features);
+        features.add(PlayerSkeleton.Features::getBumpiness);
+        features.add(PlayerSkeleton.Features::getTotalHeight);
 
         new GeneticTrainer(features).train();
     }

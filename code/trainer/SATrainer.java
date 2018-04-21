@@ -1,3 +1,7 @@
+package trainer;
+
+import player.PlayerSkeleton;
+
 import java.util.*;
 import java.util.function.*;
 
@@ -15,9 +19,9 @@ public class SATrainer {
     private double score;
     private double time;
     private List<Double> coefficients;
-    private List<Function<TestState, Double>> features;
+    private List<Function<PlayerSkeleton.TestState, Double>> features;
 
-    public SATrainer(List<Double> coefficients, List<Function<TestState, Double>> features) {
+    public SATrainer(List<Double> coefficients, List<Function<PlayerSkeleton.TestState, Double>> features) {
         this.numBatches = -1;
         this.numMoves = STARTING_MOVES;
         this.score = Double.NEGATIVE_INFINITY;
@@ -26,7 +30,7 @@ public class SATrainer {
         this.features = features;
     }
 
-    public SATrainer(List<Double> coefficients, List<Function<TestState, Double>> features, int numBatches) {
+    public SATrainer(List<Double> coefficients, List<Function<PlayerSkeleton.TestState, Double>> features, int numBatches) {
         this(coefficients, features);
         this.numBatches = numBatches;
     }
@@ -115,8 +119,8 @@ public class SATrainer {
     }
 
     public static void main(String args[]) {
-        List<Function<TestState, Double>> features = new ArrayList<>();
-        Features.addAllFeatures(features);
+        List<Function<PlayerSkeleton.TestState, Double>> features = new ArrayList<>();
+        PlayerSkeleton.Features.addAllFeatures(features);
 
         List<Double> coefficients = new ArrayList<>();
         for (int i = 0; i < features.size(); i++) {

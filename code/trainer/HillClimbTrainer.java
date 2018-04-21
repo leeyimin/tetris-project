@@ -1,3 +1,7 @@
+package trainer;
+
+import player.PlayerSkeleton;
+
 import java.util.*;
 import java.util.function.*;
 
@@ -14,9 +18,9 @@ public class HillClimbTrainer {
     private int numMoves;
     private double stepSize;
     private List<Double> coefficients;
-    private List<Function<TestState, Double>> features;
+    private List<Function<PlayerSkeleton.TestState, Double>> features;
 
-    public HillClimbTrainer(List<Double> coefficients, List<Function<TestState, Double>> features) {
+    public HillClimbTrainer(List<Double> coefficients, List<Function<PlayerSkeleton.TestState, Double>> features) {
         this.currDimension = 0;
         this.numBatches = -1;
         this.numMoves = STARTING_MOVES;
@@ -25,7 +29,7 @@ public class HillClimbTrainer {
         this.features = features;
     }
 
-    public HillClimbTrainer(List<Double> coefficients, List<Function<TestState, Double>> features, int numBatches) {
+    public HillClimbTrainer(List<Double> coefficients, List<Function<PlayerSkeleton.TestState, Double>> features, int numBatches) {
         this(coefficients, features);
         this.numBatches = numBatches;
     }
@@ -123,8 +127,8 @@ public class HillClimbTrainer {
     }
 
     public static void main(String args[]) {
-        List<Function<TestState, Double>> features = new ArrayList<>();
-        Features.addAllFeatures(features);
+        List<Function<PlayerSkeleton.TestState, Double>> features = new ArrayList<>();
+        PlayerSkeleton.Features.addAllFeatures(features);
 
         List<Double> coefficients = Arrays.asList(new Double[] { 11.51, 3.24, -15.31, 0.00, 23.83, -2.02, 3.47, 26.01, -3.10, 0.00, 0.00, -12.97, 12.84, -4.71, 12.02, 1.65, 0.00, 5.42, 2.92, 5.13, -5.64, 19.19, 9.09, 20.28, 13.91, 13.47, 10.26, 17.26, 6.83, 9.93, 0.00, 97.06 });
 

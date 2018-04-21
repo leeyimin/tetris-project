@@ -1,3 +1,7 @@
+package trainer;
+
+import player.PlayerSkeleton;
+
 import java.util.*;
 import java.util.function.*;
 
@@ -8,11 +12,11 @@ public class RandomRestartHillClimbTrainer {
     private static final double RAND_MEAN = 0;
     private static final double RAND_STDDEV = 1;
 
-    private List<Function<TestState, Double>> features;
+    private List<Function<PlayerSkeleton.TestState, Double>> features;
     private List<Double> bestCoefficients;
     private double bestRowsCleared;
 
-    public RandomRestartHillClimbTrainer(List<Function<TestState, Double>> features) {
+    public RandomRestartHillClimbTrainer(List<Function<PlayerSkeleton.TestState, Double>> features) {
         this.features = features;
         this.bestRowsCleared = Double.NEGATIVE_INFINITY;
     }
@@ -74,8 +78,8 @@ public class RandomRestartHillClimbTrainer {
     }
 
     public static void main(String args[]) {
-        List<Function<TestState, Double>> features = new ArrayList<>();
-        Features.addAllFeatures(features);
+        List<Function<PlayerSkeleton.TestState, Double>> features = new ArrayList<>();
+        PlayerSkeleton.Features.addAllFeatures(features);
 
         new RandomRestartHillClimbTrainer(features).train();
     }

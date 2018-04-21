@@ -1,3 +1,8 @@
+package trainer;
+
+import player.PlayerSkeleton;
+import player.State;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -10,14 +15,14 @@ public class CriticalStrategyTrainer extends LocalIncreasingDecreasingTrainer {
     State startingState[];
 
     List<Double> normalCoefficients;
-    List<Function<TestState, Double>> normalFeatures;
+    List<Function<PlayerSkeleton.TestState, Double>> normalFeatures;
 
     int numStates;
 
 
 
-    public CriticalStrategyTrainer(List<Double> normalCoefficients, List<Function<TestState, Double>> normalFeatures,
-                                   List<Double> criticalCoefficients, List<Function<TestState, Double>> criticalFeatures) {
+    public CriticalStrategyTrainer(List<Double> normalCoefficients, List<Function<PlayerSkeleton.TestState, Double>> normalFeatures,
+                                   List<Double> criticalCoefficients, List<Function<PlayerSkeleton.TestState, Double>> criticalFeatures) {
         super(criticalCoefficients, criticalFeatures);
 
         this.iterations = 5000;
@@ -185,27 +190,27 @@ public class CriticalStrategyTrainer extends LocalIncreasingDecreasingTrainer {
         List<Double> coefficients = Arrays.asList(6.0, 0.0, -10.0, 0.0, 0.5, 16.0, 0.0, 0.0, 38.0, -4.0, 0.0, 0.0, -2.0, 0.5, -2.0, 2.0, 0.0, 0.0, 2.0, -0.5, 0.0, -2.0, 2.0, 0.0, 2.0, 0.0, 0.0, 0.0, 2.0, -0.5, 0.0, 3.2, 44.0);
         List<Double> normalCoefficients = Arrays.asList(6.0, 0.0, -10.0, 0.0, 0.5, 16.0, 0.0, 0.0, 38.0, -4.0, 0.0, 0.0, -2.0, 0.5, -2.0, 2.0, 0.0, 0.0, 2.0, -0.5, 0.0, -2.0, 2.0, 0.0, 2.0, 0.0, 0.0, 0.0, 2.0, -0.5, 0.0, 3.2, 44.0);
 
-        List<Function<TestState, Double>> features = new ArrayList<>();
+        List<Function<PlayerSkeleton.TestState, Double>> features = new ArrayList<>();
 
-        features.add(Features::getNegativeOfRowsCleared);
-        features.add(Features::getMaxHeight);
-        features.add(Features::getNumHoles);
-        features.add(Features::getSumOfDepthOfHoles);
-        features.add(Features::getHeightAboveHoles);
-        features.add(Features::getMeanAbsoluteDeviationOfTop);
-        features.add(Features::getBlocksAboveHoles);
-        features.add(Features::getSignificantHoleAndTopDifferenceFixed);
-        features.add(Features::getNumOfSignificantTopDifference);
-        features.add(Features::hasLevelSurface);
+        features.add(PlayerSkeleton.Features::getNegativeOfRowsCleared);
+        features.add(PlayerSkeleton.Features::getMaxHeight);
+        features.add(PlayerSkeleton.Features::getNumHoles);
+        features.add(PlayerSkeleton.Features::getSumOfDepthOfHoles);
+        features.add(PlayerSkeleton.Features::getHeightAboveHoles);
+        features.add(PlayerSkeleton.Features::getMeanAbsoluteDeviationOfTop);
+        features.add(PlayerSkeleton.Features::getBlocksAboveHoles);
+        features.add(PlayerSkeleton.Features::getSignificantHoleAndTopDifferenceFixed);
+        features.add(PlayerSkeleton.Features::getNumOfSignificantTopDifference);
+        features.add(PlayerSkeleton.Features::hasLevelSurface);
 
-        features.add(Features::getNumColsWithHoles);
-        features.add(Features::getNumRowsWithHoles);
+        features.add(PlayerSkeleton.Features::getNumColsWithHoles);
+        features.add(PlayerSkeleton.Features::getNumRowsWithHoles);
 
-        Features.addAllColHeightFeatures(features);
-        Features.addAllHeightDiffFeatures(features);
+        PlayerSkeleton.Features.addAllColHeightFeatures(features);
+        PlayerSkeleton.Features.addAllHeightDiffFeatures(features);
 
-        features.add(Features::getBumpiness);
-        features.add(Features::getTotalHeight);
+        features.add(PlayerSkeleton.Features::getBumpiness);
+        features.add(PlayerSkeleton.Features::getTotalHeight);
 
         new CriticalStrategyTrainer(normalCoefficients, features, coefficients, features).train();
     }

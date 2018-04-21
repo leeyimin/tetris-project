@@ -1,3 +1,5 @@
+package player;
+
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -38,7 +40,7 @@ public class TFrame extends JFrame implements KeyListener{
 		setVisible(true);
 	}
 	
-	//switches which state is attached to this TFrame
+	//switches which state is attached to this player.TFrame
 	public void bindState(State s) {
 		if(s!= null)	s.label = null;
 		this.s = s;

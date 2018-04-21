@@ -1,10 +1,14 @@
+package trainer;
+
+import player.PlayerSkeleton;
+
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.*;
 
 public class DarwinTrainer extends Trainer {
 
-    public DarwinTrainer(List<Double> coefficients, List<Function<TestState, Double>> features) {
+    public DarwinTrainer(List<Double> coefficients, List<Function<PlayerSkeleton.TestState, Double>> features) {
         super(100, coefficients, features);
     }
 
@@ -23,7 +27,7 @@ public class DarwinTrainer extends Trainer {
     }
 
     private static int[] oneGenerationRun(ArrayList<List<Double>> playerCoefficients,
-                                          List<Function<TestState, Double>> features) {
+                                          List<Function<PlayerSkeleton.TestState, Double>> features) {
 
         int[] resultPair = new int[2];
         List<Double> currentPlayer;
@@ -175,20 +179,20 @@ public class DarwinTrainer extends Trainer {
 
     public static void main(String args[]) {
         ArrayList<List<Double>> playerCoefficients = new ArrayList<>();
-        List<Function<TestState, Double>> features = new ArrayList<>();
+        List<Function<PlayerSkeleton.TestState, Double>> features = new ArrayList<>();
         List<Double> oneSetCoefficients;
         int[] resultPair = new int[2];
 
         final int numPlayers = 20;
 
         //Adding features
-        features.add(Features::hasPossibleInevitableDeathNextPiece);
-        features.add(Features::getNegativeOfRowsCleared);
-        features.add(Features::hasRightStep);
-        features.add(Features::getMeanAbsoluteDeviationOfTop);
-        features.add(Features::getTotalHeight);
-        features.add(Features::getNumOfSignificantTopDifference);
-        features.add(Features::getNumHoles);
+        features.add(PlayerSkeleton.Features::hasPossibleInevitableDeathNextPiece);
+        features.add(PlayerSkeleton.Features::getNegativeOfRowsCleared);
+        features.add(PlayerSkeleton.Features::hasRightStep);
+        features.add(PlayerSkeleton.Features::getMeanAbsoluteDeviationOfTop);
+        features.add(PlayerSkeleton.Features::getTotalHeight);
+        features.add(PlayerSkeleton.Features::getNumOfSignificantTopDifference);
+        features.add(PlayerSkeleton.Features::getNumHoles);
 
         //Populating random weights
         for (int i = 0; i < numPlayers; i++) {

@@ -1,3 +1,9 @@
+package trainer;
+
+import player.PlayerSkeleton;
+import player.State;
+import player.TFrame;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

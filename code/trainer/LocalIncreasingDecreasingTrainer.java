@@ -1,3 +1,7 @@
+package trainer;
+
+import player.PlayerSkeleton;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,7 +60,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
 
     Random random;
 
-    public LocalIncreasingDecreasingTrainer(List<Double> coefficients, List<Function<TestState, Double>> features) {
+    public LocalIncreasingDecreasingTrainer(List<Double> coefficients, List<Function<PlayerSkeleton.TestState, Double>> features) {
         super(Integer.MAX_VALUE, coefficients, features);
         moves = STARTING_MOVES;
         rounds = 0;
@@ -84,16 +88,16 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
             fw.write("max moves: " + moves + "\n");
             fw.write("increment: " + STARTING_INCREMENT + "\n");
             fw.write("epsilon: " + EPSILON + "\n");
-            fw.write("         Features.addAllHeightDiffFeatures(features);\n" +
-                    "        Features.addAllColHeightFeatures(features);\n" +
-                    "        features.add(Features::getNegativeOfRowsCleared);\n" +
-                    "        features.add(Features::getMaxHeight);\n" +
-                    "        features.add(Features::getSumOfDepthOfHoles);\n" +
-                    "        features.add(Features::getMeanAbsoluteDeviationOfTop);\n" +
-                    "        features.add(Features::getBlocksAboveHoles);\n" +
-                    "        features.add(Features::getSignificantHoleAndTopDifferenceFixed);\n" +
-                    "        features.add(Features::getBumpiness);\n" +
-                    "        features.add(Features::getTotalHeight);");
+            fw.write("         player.PlayerSkeleton.Features.addAllHeightDiffFeatures(features);\n" +
+                    "        player.PlayerSkeleton.Features.addAllColHeightFeatures(features);\n" +
+                    "        features.add(player.PlayerSkeleton.Features::getNegativeOfRowsCleared);\n" +
+                    "        features.add(player.PlayerSkeleton.Features::getMaxHeight);\n" +
+                    "        features.add(player.PlayerSkeleton.Features::getSumOfDepthOfHoles);\n" +
+                    "        features.add(player.PlayerSkeleton.Features::getMeanAbsoluteDeviationOfTop);\n" +
+                    "        features.add(player.PlayerSkeleton.Features::getBlocksAboveHoles);\n" +
+                    "        features.add(player.PlayerSkeleton.Features::getSignificantHoleAndTopDifferenceFixed);\n" +
+                    "        features.add(player.PlayerSkeleton.Features::getBumpiness);\n" +
+                    "        features.add(player.PlayerSkeleton.Features::getTotalHeight);");
             fw.write("\n");
             fw.close();
         } catch (IOException ioe) {
@@ -377,27 +381,27 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
     public static void main(String args[]) {
         List<Double> coefficients = new ArrayList<>();
 
-        List<Function<TestState, Double>> features = new ArrayList<>();
+        List<Function<PlayerSkeleton.TestState, Double>> features = new ArrayList<>();
 
-        Features.addAllHeightDiffFeatures(features);
-        Features.addAllColHeightFeatures(features);
-        features.add(Features::getNumColsWithHoles);
-        features.add(Features::getNumRowsWithHoles);
-        features.add(Features::hasLevelSurface);
-        features.add(Features::hasRightStep);
-        features.add(Features::hasLeftStep);
+        PlayerSkeleton.Features.addAllHeightDiffFeatures(features);
+        PlayerSkeleton.Features.addAllColHeightFeatures(features);
+        features.add(PlayerSkeleton.Features::getNumColsWithHoles);
+        features.add(PlayerSkeleton.Features::getNumRowsWithHoles);
+        features.add(PlayerSkeleton.Features::hasLevelSurface);
+        features.add(PlayerSkeleton.Features::hasRightStep);
+        features.add(PlayerSkeleton.Features::hasLeftStep);
 
         initialiseCoefficients(coefficients, features.size());
 
-        features.add(Features::getNegativeOfRowsCleared);
-        features.add(Features::getMaxHeight);
-        features.add(Features::getSumOfDepthOfHoles);
-        features.add(Features::getMeanAbsoluteDeviationOfTop);
-        features.add(Features::getBlocksAboveHoles);
-        features.add(Features::getSignificantHoleAndTopDifferenceFixed);
-        features.add(Features::getNumHoles);
-        features.add(Features::getBumpiness);
-        features.add(Features::getTotalHeight);
+        features.add(PlayerSkeleton.Features::getNegativeOfRowsCleared);
+        features.add(PlayerSkeleton.Features::getMaxHeight);
+        features.add(PlayerSkeleton.Features::getSumOfDepthOfHoles);
+        features.add(PlayerSkeleton.Features::getMeanAbsoluteDeviationOfTop);
+        features.add(PlayerSkeleton.Features::getBlocksAboveHoles);
+        features.add(PlayerSkeleton.Features::getSignificantHoleAndTopDifferenceFixed);
+        features.add(PlayerSkeleton.Features::getNumHoles);
+        features.add(PlayerSkeleton.Features::getBumpiness);
+        features.add(PlayerSkeleton.Features::getTotalHeight);
 
 
         coefficients.addAll(Arrays.asList(0.0, -64.0, -4.0, 304.0, 23.0, 192.0, 0.0, 80.0, 416.0));

@@ -1,3 +1,7 @@
+package trainer;
+
+import player.PlayerSkeleton;
+
 import java.util.*;
 import java.util.function.*;
 
@@ -15,9 +19,9 @@ public class LocalTrainer {
     private double stepSize;
     private List<Double> bestCoefficients;
     private List<Double> coefficients;
-    private List<Function<TestState, Double>> features;
+    private List<Function<PlayerSkeleton.TestState, Double>> features;
 
-    public LocalTrainer(List<Double> coefficients, List<Function<TestState, Double>> features) {
+    public LocalTrainer(List<Double> coefficients, List<Function<PlayerSkeleton.TestState, Double>> features) {
         this.currBatch = 0;
         this.currRound = 0;
         this.cumulatedRows = 0;
@@ -94,22 +98,22 @@ public class LocalTrainer {
     }
 
     public static void main(String args[]) {
-        List<Function<TestState, Double>> features = new ArrayList<>();
-        features.add(Features::getNegativeOfRowsCleared);
-        features.add(Features::getMaxHeight);
-        features.add(Features::getNumHoles);
-        features.add(Features::getSumOfDepthOfHoles);
-        features.add(Features::getMeanAbsoluteDeviationOfTop);
-        features.add(Features::getBlocksAboveHoles);
-        features.add(Features::getSignificantHoleAndTopDifference);
-        features.add(Features::getNumOfSignificantTopDifference);
-        features.add(Features::hasLevelSurface);
-        features.add(Features::getNumColsWithHoles);
-        features.add(Features::getNumRowsWithHoles);
-        Features.addAllColHeightFeatures(features);
-        Features.addAllHeightDiffFeatures(features);
-        features.add(Features::getBumpiness);
-        features.add(Features::getTotalHeight);
+        List<Function<PlayerSkeleton.TestState, Double>> features = new ArrayList<>();
+        features.add(PlayerSkeleton.Features::getNegativeOfRowsCleared);
+        features.add(PlayerSkeleton.Features::getMaxHeight);
+        features.add(PlayerSkeleton.Features::getNumHoles);
+        features.add(PlayerSkeleton.Features::getSumOfDepthOfHoles);
+        features.add(PlayerSkeleton.Features::getMeanAbsoluteDeviationOfTop);
+        features.add(PlayerSkeleton.Features::getBlocksAboveHoles);
+        features.add(PlayerSkeleton.Features::getSignificantHoleAndTopDifference);
+        features.add(PlayerSkeleton.Features::getNumOfSignificantTopDifference);
+        features.add(PlayerSkeleton.Features::hasLevelSurface);
+        features.add(PlayerSkeleton.Features::getNumColsWithHoles);
+        features.add(PlayerSkeleton.Features::getNumRowsWithHoles);
+        PlayerSkeleton.Features.addAllColHeightFeatures(features);
+        PlayerSkeleton.Features.addAllHeightDiffFeatures(features);
+        features.add(PlayerSkeleton.Features::getBumpiness);
+        features.add(PlayerSkeleton.Features::getTotalHeight);
 
         List<Double> coefficients = new ArrayList<>();
         coefficients.add(  4.00);

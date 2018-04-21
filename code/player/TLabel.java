@@ -1,6 +1,4 @@
-
-
-
+package player;
 
 
 import java.awt.BasicStroke;
