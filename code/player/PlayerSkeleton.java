@@ -13,7 +13,7 @@ import java.util.stream.IntStream;
 public class PlayerSkeleton {
 
     protected static final int REFRESH_DELAY = 1;
-    protected static final boolean RENDER_BOARD = false;
+    protected static final boolean RENDER_BOARD = true;
     protected static final boolean SHOW_DEATH_STATE = false;
     protected static final int MAX_NUM_MOVES = Integer.MAX_VALUE;
     protected static final boolean WRITE_LOG = false;
@@ -34,16 +34,21 @@ public class PlayerSkeleton {
     private boolean wasCritical = false;
 
     public static void main(String[] args) {
-        List<Double> coefficients = Arrays.asList(new Double[]{11.51, 3.24, -15.31, 0.00, 23.83, -2.02, 3.47, 26.01, -3.10, 0.00, 0.00, -12.97, 12.84, -4.71, 12.02, 1.65, 0.00, 5.42, 2.92, 5.13, -5.64, 19.19, 9.09, 20.28, 13.91, 13.47, 10.26, 17.26, 6.83, 9.93, 0.00, 97.06});
+        List<Double> coefficients = Arrays.asList(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 32.0, 0.0, 0.0, 0.0, 0.0, 0.5, 2.0, 32.0, 0.5, 0.0, 32.0, 0.0, 0.0, 88.0, -12.0, 0.0, 144.0, 4.0, 195.0, 96.0, 484.0);
         List<Function<TestState, Double>> features = new ArrayList<>();
-        Features.addAllFeatures(features);
-        int total = 0;
-        for (int i = 0; i < 20; i++) {
-            int rows = new PlayerSkeleton(coefficients, features).simulate();
-            System.out.println(rows);
-            total += rows;
-        }
-        System.out.println("Total: " + (double) total / 20);
+        Features.addAllHeightDiffFeatures(features);
+        Features.addAllColHeightFeatures(features);
+        features.add(Features::getNegativeOfRowsCleared);
+        features.add(Features::getMaxHeight);
+        features.add(Features::getSumOfDepthOfHoles);
+        features.add(Features::getMeanAbsoluteDeviationOfTop);
+        features.add(Features::getBlocksAboveHoles);
+        features.add(Features::getSignificantHoleAndTopDifferenceFixed);
+        features.add(Features::getBumpiness);
+        features.add(Features::getTotalHeight);
+
+        System.out.println("You have completed " + new PlayerSkeleton(coefficients, features).simulate() + " rows.");
+
     }
 
     public PlayerSkeleton(List<Double> coefficients, List<Function<TestState, Double>> features) {
@@ -97,13 +102,13 @@ public class PlayerSkeleton {
         }
 
         while (!state.hasLost() && numMoves < maxMoves) {
-            numMoves++;
+            if(maxMoves != MAX_NUM_MOVES)   numMoves++;
             state.makeMove(this.pickMove(state, state.legalMoves()));
             updateBoard(state);
             writeLog(state);
         }
 
-        showDeathState(state);
+        printDeathState(state);
 
         if (RENDER_BOARD) {
             this.frame.dispose();
@@ -167,7 +172,7 @@ public class PlayerSkeleton {
         }
     }
 
-    protected void showDeathState(State state){
+    protected void printDeathState(State state){
         int field[][] = state.getField();
 
         if( SHOW_DEATH_STATE && state.hasLost()){

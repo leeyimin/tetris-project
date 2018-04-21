@@ -120,7 +120,7 @@ public class TwoStrategyPlayer extends PlayerSkeleton {
             writeLog(state);
         }
 
-        showDeathState(state);
+        printDeathState(state);
 
         if (RENDER_BOARD) {
             this.frame.dispose();
