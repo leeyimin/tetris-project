@@ -66,7 +66,7 @@ public class RandomRestartHillClimbTrainer {
     private double evaluate(List<Double> coefficients) {
         int totalRowsCleared = 0;
         for (int i = 0; i < TEST_BATCH_SIZE; i++) {
-            totalRowsCleared += new Player(coefficients, this.features).simulate();
+            totalRowsCleared += new PlayerSkeleton(coefficients, this.features).simulate();
         }
 
         double averageRowsCleared = (double) totalRowsCleared / TEST_BATCH_SIZE;

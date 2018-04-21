@@ -3,7 +3,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.function.Function;
 
-public class Player {
+public class PlayerSkeleton {
 
     protected static final int REFRESH_DELAY = 1;
     protected static final boolean RENDER_BOARD = false;
@@ -32,32 +32,36 @@ public class Player {
         Features.addAllFeatures(features);
         int total = 0;
         for (int i = 0; i < 20; i++) {
-            int rows = new Player(coefficients, features).simulate();
+            int rows = new PlayerSkeleton(coefficients, features).simulate();
             System.out.println(rows);
             total += rows;
         }
         System.out.println("Total: " + (double) total / 20);
     }
 
-    public Player(List<Double> coefficients, List<Function<TestState, Double>> features) {
+    public PlayerSkeleton(List<Double> coefficients, List<Function<TestState, Double>> features) {
         this.coefficients = coefficients;
         this.features = features;
         startTime = System.currentTimeMillis();
     }
 
     public int pickMove(State currentState, int[][] legalMoves) {
-        int bestMove = 0;
+        int bestMoves[] = new int[legalMoves.length];
+        int count = 0;
         double bestCost = Double.MAX_VALUE;
 
         for (int move = 0; move < legalMoves.length; move++) {
             double cost = this.evaluateField(MoveTester.testMove(currentState, move));
             if (cost < bestCost) {
-                bestMove = move;
+                count = 0;
+                bestMoves[count++] = move;
                 bestCost = cost;
+            } else if (cost == bestCost) {
+                bestMoves[count++] = move;
             }
         }
 
-        return bestMove;
+        return bestMoves[(new Random()).nextInt(count)];
     }
 
     public double evaluateField(TestState testState) {

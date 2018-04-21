@@ -74,7 +74,7 @@ public class SATrainer {
     private double evaluate(List<Double> coefficients) {
         int totalRowsCleared = 0;
         for (int i = 0; i < BATCH_SIZE; i++) {
-            totalRowsCleared += new Player(coefficients, this.features).simulate(this.numMoves);
+            totalRowsCleared += new PlayerSkeleton(coefficients, this.features).simulate(this.numMoves);
         }
 
         double averageRowsCleared = (double) totalRowsCleared / BATCH_SIZE;

@@ -1,23 +1,22 @@
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
-public class TwoStrategyPlayer extends FairPlayer{
+public class TwoStrategyPlayer extends PlayerSkeleton {
 
     public static final int CRITICAL_TOTAL_HEIGHT = 150;
     public static final int RETURN_TOTAL_HEIGHT = 60;
     private boolean isCritical;
     State startingState;
 
-    private Player criticalPlayer;
+    private PlayerSkeleton criticalPlayer;
 
 
     public TwoStrategyPlayer(List<Double> coefficients, List<Function<TestState, Double>> features,
                              List<Double> criticalCoefficients, List<Function<TestState, Double>> criticalFeatures) {
         super(coefficients, features);
-        criticalPlayer = new FairPlayer(criticalCoefficients, criticalFeatures);
+        criticalPlayer = new PlayerSkeleton(criticalCoefficients, criticalFeatures);
         isCritical = false;
     }
 

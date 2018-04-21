@@ -82,7 +82,7 @@ public class GeneticTrainer {
     private void evaluateGene(Gene gene) {
         int totalRowsCleared = 0;
         for (int i = 0; i < BATCH_SIZE; i++) {
-            totalRowsCleared += new Player(gene.coefficients, features).simulate(this.numMoves);
+            totalRowsCleared += new PlayerSkeleton(gene.coefficients, features).simulate(this.numMoves);
         }
         gene.fitness = totalRowsCleared;
     }

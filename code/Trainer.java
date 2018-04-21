@@ -15,7 +15,7 @@ public abstract class Trainer {
 
     public void train() {
         for (int i = 0; i < this.numIterations; i++) {
-            int rowsCleared = new Player(coefficients, features).simulate();
+            int rowsCleared = new PlayerSkeleton(coefficients, features).simulate();
             this.onSimulateDone(rowsCleared);
         }
     }
@@ -23,7 +23,7 @@ public abstract class Trainer {
     public int getAverageResult() {
         int rowsCleared = 0;
         for (int i = 0; i < this.numIterations; i++) {
-            rowsCleared += new Player(coefficients, features).simulate();
+            rowsCleared += new PlayerSkeleton(coefficients, features).simulate();
         }
         return (rowsCleared/numIterations);
     }

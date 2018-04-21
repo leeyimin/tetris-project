@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
@@ -19,7 +17,7 @@ public class BasicFairTrainer extends BasicTrainer {
     @Override
     public void train() {
         for (int i = 0; i < this.numIterations; i++) {
-            int rowsCleared = new FairPlayer(coefficients, features).simulate();
+            int rowsCleared = new PlayerSkeleton(coefficients, features).simulate();
             this.onSimulateDone(rowsCleared);
         }
     }

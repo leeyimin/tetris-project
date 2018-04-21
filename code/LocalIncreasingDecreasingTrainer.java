@@ -108,7 +108,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
     @Override
     public void train() {
         for (int i = 0; i < this.numIterations; i++) {
-            int rowsCleared = new FairPlayer(coefficients, features).simulate(moves);
+            int rowsCleared = new PlayerSkeleton(coefficients, features).simulate(moves);
             this.onSimulateDone(rowsCleared);
         }
     }

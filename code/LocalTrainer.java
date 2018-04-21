@@ -31,7 +31,7 @@ public class LocalTrainer {
 
     public void train() {
         while (true) {
-            int rowsCleared = new Player(coefficients, features).simulate(this.maxMoves);
+            int rowsCleared = new PlayerSkeleton(coefficients, features).simulate(this.maxMoves);
             this.onSimulateDone(rowsCleared);
         }
     }
