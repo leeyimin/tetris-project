@@ -230,7 +230,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
         boolean shouldPerturb = false;
         lastUpdate = System.currentTimeMillis();
 
-        BasicTrainer trainer = BasicFairTrainer.getTrainerResults(bestCoefficient, features, 100);
+        BasicTrainer trainer = BasicTrainer.getTrainerResults(bestCoefficient, features, 100);
         double currAverage = trainer.getAverage();
 
         if(bestCoefficient.equals(backupBest)){
@@ -245,7 +245,7 @@ public class LocalIncreasingDecreasingTrainer extends Trainer {
 
         }
         else{
-            BasicTrainer retest = BasicFairTrainer.getTrainerResults(backupBest, features, 100);
+            BasicTrainer retest = BasicTrainer.getTrainerResults(backupBest, features, 100);
             backupBestAverage = (retest.getAverage() + backupBestAverage) / 2;
             if (currAverage > backupBestAverage) {
                 backupBestAverage = currAverage;

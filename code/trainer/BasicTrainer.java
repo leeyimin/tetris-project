@@ -62,17 +62,23 @@ public class BasicTrainer extends Trainer {
     }
 
     public static void main(String args[]) {
-        List<Double> coefficients = new ArrayList<>();
-        coefficients.add(2.0);
-        coefficients.add(10.0);
-        coefficients.add(0.5);
+        List<Double> coefficients = Arrays.asList(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 32.0, 0.0, 0.0, 0.0, 0.0, 0.5, 2.0, 32.0, 0.5, 0.0, 32.0, 0.0, 0.0, 88.0, -12.0, 0.0, 144.0, 4.0, 195.0, 96.0, 484.0);
 
         List<Function<PlayerSkeleton.TestState, Double>> features = new ArrayList<>();
+        PlayerSkeleton.Features.addAllHeightDiffFeatures(features);
+        PlayerSkeleton.Features.addAllColHeightFeatures(features);
+        features.add(PlayerSkeleton.Features::getNegativeOfRowsCleared);
+        features.add(PlayerSkeleton.Features::getMaxHeight);
+        features.add(PlayerSkeleton.Features::getSumOfDepthOfHoles);
+        features.add(PlayerSkeleton.Features::getMeanAbsoluteDeviationOfTop);
+        features.add(PlayerSkeleton.Features::getBlocksAboveHoles);
+        features.add(PlayerSkeleton.Features::getSignificantHoleAndTopDifferenceFixed);
         features.add(PlayerSkeleton.Features::getBumpiness);
         features.add(PlayerSkeleton.Features::getTotalHeight);
-        features.add(PlayerSkeleton.Features::getMaxHeight);
 
-        new BasicTrainer(coefficients, features).train();
+        BasicTrainer trainer =  new BasicTrainer(coefficients, features);
+        trainer.train();
+        trainer.printAllResults();
     }
 
 }

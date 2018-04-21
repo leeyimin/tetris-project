@@ -1,5 +1,3 @@
-package player;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,10 +8,13 @@ import java.util.Random;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
+/**
+ * Submitted version
+ */
 public class PlayerSkeleton {
 
     protected static final int REFRESH_DELAY = 1;
-    protected static final boolean RENDER_BOARD = false;
+    protected static final boolean RENDER_BOARD = true;
     protected static final boolean SHOW_DEATH_STATE = false;
     protected static final int MAX_NUM_MOVES = Integer.MAX_VALUE;
     protected static final boolean WRITE_LOG = false;
