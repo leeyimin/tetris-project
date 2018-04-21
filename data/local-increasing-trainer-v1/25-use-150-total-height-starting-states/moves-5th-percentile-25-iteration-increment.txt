@@ -1,0 +1,54 @@
+iterations: 50
+max moves: 1000
+increment: 32.0
+epsilon: 0.5
+        features.add(Features::getNegativeOfRowsCleared);
+        features.add(Features::getMaxHeight);
+        features.add(Features::getSumOfDepthOfHoles);
+        features.add(Features::getMeanAbsoluteDeviationOfTop);
+        features.add(Features::getBlocksAboveHoles);
+        features.add(Features::getSignificantHoleAndTopDifferenceFixed);
+        features.add(Features::getNumHoles);
+        features.add(Features::getBumpiness);
+        features.add(Features::getTotalHeight);
+
+time: 2.1949666666666667
+sum: 27730
+average: 33803.49
+30.0, 8.0, 0.0, 0.0, 0.0, 64.0, -32.0, 30.0, 160.0
+should perturb: false
+
+max moves: 6832
+iterations: 100
+time: 24.032033333333334
+sum: 249688
+average: 71175.3
+64.0, 8.0, 0.0, 64.0, 0.5, 64.0, -32.0, 30.0, 224.5
+should perturb: false
+
+max moves: 10760
+iterations: 125
+time: 62.25783333333333
+sum: 460241
+average: 97586.8
+32.0, 8.0, 0.0, 64.0, 0.5, 64.0, -32.0, 30.0, 190.5
+should perturb: false
+
+max moves: 23307
+iterations: 150
+time: 148.67568333333332
+sum: 1199553
+average: 97586.8
+32.0, 8.0, 0.0, 64.0, 0.5, 64.0, -32.0, 30.0, 190.5
+should perturb: true
+
+max moves: 23307
+iterations: 175
+time: 205.09231666666668
+sum: 3603
+average: 97586.8
+32.0, 8.0, 0.0, 64.0, 0.5, 64.0, -32.0, 30.0, 190.5
+should perturb: true
+
+max moves: 23307
+iterations: 200

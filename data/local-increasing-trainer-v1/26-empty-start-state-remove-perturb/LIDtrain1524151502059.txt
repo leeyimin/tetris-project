@@ -1,0 +1,94 @@
+iterations: 50
+max moves: 1000
+increment: 32.0
+epsilon: 0.5
+        features.add(Features::getNegativeOfRowsCleared);
+        features.add(Features::getMaxHeight);
+        features.add(Features::getSumOfDepthOfHoles);
+        features.add(Features::getMeanAbsoluteDeviationOfTop);
+        features.add(Features::getBlocksAboveHoles);
+        features.add(Features::getSignificantHoleAndTopDifferenceFixed);
+        features.add(Features::getNumHoles);
+        features.add(Features::getBumpiness);
+        features.add(Features::getTotalHeight);
+
+time: 0.7194
+sum: 19844
+average: 7305.69
+64.0, 32.0, 0.0, 0.0, 32.0, 64.0, 0.0, 32.0, 192.0
+should perturb: false
+
+max moves: 2402
+iterations: 50
+time: 4.11105
+sum: 47472
+average: 32655.14
+64.0, 0.0, 0.0, 0.0, 0.0, 64.0, 0.0, 32.0, 160.0
+should perturb: false
+
+max moves: 11245
+iterations: 50
+time: 20.505116666666666
+sum: 222824
+average: 44988.35
+64.0, 0.0, 0.0, 96.0, 0.0, 64.0, 0.0, 32.0, 160.0
+should perturb: false
+
+max moves: 21612
+iterations: 50
+time: 42.61266666666667
+sum: 416643
+average: 99208.01
+64.0, -32.0, 0.0, 96.0, 0.0, 64.0, 0.0, 32.0, 160.0
+should perturb: false
+
+max moves: 51712
+iterations: 51
+time: 96.70656666666666
+sum: 1006451
+average: 130652.2
+64.0, -32.0, 0.0, 128.0, 0.0, 64.0, 0.0, 32.0, 192.0
+should perturb: false
+
+max moves: 65020
+iterations: 65
+time: 276.5152166666667
+sum: 1588074
+average: 130652.2
+64.0, -32.0, 0.0, 128.0, 0.0, 64.0, 0.0, 32.0, 192.0
+should perturb: true
+
+max moves: 65020
+iterations: 65
+time: 467.2149333333333
+sum: 1594024
+average: 130652.2
+64.0, -32.0, 0.0, 128.0, 0.0, 64.0, 0.0, 32.0, 192.0
+should perturb: true
+
+max moves: 65020
+iterations: 65
+time: 650.2786166666667
+sum: 1620095
+average: 130652.2
+64.0, -32.0, 0.0, 128.0, 0.0, 64.0, 0.0, 32.0, 192.0
+should perturb: true
+
+max moves: 65020
+iterations: 65
+time: 799.3094333333333
+sum: 1615079
+average: 130652.2
+64.0, -32.0, 0.0, 128.0, 0.0, 64.0, 0.0, 32.0, 192.0
+should perturb: true
+
+max moves: 65020
+iterations: 65
+time: 954.8229333333334
+sum: 1581566
+average: 130652.2
+64.0, -32.0, 0.0, 128.0, 0.0, 64.0, 0.0, 32.0, 192.0
+should perturb: true
+
+max moves: 65020
+iterations: 65
